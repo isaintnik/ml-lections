@@ -1,0 +1,306 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+
+\usepackage{tikz}                   
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\title{Машинное обучение: начало\\\small{}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Постановка задачи}
+\begin{frame}
+\frametitle{Задача на сегодня}
+\emph{Задача:} отделить ``хороших'' студентов от ``плохих'' \\
+\\
+\emph{Формально:} предсказать средний балл следующей сессии
+\end{frame}
+
+\begin{frame}
+\frametitle{План работы}
+\begin{enumerate}
+\item Определиться с тем кто такой студент
+\item Как из этого определения можно понять хороший он или нет
+\item Выработать чувство прекрасного
+\item Решить полученную задачу оптимизации
+\item Оценить качество полученного решения
+\item Проанализировать результаты
+\end{enumerate}
+\end{frame}
+
+\section{Векторизация и факторы}
+\begin{frame}
+\frametitle{Векторизация}
+{\tinyВ данном случае не про графику.} \\
+\\
+\emph{\textbf{Векторизация:} перевод представления о предмете в векторное выражение.}\\
+\\
+\emph{Компоненты полученного в результате векторизации вектора будем называть \textbf{факторами}}
+\end{frame}
+
+\section{Векторизация и факторы}
+\begin{frame}
+\frametitle{Факторы про студента}
+\begin{itemize}
+% инф, инт
+  \item Баллы ЕГЭ по математике при поступлении
+  \item Процент пропусков лекций
+  \item Количество друзей = $\|$ ВК $\cup$ О $\cup$ FB $\|$
+% инф, инт, шум
+  \item Литры пива в неделю
+  \item Текущий средний балл по мнению родителей
+% инф, не инт
+  \item Пол
+  \item Тип школы
+% неинф, инт
+  \item Расстояние от дома до универа (км)
+  \item Диаметр головы
+% неинф, неинт
+  \item Предпочитаемый ряд в аудитории
+  \item Наличие планшета
+\end{itemize}
+\end{frame}
+\begin{frame}[t]\frametitle{Множество на котором обучаемся $L$}
+\small
+\begin{tabular}{l||l|l|l|l|l|l|l|l|l|l|l||c}
+\hline
+Имя & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & Итог \\
+\hline\hline
+Вася & 87 & 2 & 0.3 & 145 & 4.7 & 1 & 3 & 12 & 53.7 & 3 & 1 & 3.8 \\
+\hline
+\end{tabular}
+\end{frame}
+
+\section{Решающая и целевая функции}
+\begin{frame}[t]\frametitle{Решающая функция}
+    $$\begin{array}{c}
+      h_{w_0}(x) = w_0^{T}x \\
+      \\
+      w_0, x \in \mathbb{R}^n \\
+      \end{array}
+    $$
+\begin{itemize}
+  \item Простая
+  \item Универсальная
+  \item Легко интерпретируемая
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Целевая функция}
+    $$
+      w_0 = \arg\min_w \sum_{(x_i,y_i) \in L} \| h_w(x_i) - y_i \|
+    $$
+\begin{itemize}
+  \item MSE --- годное первое приближение в $\mathbb{R}$
+  \item Интерпретируемое значение $\min$
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Решение и его интерпретация}
+    $$
+      \begin{array}{ll}
+      w_0 &= \arg\min_w \sum_{(x_i,y_i) \in L} \left\| x_i^Tw - y_i \right\| \\
+       &= \arg\min_w \left\|X^Tw - y\right\|^2 \\
+      &= \left(XX^T\right)^{-1}Xy \\
+      \end{array}
+    $$
+\end{frame}
+
+\section{Оценка качества обучения}
+\begin{frame}[t]\frametitle{Хорош ли полученный результат}
+\begin{itemize}
+  \item Отличается ли от КО
+  \item Сколько можно выжать из данных
+  \item Можно ли верить его компонентам
+  \item Воспроизводится ли результат
+  \item Насколько можно доверять предсказанию
+\end{itemize}
+\end{frame}
+
+\subsection{Качество решения}
+\begin{frame}[t]\frametitle{По невязке}
+$$
+t_L = \sum_{(x_i,y_i) \in L} \left\| h_{w_0}(x_i) - y_i \right\|
+$$
+\begin{itemize}
+  \item Просто посчитать
+  \item Рассказывает о работе на тренировочном множестве
+  \item Ничего не говорит о качестве предсказания
+\end{itemize}
+\end{frame}
+
+\subsection{Качество предсказания}
+
+\begin{frame}[t]\frametitle{По невязке на другом множестве I}
+Можно поделить множество на 2 части, настроить на одной, проверить на другой
+$$
+  \begin{array}{ll}
+    DS = L \cup T, L \cap T = \o \\
+    \\
+    w_0 = \arg\min_w \sum_{(x_i,y_i) \in L} \left\| x_i^Tw - y_i \right\| \\
+    t_T = \sum_{(x_i,y_i) \in T} \left\| h_{w_0}(x_i) - y_i \right\|
+  \end{array}
+$$
+\end{frame}
+
+\begin{frame}[t]\frametitle{По невязке на другом множестве II}
+\begin{itemize}
+  \item Расскажет о качестве предсказания с точностью до деления на $L$ и $T$
+  \item Использует меньше данных в обучении
+  \item Если исходное множество не показательно, то деление нас не спасет
+  \item Можно посмотреть на $t_L$ и $t_T$
+\end{itemize}
+\end{frame}
+
+\subsection{Стабильность решения}
+
+\begin{frame}[t]\frametitle{По стабильности решения}
+Поделим несколько раз и посмотрим на то как меняется $w_0$.
+\begin{itemize}
+  \item Стабильные компоненты заслуживают веры
+  \item Если все нестабильно --- беда-беда
+\end{itemize}
+\end{frame}
+
+\section{Анализ данных}
+\begin{frame}[t]\frametitle{Можно ли сделать лучше?}
+\begin{itemize}
+  \item Мало данных или много факторов?
+  \begin{itemize}
+    \item Все ли факторы одинаково хороши?
+    \item Может их можно скомбинировать?
+    \item Стоит ли одинаково верить всем факторам?
+  \end{itemize}
+  \item Может быть в данных что-то нечисто?
+  \begin{itemize}
+    \item Все ли мы можем объяснить?
+    \item А набирали данные правильно?
+    \item Не подсматриваем ли мы в ответ?
+    % строчки данных, от которых некоторые фичи стреляют
+    % данные в лерн содержат результаты про тест, например средние значения по хосту, при делении по запросам
+    \item Все ли важные примеры представленны в данных?
+  \end{itemize}
+\end{itemize}
+\end{frame}
+
+\subsection{Не все факторы одинаково полезны}
+\begin{frame}[t]\frametitle{Все ли факторы одинаково полезны}
+\begin{itemize}
+  \item Можем ли мы обойтись без какого-нибудь фактора?
+  \item А если фактор преобразовать, может его станет проще использовать?
+  \item Если есть похожие факторы, наверное это можно учесть.
+  \item Стот ли рассмотреть комбинации нескольких факторов?
+  \item Что мы делаем, если фактор посчитать нельзя?
+\end{itemize}
+\end{frame}
+
+\subsubsection{Информативность фактора}
+\begin{frame}[t]\frametitle{Полезна ли информация, которую несет фактор?}
+
+\begin{itemize}
+  \item Что мы делаем, если фактор посчитать нельзя?
+\end{itemize}
+\end{frame}
+
+\subsubsection{Интерпретируемость в рамках модели}
+\begin{frame}[t]\frametitle{Как сделать фактор ``съедобным'' для модели?}
+Мы использовали линейную модель, в которой, например, категориальные факторы не могут быть эффективно задействованы. Что же делать?
+\begin{itemize}
+  \item Что мы делаем, если фактор посчитать нельзя?
+\end{itemize}
+\end{frame}
+\subsubsection{Шумность/смещенность}
+\subsection{Взаимодействие факторов}
+\subsubsection{Корреляция}
+\subsubsection{Interaction}
+\subsection{Выбросы}
+\subsection{Приспособляемость}
+\section{Подбор целевой функции}
+\subsection{А ту ли задачу мы решаем?}
+\subsection{Логистическая регрессия}
+\section{Заключение}
+\begin{frame}{Информативные факторы}
+Интерпретируемые
+\begin{itemize}
+% инф, инт
+  \item Баллы ЕГЭ по математике при поступлении
+  \item Литры пива в неделю
+  \item Процент пропусков лекций
+  \item Количество друзей = $\|$ ВК $\cup$ О $\cup$ FB $\|$
+\end{itemize}
+% инф, инт, шум  
+Шумный
+\begin{itemize}
+  \item Текущий средний балл по мнению родителей
+\end{itemize}
+% инф, не инт
+Неинтерпретируемые
+\begin{itemize}
+  \item Пол
+  \item Тип школы
+\end{itemize}
+\end{frame}
+
+\begin{frame}[t]{Неинформативные}
+Интерпретируемые
+\begin{itemize}
+  \item Расстояние от дома до универа
+  \item Диаметр головы
+\end{itemize}
+Неинтерпретируемые
+\begin{itemize}
+  \item Предпочитаемый ряд в аудитории
+  \item Наличие планшета
+\end{itemize}    
+\end{frame}
+
+\end{document} 
