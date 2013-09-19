@@ -1,5 +1,4 @@
 clear ; close all; clc
-fprintf('Loading data ...\n');
 %% Load Data
 data = csvread('students.txt');
 i = length(transpose(data(1:1, :)));
@@ -7,10 +6,21 @@ X = data(:, 1:i-1);
 y = data(:, i);
 m = length(y);
 
-fprintf('Solving with normal equations...\n');
+%fprintf('Solving with normal equations...\n');
 
 % Add intercept term to X
-%X = [ones(m, 1) X];
+X_norm = X;
+mu = zeros(1, size(X, 2));
+sigma = zeros(1, size(X, 2));
+for i = 1:length(mu)
+    cur_column = X_norm(:, i);
+    mu(i) = mean(cur_column);
+    sigma(i) = std(cur_column);
+    X_norm(:, i) -= mu(i);
+    X_norm(:, i) /= sigma(i);
+endfor
+X=X_norm
+
 b=sum(y)/m;
 y=y.-b;
 
@@ -27,6 +37,7 @@ diff = (predict .- real) .* (predict .- real);
 result = [predict real];
 
 % Display normal equations result
+fprintf('Theta computed from the normal equations: \n');
 fprintf('w_0 &= %.2f ')
 for i = 1:length(theta)
 	if (i != 1)
@@ -41,3 +52,4 @@ fprintf('\\sqrt{\\frac{T(w_0, b_0)}{n}} &= %.2f \\\\ \n',sqrt(sum(diff)/length(d
 
 fprintf('Predict and real values: \n');
 result
+
