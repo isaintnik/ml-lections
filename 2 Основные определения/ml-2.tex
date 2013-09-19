@@ -1,9 +1,18 @@
-\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}, hyperref={unicode}, babel={english,russian}, inputenc=utf8x]{beamer}
+
+% \usepackage{mathtext}
+% \usepackage[unicode]{hyperref}
+% \usepackage[utf8x]{inputenc}
 \usepackage[T2A]{fontenc}
-\usepackage[utf8]{inputenc}
-\usepackage[english,russian]{babel}
-\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage[utf8x]{inputenc}
+\usepackage[russian,english]{babel}
+\usepackage{amsmath,amsthm,amssymb}
+% \selectlanguage{russian}
+
+
 \usepackage{cite,enumerate,float,indentfirst}
+\usepackage{csvsimple}
+\usepackage{datatool}
 
 \usepackage{tikz}                   
 \usetikzlibrary{shadows}
@@ -60,9 +69,15 @@
 \section{Постановка задачи}
 \begin{frame}
 \frametitle{Задача на сегодня}
-\emph{Задача:} отделить ``хороших'' студентов от ``плохих'' \\
-\\
-\emph{Формально:} предсказать средний балл следующей сессии
+\begin{description}
+\leftmargin=-5em
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em
+\item[Задача:] отделить ``хороших'' студентов от ``плохих''
+\item
+\item[Формально:] предсказать средний балл следующей сессии
+\end{description}
 \end{frame}
 
 \begin{frame}
@@ -79,45 +94,57 @@
 
 \section{Векторизация и факторы}
 \begin{frame}
-\frametitle{Векторизация}
-{\tinyВ данном случае не про графику.} \\
-\\
-\emph{\textbf{Векторизация:} перевод представления о предмете в векторное выражение.}\\
-\\
-\emph{Компоненты полученного в результате векторизации вектора будем называть \textbf{факторами}}
+\frametitle{Векторизация\footnote{В данном случае не про графику.}}
+\begin{description}
+\leftmargin=-5em
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em
+\item[Векторизация:] перевод представления о предмете в векторное выражение.
+\item[]
+\item[] Компоненты полученного в результате векторизации вектора будем называть {\bfфакторами}
+\end{description}
 \end{frame}
 
 \section{Векторизация и факторы}
 \begin{frame}
 \frametitle{Факторы про студента}
+\small
+\begin{center}
+\begin{tabular}{p{0.45\textwidth}p{0.5\textwidth}}
 \begin{itemize}
-% инф, инт
-  \item Баллы ЕГЭ по математике при поступлении
-  \item Процент пропусков лекций
-  \item Количество друзей = $\|$ ВК $\cup$ О $\cup$ FB $\|$
-% инф, инт, шум
-  \item Литры пива в неделю
-  \item Текущий средний балл по мнению родителей
-% инф, не инт
   \item Пол
-  \item Тип школы
-% неинф, инт
-  \item Расстояние от дома до универа (км)
-  \item Диаметр головы
-% неинф, неинт
-  \item Предпочитаемый ряд в аудитории
+  \item Средний школьный балл
+  \item Школа номер
+  \item Школа город
+  \item Доля пропущенных лекций
+  \item Оценка по мнению родителей
+\end{itemize} &
+\begin{itemize}
+  \item Пиво/неделя
+  \item Друзей в ОК/FB/ВК
+  \item Расстояние от дома до универа
+  \item Ряд в аудитории
   \item Наличие планшета
+  \item Периметр головы
 \end{itemize}
+\end{tabular}
+\end{center}
 \end{frame}
 \begin{frame}[t]\frametitle{Множество на котором обучаемся $L$}
-\small
-\begin{tabular}{l||l|l|l|l|l|l|l|l|l|l|l||c}
-\hline
-Имя & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & Итог \\
-\hline\hline
-Вася & 87 & 2 & 0.3 & 145 & 4.7 & 1 & 3 & 12 & 53.7 & 3 & 1 & 3.8 \\
-\hline
-\end{tabular}
+\tiny
+    \DTLsetseparator{,}
+    \renewcommand\dtlstringalign{p{4.5em}}
+    \renewcommand\dtlrealalign{p{1.5em}}
+    \renewcommand\dtlintalign{p{1.5em}}
+    \renewcommand\dtldisplayvalign{c}
+    \renewcommand\dtldisplayafterhead{\hline\\}
+    \renewcommand\dtlheaderformat[1]{\textbf{#1}}
+    \DTLloaddb[noheader,%
+    headers={Пол,СШБ,Город,Тип Шк,Проп.,Род.,Пиво,Друзей,D,Ряд,iPad,Голова,Баллы}%
+    ]{data}{sample_set_filtered.csv}
+    
+    \DTLdisplaydb{data}
 \end{frame}
 
 \section{Решающая и целевая функции}
@@ -135,9 +162,53 @@
 \end{itemize}
 \end{frame}
 
+\section{Нормализация факторов}
+\begin{frame}{Адаптация факторов}
+Не все факторы подходят для использования в выбранной модели:
+\begin{itemize}
+  \item Город -- плохой фактор, не из $\mathbb{R}$, $\Rightarrow$ местные/неместные $\in \{0,1\}$
+  \item Тип школы $\Rightarrow$
+  \begin{enumerate}
+    \item Школа = Лицей/Гимназия $\in \{0,1\}$
+    \item Школа = 239 $\in \{0,1\}$
+  \end{enumerate}
+  \item Оценка по мнению родителей -- есть пропущенные значения, $\Rightarrow$ хуже/неизвестно/лучше чем было в школе $\in \{-1,0,1\}$
+  \item Планшеты есть у всех $\Rightarrow$ выкинули
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Итоговый вектор факторов}
+\begin{center}
+\footnotesize
+\begin{tabular}{rlrl}
+1 & Пол & 2 & Средний школьный балл \\
+3 & школа = 239 & 4 & Понаехали \\
+5 & Гимназия/Лицей & 6 & Доля пропущенных лекций \\
+7 & Оценка по мнению родителей & 8 & Пиво/неделя \\
+9 & Друзей в ОК/FB/ВК & 10 & Расстояние от дома до универа \\
+11 & Ряд в аудитории & 12 & Периметр головы
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}[t]\frametitle{Решающая функция}
+    $$\begin{array}{c}
+      h_{w_0,b_0}(x) = w_0^{T}x + b_0 \\
+      \\
+      w_0, x \in \mathbb{R}^n, b_0 \in \mathbb{R} \\
+      \end{array}
+    $$
+\begin{itemize}
+  \item Простая
+  \item Универсальная
+  \item Легко интерпретируемая
+\end{itemize}
+\end{frame}
+
+
 \begin{frame}[t]\frametitle{Целевая функция}
     $$
-      w_0 = \arg\min_w \sum_{(x_i,y_i) \in L} \| h_w(x_i) - y_i \|
+      (w_0,b_0) = \arg\min_{(w,b)} \sum_{(x_i,y_i) \in L} \| h_{w,b}(x_i) - y_i \|
     $$
 \begin{itemize}
   \item MSE --- годное первое приближение в $\mathbb{R}$
@@ -148,11 +219,92 @@
 \begin{frame}[t]\frametitle{Решение и его интерпретация}
     $$
       \begin{array}{ll}
-      w_0 &= \arg\min_w \sum_{(x_i,y_i) \in L} \left\| x_i^Tw - y_i \right\| \\
-       &= \arg\min_w \left\|X^Tw - y\right\|^2 \\
-      &= \left(XX^T\right)^{-1}Xy \\
+      (w_0, b_0) &= \arg\min_w \sum_{(x_i,y_i) \in L} \left\| x_i^Tw + b - y_i \right\| \\
+       &= \arg\min_w \left\|X^Tw + b - y\right\|^2 \\
+       &\left\{\begin{array}{l}
+        w_0 = \left(XX^T\right)^{-1}X(y - 1b) \\
+        b_0 = \frac{1}{n} \sum_{i=1}^n y_i
+       \end{array}\right.
       \end{array}
     $$
+    Вот что получилось:
+    {\scriptsize
+    $$\begin{array}{ll}
+      w_0 &= -0.24, 1.17, -5.82, 0.32, 0.30, -2.33, 1.77, -0.01, -0.00, 0.13, 0.03, -0.08\\
+      b_0 &= 17.04 \\
+      T&= 83.06 \\
+      \sqrt{\frac{T(w_0, b_0)}{n}} &= 1.72\\
+    \end{array}
+    $$}
+\end{frame}
+
+\begin{frame}{Интерпретация результата}
+Обещали, что результат хорошо интерпретируется. Влияние факторов:
+\footnotesize
+\begin{description}
+\item[Школа = 239 (3), вес $=-5.82$] Вот такая вот выборка :)
+\item[Доля пропущенных лекций (6), вес $=-2.33$] на лекции надо ходить
+\item[Оценка по мнению родителей (7), вес $=1.77$] честность -- это хорошо :)
+\end{description}
+\end{frame}
+
+\begin{frame}{Интерпретация результата}
+Обещали, что результат хорошо интерпретируется. Влияние факторов:
+\footnotesize
+\begin{description}
+\item[Школа = 239 (3), вес $=-5.82$] вот такая вот выборка :)
+\item[Доля пропущенных лекций (6), вес $=-2.33$] на лекции надо ходить
+\item[Оценка по мнению родителей (7), вес $=1.77$] честность -- это хорошо :)
+\end{description}
+\center{\textbf{\Large Все это фигня!}}
+\end{frame}
+
+\begin{frame}{Нормализация факторов}
+Хотим простого: $0$ мат. ожидание и $1$ дисперсию.
+$$
+\begin{array}{ll}
+y_i=\frac{x_i-m_i}{\sigma_i}
+\end{array}
+$$
+
+{\em Это стандартная техника, но немного (2 слайда) подумайте насколько она нам подходит.}
+
+{\scriptsize $$\begin{array}{ll}
+  w_0 &= -0.16, 0.74, -1.47, 0.19, 0.16, -0.67, 1.19, -0.05, -0.02, 0.27, 0.11, -0.08\\
+      b_0 &= 17.04 \\
+      T(w_0, b_0) &= 82.72 \\
+      \sqrt{\frac{T(w_0, b_0)}{n}} &= 1.72 \\
+  \end{array}
+$$}
+\end{frame}
+
+\begin{frame}{Интерпретация результата II}
+Обещали, что результат хорошо интерпретируется. Влияние факторов:
+\footnotesize
+\begin{description}
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em  
+\item[Школа = 239 (3), вес $=-1.47$] таки да :)
+\item[Оценка по мнению родителей (7), вес $=1.19$] честность еще важнее!
+\item[Средний школьный балл (2), вес $=0.74$] багаж знаний -- определяет (догадайтесь какой курс?)
+\item[Доля пропущенных лекций (6), вес $=-0.67$] опустилась вниз
+\end{description}
+\end{frame}
+
+\begin{frame}{Интерпретация результата II}
+Обещали, что результат хорошо интерпретируется. Влияние факторов:
+\footnotesize
+\begin{description}
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em  
+\item[Школа $=239$ (3), вес $=-1.47$] Таки да :)
+\item[Оценка по мнению родителей (7), вес $=1.19$] честность еще важнее!
+\item[Средний школьный балл (2), вес $=0.74$] багаж знаний -- определяет (догадайтесь какой курс?)
+\item[Доля пропущенных лекций (6), вес $=-0.67$] опустилась вниз
+\end{description}
+\center{\textbf{\Large Но и это фигня!}}
 \end{frame}
 
 \section{Оценка качества обучения}
@@ -168,13 +320,14 @@
 
 \subsection{Качество решения}
 \begin{frame}[t]\frametitle{По невязке}
+В нашем случае невязка -- целевая функция
 $$
-t_L = \sum_{(x_i,y_i) \in L} \left\| h_{w_0}(x_i) - y_i \right\|
+T(w_0,b_0) = \sum_{(x_i,y_i) \in L} \left\| h_{w_0,b_0}(x_i) - y_i \right\|
 $$
 \begin{itemize}
   \item Просто посчитать
   \item Рассказывает о работе на тренировочном множестве
-  \item Ничего не говорит о качестве предсказания
+  \item {\bf Ничего не говорит о качестве предсказания}
 \end{itemize}
 \end{frame}
 
@@ -186,8 +339,8 @@ $$
   \begin{array}{ll}
     DS = L \cup T, L \cap T = \o \\
     \\
-    w_0 = \arg\min_w \sum_{(x_i,y_i) \in L} \left\| x_i^Tw - y_i \right\| \\
-    t_T = \sum_{(x_i,y_i) \in T} \left\| h_{w_0}(x_i) - y_i \right\|
+    (w_0,b_0) = \arg\min_(w,b) \sum_{(x_i,y_i) \in L} \left\| x_i^Tw + b - y_i \right\| \\
+    T_T = \sum_{(x_i,y_i) \in T} \left\| h_{w_0}(x_i) - y_i \right\|
   \end{array}
 $$
 \end{frame}
@@ -197,22 +350,78 @@ $$
   \item Расскажет о качестве предсказания с точностью до деления на $L$ и $T$
   \item Использует меньше данных в обучении
   \item Если исходное множество не показательно, то деление нас не спасет
-  \item Можно посмотреть на $t_L$ и $t_T$
+  \item Можно посмотреть на $T_L$ и $T_T$
 \end{itemize}
 \end{frame}
 
 \subsection{Стабильность решения}
 
 \begin{frame}[t]\frametitle{По стабильности решения}
-Поделим несколько раз и посмотрим на то как меняется $w_0$.
+Поделим несколько раз и посмотрим на то как меняется $(w_0,b_0)$.
 \begin{itemize}
   \item Стабильные компоненты заслуживают веры
   \item Если все нестабильно --- беда-беда
 \end{itemize}
 \end{frame}
 
-\section{Анализ данных}
-\begin{frame}[t]\frametitle{Можно ли сделать лучше?}
+\begin{frame}[t]\frametitle{Немного результатов I}
+\scriptsize
+$$\begin{array}{ll}
+T_L= 176.31 & T_T= 6414.28 \\ 
+\sqrt{\frac{T_l(w_0, b_0)}{n}} = 3.55 & \sqrt{\frac{T_t(w_0, b_0)}{n}} = 21.40  \\ 
+\\
+\multicolumn{2}{l}{
+w_0 = -1.80, -0.72, -0.27, 11.70, 5.53, 0.59, -0.13, 0.83, -8.24, 10.15, -1.77, 0.27 %\\
+~~ b_0 = 8.71 %\\ 
+}\\ 
+\\
+\\
+T_L= 389.83& T_T= 3709.73 \\ 
+\sqrt{\frac{T_l(w_0, b_0)}{n}} = 4.79 & \sqrt{\frac{T_t(w_0, b_0)}{n}} = 18.36 \\ 
+\\
+\multicolumn{2}{l}{
+w_0 = -1.96, 1.45, -3.72, -2.57, 1.63, -9.45, 0.76, -1.26, -1.60, 1.83, 2.75, -3.36
+~~ b_0 = 10.32 
+}\\
+\\ 
+\\
+T_l = 35.94 & T_t = 14181.93 \\ 
+\sqrt{\frac{T_l(w_0, b_0)}{n}} = 1.45 & \sqrt{\frac{T_t(w_0, b_0)}{n}} = 35.91 \\ 
+\\
+\multicolumn{2}{l}{
+w_0 = -1.68, 0.62, -22.71, 2.78, 0.97, -0.53, 1.88, 0.70, -0.39, 2.80, -0.46, 1.24
+~~b_0 = 10.32
+} \\
+\\ 
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Немного результатов II}
+А если так делать много раз то можно получить оценки:\\
+\vspace{0.5em}
+\footnotesize
+$$
+\begin{array}{rl} 
+{w_0}_{1} & 3.09 \pm 50.13 \\
+{w_0}_{2} & -8.37 \pm 232.00 \\
+{w_0}_{3} & -16.38 \pm 230.82 \\
+{w_0}_{4} & -1.11 \pm 94.59 \\
+{w_0}_{5} & -0.39 \pm 55.62 \\
+{w_0}_{6} & -3.59 \pm 90.58 \\
+{w_0}_{7} & -4.86 \pm 124.70 \\
+{w_0}_{8} & -10.16 \pm 88.74 \\
+{w_0}_{9} & 0.33 \pm 141.19 \\
+{w_0}_{10} & 0.54 \pm 45.49 \\
+{w_0}_{11} & -2.20 \pm 89.73 \\
+{w_0}_{12} & 1.75 \pm 53.67 \\
+\\
+b_0 & 8.43 \pm 1.57
+\end{array}
+$$
+\end{frame}
+
+\section{Анализ полученных результатов}
+\begin{frame}{Можно ли сделать лучше?}
 \begin{itemize}
   \item Мало данных или много факторов?
   \begin{itemize}
@@ -227,13 +436,13 @@ $$
     \item Не подсматриваем ли мы в ответ?
     % строчки данных, от которых некоторые фичи стреляют
     % данные в лерн содержат результаты про тест, например средние значения по хосту, при делении по запросам
-    \item Все ли важные примеры представленны в данных?
+    \item Все ли важные примеры представлены в данных и репрезентативно ли это представление?
   \end{itemize}
 \end{itemize}
 \end{frame}
 
 \subsection{Не все факторы одинаково полезны}
-\begin{frame}[t]\frametitle{Все ли факторы одинаково полезны}
+\begin{frame}{Не все факторы одинаково полезны}
 \begin{itemize}
   \item Можем ли мы обойтись без какого-нибудь фактора?
   \item А если фактор преобразовать, может его станет проще использовать?
@@ -268,39 +477,39 @@ $$
 \subsection{А ту ли задачу мы решаем?}
 \subsection{Логистическая регрессия}
 \section{Заключение}
-\begin{frame}{Информативные факторы}
-Интерпретируемые
-\begin{itemize}
-% инф, инт
-  \item Баллы ЕГЭ по математике при поступлении
-  \item Литры пива в неделю
-  \item Процент пропусков лекций
-  \item Количество друзей = $\|$ ВК $\cup$ О $\cup$ FB $\|$
-\end{itemize}
-% инф, инт, шум  
-Шумный
-\begin{itemize}
-  \item Текущий средний балл по мнению родителей
-\end{itemize}
-% инф, не инт
-Неинтерпретируемые
-\begin{itemize}
-  \item Пол
-  \item Тип школы
-\end{itemize}
-\end{frame}
+% \begin{frame}{Информативные факторы}
+% Интерпретируемые
+% \begin{itemize}
+% % инф, инт
+%   \item Баллы ЕГЭ по математике при поступлении
+%   \item Литры пива в неделю
+%   \item Процент пропусков лекций
+%   \item Количество друзей = $\|$ ВК $\cup$ О $\cup$ FB $\|$
+% \end{itemize}
+% % инф, инт, шум  
+% Шумный
+% \begin{itemize}
+%   \item Текущий средний балл по мнению родителей
+% \end{itemize}
+% % инф, не инт
+% Неинтерпретируемые
+% \begin{itemize}
+%   \item Пол
+%   \item Тип школы
+% \end{itemize}
+% \end{frame}
 
-\begin{frame}[t]{Неинформативные}
-Интерпретируемые
-\begin{itemize}
-  \item Расстояние от дома до универа
-  \item Диаметр головы
-\end{itemize}
-Неинтерпретируемые
-\begin{itemize}
-  \item Предпочитаемый ряд в аудитории
-  \item Наличие планшета
-\end{itemize}    
-\end{frame}
+% \begin{frame}[t]{Неинформативные}
+% Интерпретируемые
+% \begin{itemize}
+%   \item Расстояние от дома до универа
+%   \item Диаметр головы
+% \end{itemize}
+% Неинтерпретируемые
+% \begin{itemize}
+%   \item Предпочитаемый ряд в аудитории
+%   \item Наличие планшета
+% \end{itemize}    
+% \end{frame}
 
 \end{document} 
