@@ -1,0 +1,209 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+
+\usepackage{tikz}                   
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\title{Машинное обучение: оценка методов обучения с учителем\\\small{}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Постановка задачи и классификация способов оценки}
+\begin{frame}{Задача на сегодня}
+\emph{Задача:} Есть метод обучения и данные, на которых обучаемся. Хотим понять хорошо ли будет работать решающая функция на практике.\\
+
+\flushleft{\em ``If you can't measure it, you can't improve it''} \\
+\flushright{\textbf{—-- Lord Kelvin}} \\
+
+\flushleft{\em ``Гораздо легче что-то измерить, чем понять, что именно вы измеряете.''} \\
+\flushright{\textbf{—-- Джон Уильям Салливан}}
+\end{frame}
+
+\subsection{Источники проблемы}
+\begin{frame}{Источник проблемы}
+$$
+F_0 = \arg \max_{F(D)} \mu_{\xi \sim U\left(\Gamma\right)}T(y_{\xi}, F(x_{\xi}))
+$$
+Мы обучаемся на одном множестве, а работаем на другом. А что, если эти множества отличаются?
+\end{frame}
+
+\begin{frame}{Свойства выборки}
+\flushleft{\em ``Иными словами, репрезентативная выборка представляет собой микрокосм, меньшую по размеру, но точную модель генеральной совокупности, которую она должна отражать.''}\\
+\flushright{\textbf{--- Дж. Б. Мангейм, Р. К. Рич}}\\
+\flushleft
+Такого сложно достичь, поэтому хотим лишь ``несмещенности'' по параметрам обучения:
+\small
+$$\begin{array}{rl}
+F_0 =& \arg \max_{F} \mu_{\xi \sim U(D)} T(y_{\xi}, F(x_{\xi})) \\
+    =& \arg \max_{F} \mu_{\xi \sim U(\Gamma)} T(y_{\xi}, F(x_{\xi}))
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Способы повлиять на несмещенность}
+Способы понятны:
+\begin{itemize}
+  \item Поменять класс решающих функций
+  \item Поменять выборку
+\end{itemize}
+Но для любых изменений необходимы измерения, и чем тоньше изменения, тем более точный инструмент измерения нужен.
+\end{frame}
+
+\subsection{Классификация способов оценки}
+\begin{frame}{Способы повлиять на несмещенность}
+Способы понятны:
+\begin{itemize}
+  \item Поменять класс решающих функций
+  \item Игры с точностью обучения
+  \item Поменять выборку
+\end{itemize}
+Но для любых изменений необходимы измерения, и чем тоньше изменения, тем более точный инструмент измерения нужен.
+\end{frame}
+
+\begin{frame}{Известные способы оценки}
+Оценка по принципу ``чёрного ящика'':
+\begin{itemize}
+  \item Оценка в боевых условиях (на пользователях)
+  \item Кросс-валидация
+\end{itemize}
+Оценка по принципу ``прозрачного ящика'':
+\begin{itemize}
+  \item VС оценки
+  \item PAC-Bayes bounds
+  \item Оценки по Воронцову
+\end{itemize}
+\end{frame}
+
+\section{Black box оценка}
+\begin{frame}{Оценка в боевых условиях}
+
+\end{frame}
+
+\subsection{Cross-validation}
+
+\begin{frame}{Cross-fold validation}
+Можно организовать разными способами:
+\begin{itemize}
+  \item 2-fold
+  \item k-fold
+  \item Random sub-sampling (e.g. bootstrapping) 
+  \item Leave-one-out (LOOCV)
+\end{itemize}
+\end{frame}
+\section{Сложность модели}
+\subsection{Пример с полиномами}
+
+\begin{frame}{Сложность модели}
+\end{frame}
+
+\begin{frame}{Семейство полиномов $p$-й степени}
+\end{frame}
+
+\subsection{VC-dimension}
+\begin{frame}{Размерность Вапника-Червоненкиса}
+\end{frame}
+
+\section{Виды ошибок}
+\begin{frame}{Overfit vs. underfit}
+\end{frame}
+
+\begin{frame}{Как это выглядит в полиномах (underfit)}
+\end{frame}
+
+\begin{frame}{Как это выглядит в полиномах (fit)}
+\end{frame}
+
+\begin{frame}{Как это выглядит в полиномах (overfit)}
+\end{frame}
+
+\begin{frame}{Как это выглядит в пространстве решений}
+\end{frame}
+
+\begin{frame}{Что в какой ситуации делать}
+\end{frame}
+
+\begin{frame}{Понимаем в какой ситуации находимся}
+\end{frame}
+
+\section{Glass box оценка}
+\begin{frame}{Теоретическая оценка}
+Цели оценки:
+\begin{itemize}
+  \item Можно ли понять какой метод круче по объему данных
+  \item Предсказать сложность на которой достигается fit
+\end{itemize}
+\end{frame}
+
+\subsection{VC-оценка и ее применение}
+\begin{frame}{Оценка по методу Вапника-Червоненкиса}
+Общая модель оценки.
+Ошибка как функция vc-размерности.
+\end{frame}
+
+\subsection{Оценка в слабой аксиоматике Воронцова}
+\begin{frame}{Оценка в слабой аксиоматике Воронцова}
+\end{frame}
+
+\section{Про неточные решения}
+\begin{frame}{Соображения об информации в параметрах}
+\end{frame}
+
+\begin{frame}{Игры с шагом}
+\end{frame}
+
+\section{Overfit on validate}
+\begin{frame}{Как еще можно переобучиться?}
+\end{frame}
+
+\begin{frame}{Классическое трехчастное деление данных}
+\end{frame}
+
+\end{document} 
