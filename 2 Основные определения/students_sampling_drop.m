@@ -27,7 +27,7 @@ for f=1:columns(X);
 	endif
 
 	totalError = 0;
-	count=1000;
+	count=10000;
 	for i = 1:count;
 		[ti,error] = solveStudents(Xf,y,0);
 		totalError += error;
