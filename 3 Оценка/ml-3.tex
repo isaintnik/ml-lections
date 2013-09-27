@@ -88,24 +88,16 @@ F_0 =& \arg \max_{F} \mu_{\xi \sim U(D)} T(y_{\xi}, F(x_{\xi})) \\
 \end{array}$$
 \end{frame}
 
-\begin{frame}{Способы повлиять на несмещенность}
-Способы понятны:
-\begin{itemize}
-  \item Поменять класс решающих функций
-  \item Поменять выборку
-\end{itemize}
-Но для любых изменений необходимы измерения, и чем тоньше изменения, тем более точный инструмент измерения нужен.
-\end{frame}
 
 \subsection{Классификация способов оценки}
 \begin{frame}{Способы повлиять на несмещенность}
-Способы понятны:
+Интересно получить выборку, несмещенную (смещенную не более чем $\ldots$) по результатам процедуры обучения:
 \begin{itemize}
-  \item Поменять класс решающих функций
-  \item Игры с точностью обучения
-  \item Поменять выборку
+ \item Найти «хороший» способ генерации выборки при условии процедуры подбора
+ \item Наложить ограничения на процедуру подбора
+ \item Ограничения на решающую функцию
 \end{itemize}
-Но для любых изменений необходимы измерения, и чем тоньше изменения, тем более точный инструмент измерения нужен.
+$\Rightarrow$ \textbf{Надо научиться мерять смещенность выборки, и чем тоньше изменения, тем более точный инструмент измерения нужен.}
 \end{frame}
 
 \begin{frame}{Известные способы оценки}
@@ -113,6 +105,7 @@ F_0 =& \arg \max_{F} \mu_{\xi \sim U(D)} T(y_{\xi}, F(x_{\xi})) \\
 \begin{itemize}
   \item Оценка в боевых условиях (на пользователях)
   \item Кросс-валидация
+  \item Повторные выборки
 \end{itemize}
 Оценка по принципу ``прозрачного ящика'':
 \begin{itemize}
@@ -124,35 +117,138 @@ F_0 =& \arg \max_{F} \mu_{\xi \sim U(D)} T(y_{\xi}, F(x_{\xi})) \\
 
 \section{Black box оценка}
 \begin{frame}{Оценка в боевых условиях}
-
+Как оценить, насколько пользователяю системы ``хорошо'' по его поведению?
+Зависит от области. В поиске, например:
+\begin{itemize}
+\item Blind testing
+\item A/B тестирование (Abandonment Rate, MRR by long clicks, etc.)
+\item Interleaving (TDI, BI, etc.)
+\end{itemize}
+\footnotesize Мы можем долго-долго рассказывать байки в этом месте :).
 \end{frame}
 
 \subsection{Cross-validation}
 
-\begin{frame}{Cross-fold validation}
-Можно организовать разными способами:
-\begin{itemize}
-  \item 2-fold
-  \item k-fold
-  \item Random sub-sampling (e.g. bootstrapping) 
-  \item Leave-one-out (LOOCV)
-\end{itemize}
+\begin{frame}{Cross-fold validation I}
+Разобьем множество $X$ на два $L$ и $T$ так, чтобы $L \cup T = X, L \cap T = \emptyset$ случайным образом (Jack-knife).
+Будем обучаться на одной половине а проверять результат обучения на другой.
+\begin{description}
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-3em
+  \item[\color{green}+] простой и надежный
+  \item[\color{green}+] позволяет оценить распределение на множестве решений
+  \item[\color{red}--] последовательные эксперименты зависимы
+  \item[\color{red}--] используем мало данных для обучения
+  \item[\color{red}--] непонятно как подбирать соотношения $\frac{|L|}{|T|}$
+\end{description}
 \end{frame}
+
+\begin{frame}{Cross-fold validation II}
+Можно организовать разными способами:
+\begin{description}
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-3em
+  \item[2-fold] обычно так и делаем
+  \item[k-fold] когда очень боимся зависимости экспериментов, а данных много
+  \item[Leave-one-out (LOOCV)] когда совсем мало данных
+\end{description}
+\end{frame}
+
+
+\begin{frame}{Повторные выборки}
+В статисике продолжением метода Jack-knife стал Bootstrapping.
+Сформируем 2 множества $L$ и $T$ так, что:
+\begin{enumerate}
+  \item $|L| = |T| = |X|$
+  \item $l_i \sim U(X), t_i \sim U(X)$
+\end{enumerate}
+Будем считать, что эти 2 множества разные.
+\begin{description}
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-3em
+  \item[\color{green}+] используем полный объем выборки
+  \item[\color{green}+] на больших объемах вариативность выбора огромна
+  \item[\color{red}--] теперь еще и $T$ зависит от $L$ и как это учесть -- не ясно
+\end{description}
+$\Rightarrow$ можно применять только на больших объемах (>10k точек)
+\end{frame}
+
+\begin{frame}{Как принять решение по результатам CV/ПВ}
+Не стоит забывать, что результаты CV/ПВ экспериментов всегда {\color{red} \em зависимы}, и не спасают нас от смещенности исходной выборки.
+\begin{enumerate}
+  \item провести серию последовательных эксприментов;
+  \item закрыв глаза на зависимость, построить доверительные интервалы на $T(F_0, T)$;
+  \item чтобы сравнить два альтернативных метода можно проверить
+  $$H_0: \mu\left(T(F_{0_A}, T)\right) = \mu\left(T(F_{0_B}, T)\right)$$
+  например с помощью парного WX-test'а.
+\end{enumerate}
+
+\end{frame}
+
 \section{Сложность модели}
 \subsection{Пример с полиномами}
 
-\begin{frame}{Сложность модели}
+\begin{frame}{Сложность модели}{}
+{\em Чем больше в модели параметров, тем большую информацию они несут.}\\
+\flushright{\bf --- Ваш К.О.}
+\flushleft
+Какая бывает информация в параметрах:
+\begin{itemize}
+  \item про генеральную совокупность;
+  \item про выборку;
+  \item про random seed.
+\end{itemize}
+Если мы будем усложнять модель, соотношения информации будут двигаться.\\
+
+\textbf{$\Rightarrow$ Хотим придумать рычажок, который контролирует сложность модели.}
 \end{frame}
 
 \begin{frame}{Семейство полиномов $p$-й степени}
+Будем строить семейства решающих функций следующим образом:
+\small
+$$\begin{array}{l}
+F(x, \lambda_1=\{w\}) = w^Tx \\
+F(x, \lambda_2=\{w,A\}) = w^Tx + x^TAx\\
+F(x, \lambda_3=\{w,A,B\}) = w^Tx + x^TAx + \sum_i\sum_j\sum_k b_{ijk} x_i x_j x_k\\
+etc.\\
+\end{array}$$
+Понятно, что $|\lambda_i| < |\lambda_{i+1}|$.
 \end{frame}
 
 \subsection{VC-dimension}
 \begin{frame}{Размерность Вапника-Червоненкиса}
+\begin{definition}[ru.wikipedia.org]
+$VC$-размерность класса функций $F$ --- наибольшее количество точек, которое может быть разделено функциями семейства, вне зависимости от конфигурации множества точек.
+\end{definition}
+\begin{tabular}{p{0.70\textwidth}p{0.25\textwidth}}
+\colorbox{green!10}{
+\includegraphics[width=0.20\textwidth]{100px-VC1.png}\hspace{2px}
+\includegraphics[width=0.20\textwidth]{100px-VC2.png}\hspace{2px}
+\includegraphics[width=0.20\textwidth]{100px-VC3.png}\hspace{1px}
+} & \colorbox{red!10}{
+\includegraphics[width=0.20\textwidth]{100px-VC4.png}\hspace{1px}
+} \\
+\end{tabular}
 \end{frame}
 
 \section{Виды ошибок}
 \begin{frame}{Overfit vs. underfit}
+
+\end{frame}
+
+\begin{frame}{Overfit vs. underfit определения}
+\begin{description}
+\leftmargin=-5em
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em
+  \item[Переобучение, переподгонка (overtraining, overfitting)] —-- нежелательное явление, возникающее при решении задач обучения по прецедентам, когда вероятность ошибки обученного алгоритма на объектах тестовой выборки оказывается существенно выше, чем средняя ошибка на обучающей выборке. 
+  \item[Недообучение (underfitting)] --- нежелательное явление, возникающее при решении задач обучения по прецедентам, когда алгоритм обучения не обеспечивает достаточно малой величины средней ошибки на обучающей выборке. Недообучение возникает при использовании недостаточно сложных моделей.
+\end{description}
+\flushright{\bf --- machinelearning.ru}
 \end{frame}
 
 \begin{frame}{Как это выглядит в полиномах (underfit)}
@@ -192,6 +288,10 @@ F_0 =& \arg \max_{F} \mu_{\xi \sim U(D)} T(y_{\xi}, F(x_{\xi})) \\
 \begin{frame}{Оценка в слабой аксиоматике Воронцова}
 \end{frame}
 
+\subsection{PAC-Bayes bounds}
+\begin{frame}{PAC-Bayes bounds}
+\end{frame}
+
 \section{Про неточные решения}
 \begin{frame}{Соображения об информации в параметрах}
 \end{frame}
@@ -206,4 +306,23 @@ F_0 =& \arg \max_{F} \mu_{\xi \sim U(D)} T(y_{\xi}, F(x_{\xi})) \\
 \begin{frame}{Классическое трехчастное деление данных}
 \end{frame}
 
+\section{Где брать данные}
+\begin{frame}{Где взять данные для экспериментов}
+\end{frame}
+
+\section{Домашнее задание}
+\begin{frame}{Задача}
+Дано:
+\begin{itemize}
+  \item $L$ = 1000 точек, полученных по правилу:
+$$\begin{array}{l}
+x \sim U (0,10] \\
+y = ln(x)
+\end{array}$$
+  \item $T$ = 10000 реализаций $x$ для которых надо найти $y$
+\end{itemize}
+Задача: найти решение в классе полиномов оптимальной степени $p$, наилучшим образом приближающий $y$ на $T$.
+
+% [TODO:] Сгенерить датасет
+\end{frame}
 \end{document} 
