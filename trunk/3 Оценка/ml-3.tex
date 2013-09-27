@@ -232,6 +232,7 @@ $VC$-размерность класса функций $F$ --- наибольш
 \includegraphics[width=0.20\textwidth]{100px-VC4.png}\hspace{1px}
 } \\
 \end{tabular}
+{\footnotesize картинки с en.wikipedia.org}
 \end{frame}
 
 \section{Виды ошибок}
@@ -241,6 +242,7 @@ $VC$-размерность класса функций $F$ --- наибольш
 \end{frame}
 
 \begin{frame}{Overfit vs. underfit определения}
+\small
 \begin{description}
 \leftmargin=-5em
 \itemindent=0em
@@ -249,16 +251,28 @@ $VC$-размерность класса функций $F$ --- наибольш
   \item[Переобучение, переподгонка (overtraining, overfitting)] —-- нежелательное явление, возникающее при решении задач обучения по прецедентам, когда вероятность ошибки обученного алгоритма на объектах тестовой выборки оказывается существенно выше, чем средняя ошибка на обучающей выборке. 
   \item[Недообучение (underfitting)] --- нежелательное явление, возникающее при решении задач обучения по прецедентам, когда алгоритм обучения не обеспечивает достаточно малой величины средней ошибки на обучающей выборке. Недообучение возникает при использовании недостаточно сложных моделей.
 \end{description}
-\flushright{\bf --- machinelearning.ru}
+\flushright{\bf \normalsize--- machinelearning.ru}
 \end{frame}
 
 \begin{frame}{Как это выглядит в полиномах (underfit)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{300px-LsmRunge2.png}
+\end{center}
+{\footnotesize картинка с machinelearning.ru}
 \end{frame}
 
 \begin{frame}{Как это выглядит в полиномах (fit)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{300px-LsmRunge20.png}
+\end{center}
+{\footnotesize картинка с machinelearning.ru}
 \end{frame}
 
 \begin{frame}{Как это выглядит в полиномах (overfit)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{300px-LsmRunge40.png}
+\end{center}
+{\footnotesize картинка с machinelearning.ru}
 \end{frame}
 
 \begin{frame}{Как это выглядит в пространстве решений}
@@ -290,41 +304,96 @@ $VC$-размерность класса функций $F$ --- наибольш
 \begin{frame}{Теоретическая оценка}
 Цели оценки:
 \begin{itemize}
-  \item Можно ли понять какой метод круче по объему данных
+  \item Можно ли понять какой метод круче для заданного объема данных
   \item Предсказать сложность на которой достигается fit
 \end{itemize}
+Будем рассматривать задачу классификации и определять долю ошибок ($T = \sum_i I(y_i \ne F(x_i))$). 
 \end{frame}
 
 \subsection{VC-оценка и ее применение}
-\begin{frame}{Оценка по методу Вапника-Червоненкиса}
-Общая модель оценки.
-Ошибка как функция vc-размерности.
+\begin{frame}{Русские тоже что-то могут в ML :)}
+Владимир Наумович Вапник (NEC\footnote{Здесь и далее по данным ru.wikipedia.org}), \\
+Алексей Яковлевич Червоненкис (University of London). \\
+Разработали первую теорию по оценке переобучения в зависимости от класса решающих функций в 60-70е годы.
+\end{frame}
+
+\begin{frame}{Оценка по методу Вапника-Червоненкиса I}
+Хотим оценить $T(T)$ сверху по $T(L)$ и свойствам семейства решающих функций.\\
+$$
+T(T) = T(L) + \sqrt{h(\log(\frac{2n}{h})+1)-\log(\frac{\eta}{4})\over n}
+$$
+с вероятностью $1-\eta$, где $h$ -- $VC$-оценка семейства, $n = |L|$.
+\end{frame}
+
+\begin{frame}{Оценка по методу Вапника-Червоненкиса II}
+\begin{center}
+\includegraphics[height=0.6\textheight]{Herbrich2002_4-4.png}
+\end{center}
+{\footnotesize картинка с www.svms.org}
+\end{frame}
+
+\subsection{PAC-Bayes bounds I}
+\begin{frame}{PAC-Bayes bounds I}
+\small
+Кажется, что не все определяет только $VC$-размерность. Для одних данных работают одни решения, для других -- другие. \\
+\begin{definition}[Оценка McAllester'а (1998)]
+Введем априорное распределение над семейством решающих функций $F$. Тогда:
+$$
+T(F_0, T) \le T(F_0, L) - \sqrt{log \frac{1}{p(F_0)} + log(\frac{1}{\eta}) \over 2n}
+$$
+с вероятностью не меньше $1-\eta$.
+\end{definition}
+\end{frame}
+
+\begin{frame}{PAC-Bayes bounds II}
+\small
+Рассмотрим решение, как взвешивание между разными функциями семейства $F$.\footnote{Это такое байесовское решение, о котором мы поговорим в следующий раз} Тогда получится еще краше (современный вид):
+$$
+|\mu_\rho T(F_i, T) - \mu_\rho T(F_i, L)| \le \sqrt{KL(\rho \| \pi) + log \frac{4n}{\eta} \over 2n - 1}
+$$
+с вероятностью не меньше $1-\eta$.
 \end{frame}
 
 \subsection{Оценка в слабой аксиоматике Воронцова}
 \begin{frame}{Оценка в слабой аксиоматике Воронцова}
-\end{frame}
-
-\subsection{PAC-Bayes bounds}
-\begin{frame}{PAC-Bayes bounds}
+Воронцов Константин Вячеславович (ШАД в Москве, machinelearning.ru) написал докторскую диссертацию на тему \\
+\center{\textit{``Комбинаторная теория надёжности обучения по прецедентам''}} \\
+\flushleft в которой предложил интересную альтернациву VC-оценкам и PAC-Bayes.
 \end{frame}
 
 \section{Про неточные решения}
-\begin{frame}{Соображения об информации в параметрах}
-\end{frame}
-
-\begin{frame}{Игры с шагом}
+\begin{frame}{Соображения об точности решения}
+До этого мы говорили о точных решениях. Но точность определения параметров обучения определяет количество информации в решении. \\
+$\Rightarrow$ Не надо вычислять параметры решения до 100-го знака: sizeof(long double) >> sizeof(float) \\
+~\\
+В задачах итеративной оптимизации мы привыкли устремлять шаг к 0, что в случае ML приводит к большему variance решений.
 \end{frame}
 
 \section{Overfit on validate}
 \begin{frame}{Как еще можно переобучиться?}
-\end{frame}
-
-\begin{frame}{Классическое трехчастное деление данных}
+Будем долго и упорно подбирать метод обучения на фиксированном делении $L, T$:
+$$
+\max_{i} \left(\arg\max_{f \in F_i} T(f, L)\right)(T)
+$$
+Это же максимизация на всем множестве $L \cup T = X$! Называется такое overfit on validate. Что с этим делать? Исследовать
+$$
+\left(\arg \max_{i} \left(\arg\max_{f \in F_i} T(f, L)\right)(V)\right)(T)
+$$
 \end{frame}
 
 \section{Где брать данные}
 \begin{frame}{Где взять данные для экспериментов}
+\begin{itemize}
+  \item Реальные данные
+  \begin{itemize}
+    \item Поиск: РОМИП, TREC, Яндекс.ИМАТ, Yahoo LTRCh
+    \item Pascal Challenge
+    \item InnoCentive
+    \item Kaggle
+  \end{itemize}
+  \item Синтетические данные (многомерный XOR)
+  \item ``Загадки'': задумаем «хитрое» распределение и попробуем его отгадать
+\end{itemize}
 \end{frame}
 
 \section{Домашнее задание}
@@ -336,7 +405,7 @@ $$\begin{array}{l}
 x \sim U (0,10] \\
 y = ln(x)
 \end{array}$$
-  \item $T$ = 10000 реализаций $x$ для которых надо найти $y$
+  \item $T$ = 10000 реализаций $x$ для которых надо найти~$y$
 \end{itemize}
 Задача: найти решение в классе полиномов оптимальной степени $p$, наилучшим образом приближающий $y$ на $T$.
 
