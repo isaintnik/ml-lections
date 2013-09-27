@@ -236,7 +236,8 @@ $VC$-размерность класса функций $F$ --- наибольш
 
 \section{Виды ошибок}
 \begin{frame}{Overfit vs. underfit}
-
+\centering
+\includegraphics[width=0.8\textwidth]{overfit_underfit.png} 
 \end{frame}
 
 \begin{frame}{Overfit vs. underfit определения}
@@ -261,13 +262,29 @@ $VC$-размерность класса функций $F$ --- наибольш
 \end{frame}
 
 \begin{frame}{Как это выглядит в пространстве решений}
+\centering
+\includegraphics[width=0.65\textwidth]{bias_variance.png} 
 \end{frame}
 
 \begin{frame}{Что в какой ситуации делать}
+\begin{itemize}
+  \item Увеличение числа примеров для обучения фиксят high variance, но не high bias
+  \item Меньшее число факторов фиксят high variance, но не high bias
+  \item Увеличение числа факторов фиксят high bias, но не high variance
+  \item Добавление степени к полиному и взаимодействующих факторов фиксят high bias, но не high variance
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Понимаем в какой ситуации находимся}
+\begin{frame}{Понимаем в какой ситуации находимся I}
+\centering
+\includegraphics[width=1.0\textwidth]{bias_error.png}
 \end{frame}
+
+\begin{frame}{Понимаем в какой ситуации находимся II}
+\centering
+\includegraphics[width=1.0\textwidth]{bias_error_2.png}
+\end{frame}
+
 
 \section{Glass box оценка}
 \begin{frame}{Теоретическая оценка}
