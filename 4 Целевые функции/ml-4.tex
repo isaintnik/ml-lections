@@ -1,0 +1,255 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+\usepackage{cancel}
+
+\usepackage{tikz}                   
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\renewcommand{\CancelColor}{\color{red}}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\title{Машинное обучение: обзор целевых функций\\\small{}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Введение в проблематику и классификация целевых функций}
+\begin{frame}{Задача на сегодня}
+\textit{Строить варианты целевой функции на заданную тему.}\\
+~\\
+Для этогого нам понадобится:
+\begin{itemize}
+  \item узнать чем отличается измерение от оптимизации;
+  \item понять какие существуют подходы к построению целевой функции;
+  \item научиться строить целевые функции для заданных примеров (это уже ДЗ).
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Пример}
+Вахтер хочет понять кого пускать в парадную. Он хочет минимизировать свою работу (больше спать) по:
+\begin{itemize}
+   \item проверке входящих;
+   \item разборкам с жильцами/руководством;
+   \item уборке/проветриванию.
+\end{itemize}
+Для этого ему надо проверять входящих (думать).
+Однако, минимизировать ``время сна'' напрямую очень сложно. Наша задача помочь бедному вахтеру.
+\end{frame}
+
+\begin{frame}{Суть проблемы}
+Если мы понимаем чего хотим: $\mathcal{M}(F_0)(X)$ (линейка позволяющая измерить конкретное решение), то задачу оптимизации можно переписать так:
+$$
+\max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)
+$$
+Если выборка не смещена по параметрам оптимизации, то К.О. говорит нам:
+$$
+\mathcal{M} \equiv \arg \max_{\mathcal{T}} \mathcal{M}\left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)
+$$
+Однако, все не так просто.
+\end{frame}
+
+\begin{frame}{Про вахтера в новых обозначениях}
+\begin{description}
+  \item[$\mathcal{M}$] --- время сна;
+  \item[$F$] --- способы проверки входящих;
+  \item[$\mathcal{T}$] --- способы оценить проверку входящих.
+\end{description}
+Например в качестве $F$ может выступать оценка вероятности того, что ``клиент'' --- проблемный. Тогда $\mathcal{T}$ может быть как собственно время сна, так и средняя ошибка предсказания по результату работы функции $F$.
+\end{frame}
+
+\begin{frame}{Проблема в построении}
+Что может быть ``не так'' в очевидном решении:
+\begin{itemize}
+  \item $\mathcal{M}$ может быть неудобна для оптимизации (кусочно-постоянная, например);
+  \item сложно гарантировать несмещенность по параметрам оптимизации;
+  \item сложно собирать данные в терминах $\mathcal{M}$;
+  \item вся прошлая лекция говорит о том, что в контексте оптимизации не все таргеты одинаково полезны.
+\end{itemize} 
+Поэтому все еще актуально решать исходную задачу:
+$$
+\max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)
+$$
+\end{frame}
+
+\begin{frame}{Как можно подойти к построению $\mathcal{T}$}
+Можно исходить из трех соображений:
+\begin{description}
+\small
+\leftmargin=-5em
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em
+  \item[$\mathcal{T} \equiv \mathcal{M}$:] усреднение $\mathcal{M}$ по всему доступному опыту;
+  \item[$\arg\max_{F} \mathcal{T}(F, L) = \arg\max_{F} \mathcal{M}(F, L)$:]~\\
+  \begin{itemize}
+  \itemindent=0em
+  \leftskip=-4em
+    \item регрессия по ``очкам'': введем для каждого наблюдения стоимость, и будем ее приближать по $\mathcal{T}$;
+    \item принцип максимальной энтропии;
+    \item принцип минимального описания;
+  \end{itemize}
+  \item[$\max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)$:] вероятностное моделирование происходящего: как можно получить $\mathcal{M}$ из удобного $\mathcal{T}$.
+\end{description} 
+\end{frame}
+
+\section{Способы усреднения}
+
+\begin{frame}{Средние значения}
+Будем оценивать каждое наблюдение. Хотим улучшить результат в среднем.
+$$
+F_0 = \arg \max_F \frac{1}{n} \sum_i \mathfrak{m}(F(x_i),y_i)
+$$
+Поделили большую $\mathcal{M}$ на много маленьких $\mathfrak{m}$. 
+\begin{description}
+\small
+\leftmargin=-5em
+\itemindent=0em
+\labelwidth=0em
+\leftskip=-5em
+  \item[\color{green}+] по наблюдениям делить естественно;
+  \item[\color{red}---] надо следить за независимостью наблюдений;
+  \item[\color{red}---] работает только для ситуаций когда нет $\infty$ потерь/приобретений;
+\end{description} 
+\end{frame}
+
+\begin{frame}{Средние значения бывают разные}
+\end{frame}
+
+\begin{frame}{Все средние одинаковы}
+\end{frame}
+
+\section{Очки и их учет}
+
+\begin{frame}{Почему это работает}
+\end{frame}
+
+\begin{frame}{Виды невязки $l_q$}
+\end{frame}
+
+\begin{frame}{Экстремальные случаи $q$}
+\end{frame}
+
+\begin{frame}{Как выглядят разные $q$}
+..
+Часто из $l_0$ делают $l_1$
+\end{frame}
+
+\begin{frame}{Подбираем ``очки''} % повтор
+\end{frame}
+
+\begin{frame}{Вспоминая вахтера}
+\end{frame}
+
+\subsection{Вероятностные модели}
+
+\begin{frame}{Моделирование вахтера}
+Попробуем объяснить происходящее, зная как оно бывает.
+\end{frame}
+
+\begin{frame}{Оптимизация вероятностной модели}
+\end{frame}
+
+\begin{frame}{Почему это работает} % переход в общие термины
+\end{frame}
+
+\begin{frame}{Байесовские методы}
+\end{frame}
+
+\begin{frame}{Байесовские методы (практика)}
+\end{frame}
+
+\begin{frame}{Байесовские методы (свойства)}
+\end{frame}
+
+\begin{frame}{Maximum aposteriori}{(Байес по простому)}
+\end{frame}
+
+\begin{frame}{Метод максимального правдоподобия}{(Байес совсем по простому)}
+\end{frame}
+
+\begin{frame}{Веса при LL}
+\end{frame}
+\subsection{Математические свойства ММП}
+\begin{frame}{Сходимость ММП}
+\end{frame}
+\begin{frame}{Асимптотическая нормальность ММП}
+\end{frame}
+\section{Принцип максимальной энтропии}
+
+\begin{frame}{Принцип максимальной энтропии}
+\end{frame}
+
+\begin{frame}{Почему это работает} % переход в общие термины
+\end{frame}
+
+\section{Принцип наименьшего описания}
+
+\begin{frame}{Принцип наименьшего описания}
+\end{frame}
+
+\begin{frame}{Почему это работает} % переход в общие термины
+\end{frame}
+
+\section{Выводы}
+\begin{frame}{Подводя итог}
+\end{frame}
+
+\begin{frame}{Сглаживание таргета}
+\end{frame}
+
+\begin{frame}{Чему следовать выбирая таргет}
+\end{frame}
+
+\begin{frame}{Про накопление знания в таргет функции}
+\end{frame}
+
+\section{ДЗ}
+\begin{frame}{Задание на дом}
+\end{frame}
+\end{document}
