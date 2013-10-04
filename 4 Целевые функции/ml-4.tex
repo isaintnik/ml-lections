@@ -257,6 +257,20 @@ l_{\infty}(x,b) = max |x - b| \\
 \section{Принцип максимальной энтропии}
 
 \begin{frame}{Принцип максимальной энтропии}
+\begin{itemize}
+  \item Выразим априорные свойства в виде ограничений;
+  \item Найдём распределение обладающее максимальной энтропией;
+  \item Когда хочется своего $p(x|I)$ решение будет другое.
+\end{itemize}
+$$\begin{array}{l}
+  \sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, ..., m \\
+  \\
+  p(x|I) = \frac{1}{Z}e^{\sum_k\lambda_kf_k(x)} \\
+  \\
+  Z = \sum_i\exp^{\sum_k\lambda_kf_k(x)} \\
+  \\
+  f_k^0 = \frac{\partial}{\partial\lambda_k}logZ
+\end{array}$$
 \end{frame}
 
 \begin{frame}{Почему это работает} % переход в общие термины
@@ -265,6 +279,17 @@ l_{\infty}(x,b) = max |x - b| \\
 \section{Принцип наименьшего описания}
 
 \begin{frame}{Принцип наименьшего описания}
+\begin{itemize}
+  \item Формализация бритвы Оккама;
+  \item Колмогоров/Solomonoff;
+  \item Вводим сложность по Колмогорову;
+  \item Находим оптимальное решение; 
+  \item По хорошему вероятность = 1.
+\end{itemize}
+$$
+  F_0 = \arg\min_{F:p(X|F)\ge\epsilon} C(F)
+$$
+
 \end{frame}
 
 \begin{frame}{Почему это работает} % переход в общие термины
@@ -275,9 +300,24 @@ l_{\infty}(x,b) = max |x - b| \\
 \end{frame}
 
 \begin{frame}{Сглаживание таргета}
+\centering
+Когда целевая функция "плохая":
+$$
+F_0 = \arg\max_F UT(X|F) = \arg\max_F \mu_{x \sim p(F)}(UT(x))
+$$
 \end{frame}
 
 \begin{frame}{Чему следовать выбирая таргет}
+\begin{itemize}
+  \item Чувство прекрасного;
+  \item Возможность применять математику:
+  \begin{itemize}
+    \item Скорость вычисления;
+    \item Дифференцируемость (градиентные методы).
+  \end{itemize}
+  \item Наличие интересных внутренних параметров;
+  \item Возможность проверить осмысленность промежуточных результатов.
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Про накопление знания в таргет функции}
