@@ -275,9 +275,37 @@ $$
 \begin{frame}{Веса при LL}
 \end{frame}
 \subsection{Математические свойства ММП}
+
 \begin{frame}{Сходимость ММП}
+\begin{itemize}
+  \item Идентификация (все функции разные);
+  \item Множество функций компактно;
+  \item Функции непрерывны с вероятностью 1;
+  \item Существует мажорирующая интегрируемая $D$:
+\end{itemize}
+  $$
+  | ln F(x) | < D(x)
+  $$
+  $\Longrightarrow$ при увеличении количества точек $L$ сходится
+  $$
+    sup\|L(x, F) - L(x, F_0)\| \overset{a.s.}{\to} 0
+  $$
 \end{frame}
+
 \begin{frame}{Асимптотическая нормальность ММП}
+\begin{itemize}
+  \item Первые две производные $L$ определены:
+  $$\begin{array}{l}
+    F = F(x, \lambda) \\
+    i_{j,k} = \mu_X(\frac{\partial^2L}{\partial\lambda_j\partial\lambda_k})
+  \end{array}$$
+  \item Матрица $I$ не ноль, непрерывная функция лямбды;
+  \item Выполняется консистентность;
+  \item И всё остальное хорошо:
+  $$
+  \sqrt{n}(\lambda_{mle} - \lambda_0) \overset{d}{\to} \mathcal{N}(0, I^{-1})
+  $$
+\end{itemize}
 \end{frame}
 \section{Принцип максимальной энтропии}
 
