@@ -176,6 +176,10 @@ $$
   \item[геометрическое]: $f(x) = \log x$; 
   \item[гармоническое]: $f(x) = \frac{1}{x}$; 
 \end{description}
+C точки зрения оптимизации, если функция $f$ монотонная, то мы все можем отбросить и оптимизировать только
+$$
+\max \sum_i f(x_i)
+$$
 \end{frame}
 
 \section{Очки и их учет}
@@ -251,29 +255,107 @@ $$
 \end{frame}
 
 \begin{frame}{Оптимизация вероятностной модели}
-
+$$
+\arg \max_F p(F|X)
+$$
+\begin{itemize}
+  \item В вероятностях проще рассуждать о жизни
+  \item Интересно найти параметры, которые наиболее вероятны при наблюдаемых данных
+  \item Обычно непонятно как это распределение построить напрямую
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Почему это работает} % переход в общие термины
+\begin{frame}{Почему это работает}
+Мы строим $p$ таким образом, что она отражает наше понимание о структуре области. По сути мы итеративно напрямую оптимизируем
+$$
+\max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)
+$$
+с использованием натурального интеллекта :).
 \end{frame}
-
 \begin{frame}{Байесовские методы}
+$$
+p(f | X) = \frac{p(X|f) p(f)}{p(X)} \sim p(X|f) p(f)
+$$
+Да, внизу интеграл, мы надеемся, что его можно взять и он не 0
+\begin{description}
+  \item[p(X|f)] правдоподобие
+  \item[p(f)] априорное знание о семействе
+\end{description}
+$$
+F(x) = \int_f p(x|f) p(f|X) df
+$$
 \end{frame}
 
 \begin{frame}{Байесовские методы (практика)}
+\begin{enumerate}
+  \item Задаем априорное распределение параметров (например N(0,1))
+  \item Вычисляем вероятность X, считая что точки независимы и одинаково распределены
+  $$
+  p(X|f) = \prod_i p(x_i|f)
+  $$
+  \item Получаем распределение из которого можно посамплить
+  \item Усредняем посампленное
+\end{enumerate}
 \end{frame}
 
 \begin{frame}{Байесовские методы (свойства)}
+% \textbf{\color{green}Pros}
+\begin{description}
+  \item[\color{green}+] Все честно с точностью до входных данных и построенной модели
+  \item[\color{green}+] Можно использовать информацию о предыдущем обучении (задавая prior)
+  \item[\color{green}+] Можно понять погрешность предсказания (даже если она не выводится аналитически)
+\end{description}
+% \textbf{\color{green}Cons}
+\begin{description}
+  \item[\color{red}---] Все сильно зависит от выбора prior
+  \item[\color{red}---] Сложная решающая функция
+  \item[\color{red}---] Необходимо эффективное сэмплирование пространства решений
+\end{description}
 \end{frame}
 
-\begin{frame}{Maximum aposteriori}{(Байес по простому)}
+\begin{frame}{Максимум апостериори}{Байес по простому}
+\begin{itemize}
+  \item Хочется попроще
+  \item Для оценки ошибок есть бутстраппинг
+  \item Ансамбли можно сделать другими способами и включить в решающую функцию
+\end{itemize}
+
+Чтобы не возиться со сложной $F$, можно просто взять самое вероятное решение:
+$$
+F(x) = f(x) : p(f|X) > p(g|X), \forall g \in F
+$$
+получим \textbf{maximum a posteriori}.
 \end{frame}
 
 \begin{frame}{Метод максимального правдоподобия}{(Байес совсем по простому)}
+\begin{itemize}
+  \item Лень придумывать prior
+  \item Нет информации о предыдущих экспериментах
+  \item Быстро меняющиеся условия
+\end{itemize}
+А можно совсем обнаглеть и убрать еще prior, сказав, что все решения одинаково вероятны:
+$$\begin{array}{rl}
+p(f) = & p(g) \forall f,g \\
+\\
+F = & \arg \max_F p(X|f) = \arg \max_F \prod_i p(x_i | f) \\
+= & \arg \max_F \sum_i log(p(x_i | f)) = \arg \max_F LL(X, f)
+\end{array}$$
+Заметим, что prior не корректен, в случае $|F| = \infty$.
 \end{frame}
 
 \begin{frame}{Веса при LL}
+$$\begin{array}{rl}
+F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
+= & \arg \max_F \prod_i \left(p(x_i | F)\right)^{w_i} \\
+= & \arg \max_F \sum_i w_i \log p(x_i|F)
+\end{array}$$
+\begin{itemize}
+  \item Важность точек может быть разной
+  \item Введем «вес» для каждой точки
+  \item Будем выбирать точки случайно, с вероятностью пропорциональной весу
+\end{itemize}
 \end{frame}
+
 \subsection{Математические свойства ММП}
 
 \begin{frame}{Сходимость ММП}
@@ -327,7 +409,7 @@ $$
   \item Когда хочется своего $p(x|I)$ решение будет другое.
 \end{itemize}
 $$\begin{array}{l}
-  \sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, ..., m \\
+  \sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, \ldots, m \\
   \\
   p(x|I) = \frac{1}{Z}e^{\sum_k\lambda_kf_k(x)} \\
   \\
