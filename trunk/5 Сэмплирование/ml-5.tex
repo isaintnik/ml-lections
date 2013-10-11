@@ -40,7 +40,7 @@
      \addtolength\displaywidth{-#1}}}
 \newcommand{\itemi}{\item[\checkmark]}
 
-\title{Машинное обучение: сэмплирование\\\small{}}
+\title{Переборные методы: сэмплирование\\\small{}}
 \author[]{\small{%
 И.~Куралёнок,
 Н.~Поваров}}
@@ -64,18 +64,18 @@
 \begin{enumerate}
   \item Понятие сэмплирования
   \begin{itemize}
-   \item Процесс сэмплирования;
-   \item Основные методы сэмплирования.
+   \item Процесс сэмплирования
+   \item Основные методы сэмплирования
   \end{itemize}
   \item Переборные методы в ML
   \begin{itemize}
-   \item Полный перебор.
+   \item Полный перебор
   \end{itemize}
   \item Hill climbing
   \item Сэмплирование марковскими цепями
   \begin{itemize}
-   \item Metropolis-Hastings алгоритм;
-   \item Алгоритм Гиббса.
+   \item Metropolis-Hastings алгоритм
+   \item Алгоритм Гиббса
   \end{itemize}
   \item Построение вероятностного пространства для максимизации
 \end{enumerate}
@@ -83,7 +83,7 @@
 
 \begin{frame}{Понятие сэмплирования}
 \textit{Сэмплирование} --- метод исследования множества путём анализа его подмножеств. \\
-Применяется:
+Применяется когда:
 \begin{itemize}
    \item множество слишком велико для перебора;
    \item каждое дополнительное измерение дорого;
@@ -93,11 +93,11 @@
 
 \begin{frame}{Алгоритм сэмплирования}
 \begin{enumerate}
-   \item Понять какое множество мы изучаем;
-   \item Осознать что из этого множества мы можем измерить;
-   \item Определить количество измерений;
-   \item Разработать план сэмплирования;
-   \item Провести сэмплирование.
+   \item Понять какое множество мы изучаем
+   \item Осознать что из этого множества мы можем измерить
+   \item Определить количество измерений
+   \item Разработать план сэмплирования
+   \item Провести сэмплирование
 \end{enumerate}
 \end{frame}
 
@@ -112,9 +112,9 @@
    $$
    p(x), \exists x: p(x) = 0
    $$
-   \textit{Например: попробуем посчитать безработных в рабочее время}
-   \item Без возвращений;
-   \item С возвращениями.
+   \textit{Например: ``по результатам опроса superjob.ru, 100\% россиян пользуются интернетом''}
+   \item Без возвращений
+   \item С возвращениями
 \end{itemize}
 \end{frame}
 
@@ -144,7 +144,7 @@
    \item наличие дополнительной информации об элементах;
    \item необходимя точность измерений;
    \item точность отдельных измерений в сэмплировании;
-   \item стоимость измерений;
+   \item стоимость измерений.
 \end{itemize}
 \end{frame}
 
@@ -165,7 +165,7 @@ F_0 = \arg\max_{F \in \{f_i\}_{i=1}^n} p(F|X)
 $$
 \begin{enumerate}
   \item введём порядок обхода;
-  \item переберём все возможные решение;
+  \item переберём все возможные решения;
   \item составим взвешенное решение/выберем лучшее.
 \end{enumerate}
 \end{frame}
@@ -185,8 +185,8 @@ $$
 Чтобы построить порядок обхода можно воспользоваться такой схемой:
 
 $$\begin{array}{l}
-F = F(x, \lambda), \lambda \in \mathcal(R)^n \\
-F_t = F(x. \lambda_t) \\
+F = F(x, \lambda), \lambda \in \mathbb{R}^n \\
+F_t = F(x, \lambda_t) \\
 \lambda_{t+1} = \lambda_t + \xi~~~~C(\lambda_{t+1} | \{\lambda_i\}_0^t) \\
 \end{array}$$
 
@@ -212,7 +212,7 @@ F_t = F(x. \lambda_t) \\
 \begin{frame}{Некоторые виды случайного блуждания}
 \begin{itemize}
   \item множество фиксированных шагов $\xi \sim U(\{\xi_i\}_1^m)$;
-  \item гауссовское $\xi_i \sim N(\mu, \sigma^2)$;
+  \item гауссовское $\xi_t \sim N(\mu, \sigma^2)$;
   \item самозависимое;
   \item etc.
 \end{itemize}
@@ -220,7 +220,7 @@ F_t = F(x. \lambda_t) \\
 
 \begin{frame}{Simple hill climbing}
 $$\begin{array}{l}
-\xi \sim U(\{\xi_i\}), \xi_{ii} = \omega, \xi_{ij} = 0, j \neq i,\\
+\xi \sim U(\{\xi_i\}_1^2n), \xi_{i\frac{i}{2}} = -1^{i mod 2}\omega, \xi_{ij} = 0, j \neq \frac{i/2},\\
 \\
 C(\lambda_{t+1}|\lambda_t) = \frac{p(F(\lambda_{t+1})|X)}{p(F(\lambda_t)|X)} > 1 \\
 \end{array}$$
@@ -248,30 +248,32 @@ $\Rightarrow$ Можно рестартить hill climbing из разных н
 \end{frame}
 
 \begin{frame}{Интуиция}
+Мы бы хотели получить сэмплирование, а для этого:
 \begin{itemize}
-  \item наверное нельзя всегда ходить ''по шерсти'';
   \item хорошо бы обойти всё пространство;
-  \item скорость движения должна меняться.
+  \item нельзя всегда ходить ''по шерсти'';
+  \item скорость движения должна меняться в зависимости от плотности.
 \end{itemize}
 $\Rightarrow$ Markov Chain Monte-Carlo (MCMC)
 \end{frame}
 
 \begin{frame}{Metropolis-Hastings алгоритм}
+
+Введем $p(\lambda_1|\lambda_2)$, отвечающую за локальность.
 $$\begin{array}{l}
-p(\lambda|\lambda_t)\\
-\\
-\alpha = \frac{p(F(\lambda_t)|X)p(\lambda_t|\lambda)}{p(F(\lambda)|X)p(\lambda|\lambda_t)}\\
+\alpha = \frac{p(F_{\lambda_{t+1}}|X)p(\lambda_{t+1}|\lambda_t)}{p(F_{\lambda_t}|X)p(\lambda_t|\lambda_{t+1})}\\
 \\
 \psi \sim U(0,1)\\
 \\
 C(\lambda_{t+1}|\lambda_t) = \left\{  
-           \begin{array}{rcl}  
-            1, \alpha \ge \psi \\  
-            0 \\  
+           \begin{array}{ll}  
+            1,& \alpha \ge \psi \\  
+            0 &\\  
            \end{array}   
            \right.  
 \end{array}$$
-Например, $p(\lambda|\lambda_t) \sim N(\lambda_t|\sigma^2E)$
+Например, $p(\lambda_{t+1}|\lambda_t) \sim N(\lambda_t,\sigma^2E)$ \\
+Если $p(\lambda_1 | \lambda_2) = p(\lambda_2 | \lambda_1)$ --- это Metropolis \\ 
 \end{frame}
 
 \begin{frame}{Свойства}
@@ -279,29 +281,121 @@ C(\lambda_{t+1}|\lambda_t) = \left\{
 \includegraphics[width=0.5\textwidth]{mcmc.png}
 \end{center}
 \footnotesize
-Доказано:
+\begin{description}
+  \item[\color{green}+] Обходит всё пространство
+  \item[\color{green}+] Это действительно взвешенное сэмплирование
+  \item[\color{red}---] Последовательные самплы похожи друг на друга
+  \item[\color{red}---] На этапе разогрева показывает что-то странное
+\end{description}
+$\Rightarrow$ \textit{Точно придём в максимум!} \\
+\end{frame}
+
+\begin{frame}{Свойства}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{mcmc.png}
+\end{center}
+\footnotesize
+\begin{description}
+  \item[\color{green}+] Обходит всё пространство
+  \item[\color{green}+] Это действительно взвешенное сэмплирование
+  \item[\color{red}---] Последовательные самплы похожи друг на друга
+  \item[\color{red}---] На этапе разогрева показывает что-то странное
+\end{description}
+$\Rightarrow$ \textit{Точно придём в максимум!} \\
+\textbf{Проблема только с тем, что придём за бесконечное время}
+\end{frame}
+
+\begin{frame}{Сложности в использовании}
 \begin{itemize}
-  \item обходит всё пространство;
-  \item это действительно взвешенное сэмплирование;
+  \item Сходимость зависит от выбора $p(\lambda_{t+1}|\lambda_{t})$
+  \item Если хотим использовать разумное распределение, оно многомерное $\Rightarrow$ его сложно реализовывать
 \end{itemize}
-$\Rightarrow$ точно придём в максимум! \\
-Проблема только с тем, что придём за бесконечное время
+\end{frame}
+
+\begin{frame}{Пример с дартс I}
+\small
+Вася и Петя повесели на стене мишень и поиграли в дартс. На следующий день пришел их бригадир Юра и задался вопросом кто из подчиненных будет заделывать дырки в стенах.
+\begin{itemize}
+  \item Будет честнее, чтобы ``косой'' платил больше
+  \item Дырки все одинаковые
+  \item Каждый говорит: ``да я токо разок кинул!''
+  \item Один признался, что: ``ну вот это --- моя дырка''
+  \item Играли без употребления, так что можно считать, что кидали $\sim N(m_i, \Sigma_i), i \in$ \{Вася, Петя\} и параметры не менялись во времени
+\end{itemize}
+\textbf{Надо помочь Юре!}
+\end{frame}
+
+\begin{frame}{Пример с дартс II}
+\small
+При фиксированных параметрах вероятность увидить дырки $\{x_j\}, x_j \in \mathbb{R}^2$
+$$
+LL = \sum_j \log(\pi N(m_A, \Sigma_A)(x_j) + (1 - \pi) N(m_B, \Sigma_B)(x_j))
+$$
+где $A$ --- Вася, $B$ --- Петя, $\pi$ --- доля Васиных бросков, $m_i$ --- сбитость прицела, $\Sigma_i$ --- разброс стрелка. \\
+Максимизировать такое добро трудновато из-за суммы под логарифмом. Было бы классно точно знать, что тот или иной бросок точно сделал Вася $A_t \in \{0,1\}$:
+$$
+LL = \sum_t A_t \log(N(m_A, \Sigma_A)(x_j)) +  (1 - A_t) \log(N(m_B, \Sigma_B)(x_j))
+$$
+В таком варианте все совсем просто считается (если мы еще не забыли формулу плотности нормального многомерного распределения :))
+\end{frame}
+
+\begin{frame}{Пример с дартс III}
+\small
+Если чуть более формально, то мы ввели скрытую/ненаблюдаемую переменную $I(A)$ (такое называется data augmentation) и хотим:
+\begin{enumerate}
+  \item Прикинуть начальные $m_i, \Sigma_i, \pi$
+  \item Посчитать ожидание скрытого параметра $A_j = \mu({(m_i, \Sigma_i}, \pi)$
+  \item В условиях найденных $A_j$ максимизировать $LL$
+  \item Перейти к второму шагу до сходимости
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Expectation maximization алгоритм}
+\small
+Фокус, который мы проделали называется $EM$-алгоритм. Пускай данные у нас состоят из видимой части $L$ и скрытой $Z$, $X = (L,Z)$. Мы хотим найти оптимальные параметры $\lambda$:
+$$
+LL(p(L|\lambda)) = LL(p(X|\lambda))
+$$
+\begin{enumerate}
+  \item Возьмем какой-то $\lambda_0$
+  \item Посчитаем ожидание (expectation step):
+  $$
+  E(\lambda | \lambda_t) = \mu\left(LL(\lambda,X) | Z,\lambda_t \right)
+  $$
+  \item Проведем оптимизацию (maximization step):
+  $$
+  \lambda_{t+1} = \arg \max_{\lambda} E(\lambda | \lambda_t)
+  $$
+  \item Перейти к второму шагу до сходимости
+\end{enumerate}
 \end{frame}
 
 \begin{frame}{Алгоритм Гиббса}
-В Метрополисе есть проблема: всё зависит от $p(\lambda|\lambda_t)$.
-$$\begin{array}{l}
-i \sim U(1, ..., n) \\
-\\
-p(\xi|\lambda_t) \\
-\\
-\lambda_i = \lambda_{t_i} + \xi, \\
-\\
-\lambda_j = \lambda_{t_j}, j \neq i
-\end{array}$$
+В Метрополисе есть проблема: многомерное распределение $p(F|X) = p(\lambda|X)$. Можно попробовать рассматривать его по частям.
+\begin{enumerate}
+  \item Начнем с какого-то $\lambda$
+  \item Сгенерируем $\lambda_{t+1}$ по правилам
+$$
+p(\lambda_{t + 1,i} | X, \lambda_{t+1,1},\ldots,\lambda_{t+1, i-1}, \lambda_{t, i-1},\ldots, \lambda_{t,n})
+$$
+  \item Будем бегать по $i=1\ldots n$, пока не сойдется
+  \item Полученная $\lambda$ --- следующая точка сэмплирования
+  \item Пока хочется идем в п.2
+\end{enumerate}
 \end{frame}
 
-\begin{frame}{Как можно построить $p(F|X)$}
+\begin{frame}{Пример с дартс IV}
+\small
+На языке товарищей Геман:
+\begin{enumerate}
+  \item Прикинуть начальные $m_i, \Sigma_i, \pi$
+  \item Для каждого сампла сгенерировать $A_j$ из текущего $\pi$
+  \item В условиях найденных $A_t$ максимизировать $LL$
+  \item Перейти к второму шагу до сходимости того момента пока распределение параметров не перестанет меняться
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Как можно построить $p(F|X)$ для RMSE}
 Если MSE, то всё просто:
 $$\begin{array}{l}
 p(\lambda|X) = \frac{e^{-c\|F(\lambda|X) - Y\|_2}}{Z} \\
@@ -310,4 +404,18 @@ Z = \int\limits_{\lambda} e^{-c\|F(\lambda|X) - Y\|}d\lambda
 \end{array}$$
 Если максимизируем, то надеемся задрать $Y$ так, чтообы $Z$ был определён. 
 \end{frame}
+
+\begin{frame}{Заключение}
+Сэмплирование очень полезная вещь:
+\begin{itemize}
+  \item собирать данные;
+  \item брать интегралы;
+  \item обучаться.
+\end{itemize}
+Посмотрите на bayesian inference и библиотеку Гиббса для него: BUGS.
+\end{frame}
+
+\begin{frame}{Задание на дом}
+\end{frame}
+
 \end{document}
