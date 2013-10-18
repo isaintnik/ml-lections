@@ -1,0 +1,117 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+\usepackage{cancel}
+
+\usepackage{tikz}                   
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\renewcommand{\CancelColor}{\color{red}}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\title{Генетические алгоритмы\\\small{}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Содержание}
+\begin{frame}{Содержание}
+\begin{enumerate}
+  \item Генетические алгоритмы
+  \item Свойства генетических алгоритмов
+  \item Differential evolution
+  \item Теорема об отсутствии халявы
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Идея}
+Кажется природа решает ту же задачу. \\
+$\Rightarrow$ Можно подсмотреть механизмы \\
+$\Rightarrow$ Популяция позволяет говорить о "производных" \\
+$\Rightarrow$ Внутри популяции можно исследовать зависимости и использовать их \\
+$\Rightarrow$ Просто объяснять, но нужен специальный "масонский" язык \\
+Отсебятена: генетические алгоритмы скорее язык описания перебора.
+\end{frame}
+
+\begin{frame}{Этапы генетического алгоритма}
+\begin{enumerate}
+  \item Выбрать начальную популяцию
+  \item Измерить "приспособленность" особей
+  \item Повторить до сходимости
+  \begin{enumerate}
+    \item Выбрать представителей популяции для размножения
+    \item Породить новых особей с помощью скрещивания и мутаций
+    \item Измерить приспособленность "детей"
+    \item Заменить наименее приспособленных "детьми"
+  \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Выбор начальной позиции}
+Как любые переборные методы генетика существенно зависима от начальных позиций. \\
+Можно так:
+\begin{itemize}
+  \item Сводят пространство решений в $[0,1]^n$ и берут равномерно рандомные точки
+  \item Сводят к ${0,1}^k$ с помощью бинаризации и берут орты
+  \item Делают предварительное сэмплирование
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Выбор особей для размножения}
+Выбор особей - ключевой момент! \\
+Можно так:
+\begin{itemize}
+  \item Выбирать с вероятностью, пропорциональной "приспособленности"
+  \item Предварительно делать shuffle "приспособленности"
+  \item От "приспособленности" зависит очередность
+  \item Можно выбирать равномерно из популяции (по классике нельзя)
+  \item Любые комбинации :)
+\end{itemize}
+\end{frame}
+
+\end{document}
