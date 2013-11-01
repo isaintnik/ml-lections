@@ -40,7 +40,7 @@
      \addtolength\displaywidth{-#1}}}
 \newcommand{\itemi}{\item[\checkmark]}
 
-\title{Генетические алгоритмы\\\small{}}
+\title{Линейные модели: введение\\\small{по материалам "The Elements of Statistical Learning"}}
 \author[]{\small{%
 И.~Куралёнок,
 Н.~Поваров}}
@@ -60,11 +60,136 @@
 \end{frame}
 
 \section{Линейные модели}
+\begin{frame}{Формальная постановка}
+Ищем решающую функцию в виде:
+$$
+y = F(\lambda, x) = \lambda^T x
+$$
+Такое решение кажется примитивным!
+\end{frame}
+\begin{frame}{Формальная постановка}
+Ищем решающую функцию в виде:
+$$
+y = F(x, \lambda) = \lambda^T x = x^T \lambda
+$$
+Такое решение кажется примитивным! \\
+До того как мы расскажем что такое $x$.
+\end{frame}
+\begin{frame}{Какое $x$ бывает}
+Просто фичи:
+$$
+x \in \mathbb{R}^n
+$$
+Мономы:
+$$
+u \in \mathbb{R}^n
+x = \prod u_j
+$$
+Произвольные функции:
+$$
+u \in \mathbb{R}^n
+x: \mathbb{R}^n \to \mathbb{R}
+$$
+В любом случае мы всегда можем посчитать значение $x$ по входным параметрам.
+\end{frame}
+
 \section{Линейная регрессия}
+\begin{frame}{Простое решение}
+$$
+\arg \min_{\lambda} \|F(X, \lambda) - y\| = \arg \min_{\lambda} \|X \lambda - y\|
+$$
+Если норма $l_2$, то:
+$$
+{\partial T \over \partial X} = 2 X^T\left(X\lambda - y\right) = 0
+$$
+$$
+\lambda_0 = (X^TX)^{-1}X^Ty
+$$
+\end{frame}
+
+\begin{frame}{Геометрическая интерпретация}
+Если посмотреть на колонки, соответствующие фичам то картинка такая:
+\begin{center}
+\includegraphics[height=0.5\textheight]{3_2.png}
+\end{center}
+Об этом говорит (если нам все удалось):
+$$
+X^T(y - \hat{y}) = X^T(y - X\lambda_0) = 0
+$$
+В случае, если $rank(X) < n$ ортогональность остается!
+\end{frame}
+
 \subsection{Статистические свойства решения}
+\begin{frame}{Статистические свойства решения}
+Если наблюдения независимы, $Var(y) = const$, а $x$ вычислены точно:
+$$
+Var(\lambda) = \left(X^TX\right)^{-1}\frac{1}{n - m - 1}\|y - \hat{y}\|_2
+$$
+А если еще и предположить, что $y=\lambda_1^Tx + \epsilon$ и $\epsilon \sim N(0,\sigma)$:
+$$
+\lambda_0 \sim N(\lambda_1, \left(X^TX\right)^{-1}\sigma^2)
+$$
+а наблюдаемая $\sigma$ для $y$ распределена по $\chi^2$:
+$$
+(n-m-1)\hat{\sigma} = \|y - \hat{y}\|_2 \sim \sigma \chi^2_{n-m-1}
+$$
+\end{frame}
+
+\begin{frame}{А точно $\lambda_{0_i} \ne 0$?}
+Введем такую штуку ($Z$-score):
+$$
+z_i = \frac{\lambda_{0_i}}{\hat{\sigma}\sqrt{v_i}}
+$$
+где $v_i$ --- диагональный элемент $\left(X^TX\right)^{-1}$. Если подумать что $\lambda_{0_i} = 0$, то:
+$$
+z_i \sim T_{n-m-1}
+$$
+Чем больше $Z$-score, тем более мы уверены, что $\lambda_{0_i} \ne 0$
+\end{frame}
+
 \subsection{Теорема Гаусса-Маркова}
+\begin{frame}{Теорема Гаусса-Маркова}
+\begin{theorem}[]
+Линейное приближение по MSE обладает на наименьшим разбросом из всех несмещенных линейных решений
+\end{theorem}
+\begin{itemize}
+\item[$\Rightarrow$] для того, чтобы сделать решение более стабильным надо вводить bias
+\item[$\Rightarrow$] простым MSE нам не отделаться, надо будет менять $T$
+\end{itemize}
+\end{frame}
+
 \subsection{Расширение на несколько целевых функций}
+\begin{frame}{Расширение на несколько целей}
+$$
+y_i \in \mathbb{R}^k
+$$
+В этом случае задача превращается в такую:
+$$
+\arg \min_\Lambda tr\left((Y - X\Lambda)^T(Y - X\Lambda)\right)
+$$
+$$
+\Lambda_0 = \left(X^TX\right)^{-1} X^TY
+$$
+Если же $y = x^T\Lambda + \epsilon$, $\epsilon \sim N(0, \Sigma)$:
+$$
+\arg \min_\Lambda \left((Y - X\Lambda)^T\Sigma^{-1}(Y - X\Lambda)\right)
+$$
+\end{frame}
+
 \section{Линейная классификация}
+\begin{frame}{Классификация}
+$$
+x \in \mathbb{R}^n, y \in \{1,\ldots, k\}
+$$
+Можем пойти по-простому и решить регрессией:
+$$
+\gamma_{ij} = \left\{\begin{array}{ll}
+1,& i = y_i \\
+0 
+\end{array}\right.
+$$
+\end{frame}
+
 \subsection{Простая линейная модель и ее вариации}
 \subsection{Линейный дискриминантный анализ (LDA)}
 \subsection{Логистическая регрессия}
