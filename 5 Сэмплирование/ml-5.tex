@@ -220,7 +220,7 @@ F_t = F(x, \lambda_t) \\
 
 \begin{frame}{Simple hill climbing}
 $$\begin{array}{l}
-\xi \sim U(\{\xi_i\}_1^2n), \xi_{i\frac{i}{2}} = -1^{i mod 2}\omega, \xi_{ij} = 0, j \neq \frac{i/2},\\
+\xi \sim U(\{\xi_i\}_1^{2n}), \xi_{i\frac{i}{2}} = -1^{i~mod~2}\omega, \xi_{ij} = 0, j \neq \frac{i}{2},\\
 \\
 C(\lambda_{t+1}|\lambda_t) = \frac{p(F(\lambda_{t+1})|X)}{p(F(\lambda_t)|X)} > 1 \\
 \end{array}$$
@@ -376,7 +376,7 @@ $$
   \item Начнем с какого-то $\lambda$
   \item Сгенерируем $\lambda_{t+1}$ по правилам
 $$
-p(\lambda_{t + 1,i} | X, \lambda_{t+1,1},\ldots,\lambda_{t+1, i-1}, \lambda_{t, i-1},\ldots, \lambda_{t,n})
+p(\lambda_{t + 1,i} | X, \lambda_{t+1,1},\ldots,\lambda_{t+1, i-1}, \lambda_{t, i+1},\ldots, \lambda_{t,n})
 $$
   \item Будем бегать по $i=1\ldots n$, пока не сойдется
   \item Полученная $\lambda$ --- следующая точка сэмплирования
@@ -390,13 +390,12 @@ $$
 \begin{enumerate}
   \item Прикинуть начальные $m_i, \Sigma_i, \pi$
   \item Для каждого сампла сгенерировать $A_j$ из текущего $\pi$
-  \item В условиях найденных $A_t$ максимизировать $LL$
+  \item В условиях найденных $A_j$ максимизировать $LL$
   \item Перейти к второму шагу до сходимости того момента пока распределение параметров не перестанет меняться
 \end{enumerate}
 \end{frame}
 
 \begin{frame}{Как можно построить $p(F|X)$ для RMSE}
-Если MSE, то всё просто:
 $$\begin{array}{l}
 p(\lambda|X) = \frac{e^{-c\|F(\lambda|X) - Y\|_2}}{Z} \\
 \\

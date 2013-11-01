@@ -228,6 +228,7 @@ $$
 
 \begin{frame}{Вспоминая вахтера}
 Назначим очки:
+
 \begin{tabular}{p{0.6\textwidth}|l}
 Результат & Очки \\
 \hline \\
@@ -236,6 +237,7 @@ $$
 Накурил & 15 \\
 Напачкал & 100 \\
 \end{tabular}
+
 Это сильно проще сделать ``от балды'', чем считать статистику.
 \end{frame}
 
@@ -370,7 +372,7 @@ F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
   $$
   $\Longrightarrow$ при увеличении количества точек $L$ сходится
   $$
-    sup\|L(x, F) - L(x, F_0)\| \overset{a.s.}{\to} 0
+    sup\|LL(x, F) - LL(x, F_0)\| \overset{a.s.}{\to} 0
   $$
 \end{frame}
 
@@ -409,17 +411,20 @@ F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
   \item Когда хочется своего $p(x|I)$ решение будет другое.
 \end{itemize}
 $$\begin{array}{l}
-  \sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, \ldots, m \\
-  \\
-  p(x|I) = \frac{1}{Z}e^{\sum_k\lambda_kf_k(x)} \\
-  \\
-  Z = \sum_i\exp^{\sum_k\lambda_kf_k(x)} \\
-  \\
-  f_k^0 = \frac{\partial}{\partial\lambda_k}logZ
+\sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, \ldots, m \\
+\\
+p(x|I) = \frac{1}{Z}e^{\sum_k\lambda_kf_k(x)} \\
+\\
+Z = \sum_i\exp^{\sum_k\lambda_kf_k(x)} \\
+\\
+f_k^0 = \frac{\partial}{\partial\lambda_k}logZ
 \end{array}$$
 \end{frame}
 
 \begin{frame}{Почему это работает} % переход в общие термины
+$\arg\max_{F} \mathcal{T}(F, L) = \arg\max_{F} \mathcal{M}(F, L)$
+
+Максимизацией энтропии мы выпиливаем информацию про выборку, оставляя лишь информацию о генеральной совокупности. Так как мы хорошо смоделировали, надеемся, что минимум по метрике и по энтропии в одной точке.
 \end{frame}
 
 \section{Принцип наименьшего описания}
@@ -439,10 +444,7 @@ $$
 \end{frame}
 
 \begin{frame}{Почему это работает} % переход в общие термины
-\end{frame}
-
-\section{Выводы}
-\begin{frame}{Подводя итог}
+Те же рассуждения, что и при ПМЭ.
 \end{frame}
 
 \begin{frame}{Сглаживание таргета}
@@ -464,9 +466,7 @@ $$
   \item Наличие интересных внутренних параметров;
   \item Возможность проверить осмысленность промежуточных результатов.
 \end{itemize}
-\end{frame}
-
-\begin{frame}{Про накопление знания в таргет функции}
+NB: Чем больше мы в области, тем больше знания мы перенесем в таргет.
 \end{frame}
 
 \section{ДЗ}
@@ -476,6 +476,6 @@ $$
   \item Точные задачи приведены в файле howto.txt; 
   \item Дедлайн 18 октября.
 \end{itemize}
-
+М.: Издательство МЦНМО, 2010
 \end{frame}
 \end{document}
