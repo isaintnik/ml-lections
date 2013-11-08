@@ -199,7 +199,7 @@ $$
 А в случае LASSO все не так просто, так как $T$ негладкая. Поэтому там почти градиентный спускъ. Есть несколько способов:
 \begin{itemize}
 \small
-  \item Оригинальный пошаговый
+  \item Пошаговый LASSO
   \item LARS
   \item Покоординатный спуск (посмотреть дома)
   \item ISTA
@@ -209,24 +209,108 @@ $$
 \end{frame}
 
 \subsection{Stagewise LASSO}
-\begin{frame}{Оптимизация $l_1$ и $l_2$}
+\begin{frame}{Пошаговый LASSO}
+\begin{enumerate}
+  \item Начнем с $\beta = 0$ и зафиксируем шаг $w$ и соответствующие ему шаги по всем ортам $e_iw$
+  \item Выберем такое направление: 
+  $$\begin{array}{rl}
+  \hat{i} &= \arg \min_i \|y - X\left(\beta_t \pm e_iw\right)\|\\
+          &= \arg \min_i \|\left(y - X\beta_t\right) \pm X e_iw\| \\
+          &= \arg \min_i \|r_t \pm X e_iw\| \\
+  \end{array}$$
+  \item $\beta_{t+1}$ = $\beta_{t} \pm e_{\hat{i}}w$ если $\|y - X\beta_t\| - \|y - X\beta_{t+1}\| > \lambda$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Наблюдение за работой LASSO}
+Несколько наблюдений:
 \begin{itemize}
-\small
-  \item Оригинальный пошаговый
-  \item LARS
-  \item Покоординатный спуск (посмотреть дома)
-  \item ISTA
-  \item FISTA
-  \item etc.
+  \item Мы много раз бродили в одном и том же направлении
+  \item За шаг двигаемся только по одной координате
+  \item Так как шаг $w$ фиксирован приходим не в точное решение, а в приближенное
 \end{itemize}
 \end{frame}
 
 \subsection{LARS}
+\begin{frame}{Least angle regression (LARS)}
+\small
+Внимание, $1$ дальше --- это вектор нужной размерности.
+\begin{enumerate}
+  \item Нормируем $X$ так, чтобы $\mu(\mathbf{x_i}) = 0, D(\mathbf{x_i}) = 1$ и $y$, так чтобы $\mu(\mathbf{y}) = 0$
+  \item Введем $\beta_1 = 0, r = y$, $A = \emptyset$ --- множество всех направлений с максимальной корреляцией с $r$, $s$ --- вектор знаков корреляций.
+  \item $X_A = \left(s_1x_{A(1)}, s_2x_{A(2)}, \ldots s_{|A|}x_{A(|A|)}\right)$
+  \item $a_A = \left(1^T (X_A^TX_A)^{-1}1\right)^{-\frac{1}{2}}$
+  \item $u_A = a_AX_A(X_A^TX_A)^{-1}1_A$ обратите внимание, что ($X^Tu_A = a_A 1$)
+  \item $c = X^T (y - \beta_t)$
+  \item $a = X^T u_A$
+  \item $\gamma = min^+_j \left(\frac{C - c_j}{a_A - a_j}, \frac{C + c_j}{a_A + a_j}\right)$
+  \item $\beta_{t+1} = \beta + \gamma u_A$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Работа LARS (корреляция)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{3_14.png} 
+\end{center}
+\footnotesize
+Картинки из The Elements of Statistical Learning (Hastie, Friedman and Tibshirani, 2009)
+\end{frame}
+
 \subsection{ISTA}
 \subsection{Как LASSO работает на Сифоне-Бороде}
+
 \section{ElasticNet vs $l_{0.5}$ vs. $l_{1.1}$}
+\begin{frame}{Немного о касаниях}
+\begin{center}
+\includegraphics[height=0.9\textheight]{ElasticNet.png} 
+\end{center}
+\footnotesize
+\begin{itemize}
+  \item Хочется получить единственную точку касания
+  \item По возможности хотелось бы упростить вычисления
+\end{itemize}
+Картинки от Hui Zou
+\end{frame}
+
+\begin{frame}{ElasticNet, $l_1.1$, etc.}
+Можно пойти 2-мя способами:
+\begin{enumerate}
+  \item Добавить компоненту, которая будет отвечать за ``круглые бока'' (ElasticNet)
+  $$
+    \arg \min_\beta \|X\beta - y \| + \lambda_1 \|\beta\|_1 + \lambda_2 \|\beta\|_2
+  $$
+  \item Если жизнь все равно негладкая то гулять так гулять ($1 < q < 2$):
+  $$
+    \arg \min_\beta \|X\beta - y \| + \lambda \|\beta\|_q
+  $$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Grouped LASSO}
+Иногда мы априорно знаем, что какие-то переменные похожи. Эту информацию можно использовать:
+  $$
+    \arg \min_\beta \|X\beta - y\| + \lambda \sum_{g} \sqrt{\sum_{j \in g} \beta_j^2}
+  $$
+Бывают и другие танцы для того, чтобы обеспечить structural sparsity
+\end{frame}
+
 \subsection{Объем данных vs $q$}
+\begin{frame}{Как выбирать $q$?}
+Есть теоретические работы на эту тему. Не помню кто, не помню как, но доказал, что в ML $q$ зависит от объема выборки. Для малых объемов работает $q = 0$, для бесконечных $q=2$. Все что посередине должны найти свой любимый $q$. \\
+
+\footnotesize
+Постараюсь к следующему разу привести чуть более точную ссылку
+\end{frame}
+
 \section{Регуляризация}
+\begin{frame}{Еще раз о регуляризации}
+$$\begin{array}{l}
+\arg \max_\beta P(y|X\beta) P(\beta) \\
+= \arg \max_\beta \sum_i log P(y_i|x_i\beta) + log P(\beta)
+\end{array}$$
+Данный фокус гораздо более общий, и подходит не только для линейных решений.
+\end{frame}
+
 \section{Домашнее задание}
 \begin{frame}{Результаты ДЗ второй недели}
 \tiny
