@@ -1,0 +1,360 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+\usepackage{cancel}
+
+\usepackage{tikz}                   
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\renewcommand{\CancelColor}{\color{red}}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\title{Линейные модели: уменьшаем variance\\\small{}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Variance линейных моделей слишком велик!}
+\begin{frame}{Переобозначение параметра решающей функции!}
+$\lambda$ --- мало. С сегодняшнего дня вместо него $\beta$
+$$
+F(x, \lambda) \to F(x, \beta)
+$$
+Слайды предыдущих лекций переделаем.
+\end{frame}
+
+\begin{frame}{Воспоминания о былом}
+\begin{itemize}
+  \item Из второй лекции мы знаем, что линейные модели имеют большой разброс решений
+  \item Из 7-й лекции мы знаем, что меньше разброс нам не сделать с избранной целевой функцией (теорема Гаусса-Маркова)
+\end{itemize}
+$\Rightarrow$ будем менять целевую функцию: вводить условия, или менять саму $T$.
+\end{frame}
+
+\subsection{Пример с очередным Сифоном/Бородой}
+\section{Поиск условного оптимума}
+\begin{frame}{Хорошие решения}
+\begin{enumerate}
+  \item Предположим, что данные $y$ y нас шумные
+  \item Введем чувство прекрасного $-R(\beta)$ 
+\end{enumerate}
+Тогда нашу проблему можно свести к:
+$$\begin{array}{l}
+\arg \min_\beta R(\beta) \\
+\| X\beta - y\| < \epsilon
+\end{array}$$
+Ну или так:
+$$\begin{array}{l}
+\arg \min_\beta \| X\beta - y\| \\
+R(\beta) < p
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Преобразование целевой функции}
+$$
+\arg \min_\beta \| X\beta - y\| + \lambda R(\beta)
+$$
+Можно найти такой параметр $\lambda$, который будет давать решение задачи на предыдущем слайде. В смысле оптимизации проблемы эквивалентны.
+\end{frame}
+
+
+\begin{frame}{C байесовой точки зрения}
+Строго говоря, мы ввели prior на распределение решений:
+$$\begin{array}{l}
+\arg \max_\beta P(y|X\beta) P(\beta) \\
+= \arg \max_\beta \sum_i log P(y_i|x_i\beta) + log P(\beta)
+\end{array}$$
+Если предположить нормальность $P(y_i|x_i\beta)$, то проблема становится очень похожей на то, что мы уже видели:
+$$
+= \arg \min_\beta \|X \beta - y\| - z log P(\beta)
+$$
+где $z$ --- ошметки нормальности.
+\end{frame}
+
+\begin{frame}{Виды prior}
+Какими бывают $-log P(\beta)$:
+\begin{description}
+  \item[$\|\beta\|_0$] --- бритва Оккама, MDL, etc.;
+  \item[$\|\Gamma\beta\|_2$] --- нормальное распределение c $\Sigma = \Gamma^{-1}$ и $\mu = 0$;
+  \item[$\|\beta\|_1$] --- распределение Лапласа;
+\end{description}
+Как можно видеть все это добро обобщается в $l_q$.
+\end{frame}
+
+\begin{frame}{Сравнение prior'ов в случае $l_1$ и $l_2$}
+\begin{center}
+\includegraphics[width=0.4\textwidth,height=0.5\textheight]{800px-Laplace_distribution.png} 
+\includegraphics[width=0.4\textwidth,height=0.5\textheight]{800px-Normal_distribution.png} 
+\end{center}
+Картинки из википедии
+\end{frame}
+
+\subsection{Почему все это очень клево ложится на ML}
+\begin{frame}{Как это относится к ML}
+Точное решение в $L$ несет слишком много информации о обучающей выборке, поэтому точно оптимизировать смысла нету. Таким образом условие:
+$$\begin{array}{l}
+\min R(\beta) \\
+\|X\beta - y\| < \epsilon
+\end{array}$$
+хорошо ложится на ML. При этом возможность выбора $R$ позволяет рассказать наши ожидания от структуры решения.
+\end{frame}
+
+\begin{frame}{Как это называется}
+\begin{description}
+  \item[$\|\beta\|_0$] --- Best Subset;
+  \item[$\|\Gamma\beta\|_2$] --- регуляризация Тихонова/ridge regression;
+  \item[$\|\beta\|_1$] --- least absolute shrinkage and selection operator (LASSO);
+\end{description}
+Также рассматривается обощение на $l_q$.
+\end{frame}
+
+\subsection{Картинки разных условий}
+
+\begin{frame}{Геометрия LASSO}
+$$\begin{array}{l}
+\min_\beta {\color{blue} \|X\beta - y\|} \\
+{\color{red} \|\beta\|_1 < p}
+\end{array}$$
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Geometric_View.png} 
+\end{center}
+\footnotesize
+Картинки из ICML 2010 Tutorial (Irina Rish, Genady Grabarnik)
+\end{frame}
+
+\begin{frame}{Геометрия LASSO II}
+\small
+Рассмотрим зависимость компоненты решения $\beta_0$ от решения безусловной системы $\hat{\beta} = \left(X^TX\right)^{-1}X^Ty$.
+\begin{center}
+\includegraphics[width=0.9\textwidth]{shrinkage.png} 
+\end{center}
+\footnotesize
+Картинки из The Elements of Statistical Learning (Hastie, Friedman and Tibshirani, 2009)
+\end{frame}
+
+\section{Как считать}
+\begin{frame}{Пара слов об оптимизации $l_0$}
+\small
+$l_0$ --- естественное условие на решение: ``меньше фишек --- легче думать'' \\
+Точное решение однако найти очень дорого: проблема $NP$-сложная. Поэтому есть масса работ по тому как найти приближенное решение:
+\begin{itemize}
+  \item Если $n < 40$ есть работа ``Regressions by Leaps and Bounds'' (Furnival and Wilson 1974) + CV для выбора эффективного ограничения
+  \item Взад-назад селекшен (Forward/Backward-Stepwise Selection): выбрасываем или добавляем фичу с наибольшим/наименьшим Z-score
+  \item Приближение с маленьким $q$
+  \item ``Хитрые'' переборы многомерного креста
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Оптимизация $l_1$ и $l_2$}
+\small
+В случае ridge regression все просто:
+$$
+\beta_0 = \left(X^{T}X+ \Gamma^{T} \Gamma\right)^{-1}X^{T}y
+$$
+А в случае LASSO все не так просто, так как $T$ негладкая. Поэтому там почти градиентный спускъ. Есть несколько способов:
+\begin{itemize}
+\small
+  \item Пошаговый LASSO
+  \item LARS
+  \item Покоординатный спуск (посмотреть дома)
+  \item ISTA
+  \item FISTA
+  \item etc.
+\end{itemize}
+\end{frame}
+
+\subsection{Stagewise LASSO}
+\begin{frame}{Пошаговый LASSO}
+\begin{enumerate}
+  \item Начнем с $\beta = 0$ и зафиксируем шаг $w$ и соответствующие ему шаги по всем ортам $e_iw$
+  \item Выберем такое направление: 
+  $$\begin{array}{rl}
+  \hat{i} &= \arg \min_i \|y - X\left(\beta_t \pm e_iw\right)\|\\
+          &= \arg \min_i \|\left(y - X\beta_t\right) \pm X e_iw\| \\
+          &= \arg \min_i \|r_t \pm X e_iw\| \\
+  \end{array}$$
+  \item $\beta_{t+1}$ = $\beta_{t} \pm e_{\hat{i}}w$ если $\|y - X\beta_t\| - \|y - X\beta_{t+1}\| > \lambda$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Наблюдение за работой LASSO}
+Несколько наблюдений:
+\begin{itemize}
+  \item Мы много раз бродили в одном и том же направлении
+  \item За шаг двигаемся только по одной координате
+  \item Так как шаг $w$ фиксирован приходим не в точное решение, а в приближенное
+\end{itemize}
+\end{frame}
+
+\subsection{LARS}
+\begin{frame}{Least angle regression (LARS)}
+\small
+Внимание, $1$ дальше --- это вектор нужной размерности.
+\footnotesize
+\begin{enumerate}
+  \item Нормируем $X$ так, чтобы $\mu(\mathbf{x_i}) = 0, D(\mathbf{x_i}) = 1$ и $y$, так чтобы $\mu(\mathbf{y}) = 0$
+  \item Введем $\beta_1 = 0, r = y$, $A = \emptyset$ --- множество всех направлений с максимальной корреляцией с $r$, $s$ --- вектор знаков корреляций.
+  \item $X_A = \left(s_1x_{A(1)}, s_2x_{A(2)}, \ldots s_{|A|}x_{A(|A|)}\right)$
+  \item $a_A = \left(1^T (X_A^TX_A)^{-1}1\right)^{-\frac{1}{2}}$
+  \item $u_A = a_AX_A(X_A^TX_A)^{-1}1_A$ обратите внимание, что ($X^Tu_A = a_A 1$)
+  \item $c = X^T (y - \beta_t)$
+  \item $a = X^T u_A$
+  \item $\gamma = min^+_j \left(\frac{C - c_j}{a_A - a_j}, \frac{C + c_j}{a_A + a_j}\right)$
+  \item $\beta_{t+1} = \beta + \gamma u_A$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Работа LARS (корреляция)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{3_14.png} 
+\end{center}
+\footnotesize
+Картинки из The Elements of Statistical Learning (Hastie, Friedman and Tibshirani, 2009)
+\end{frame}
+
+\subsection{ISTA}
+\subsection{Как LASSO работает на Сифоне-Бороде}
+
+\section{ElasticNet vs $l_{0.5}$ vs. $l_{1.1}$}
+\begin{frame}{Немного о касаниях}
+\begin{center}
+\includegraphics[height=0.9\textheight]{ElasticNet.png} 
+\end{center}
+\footnotesize
+\begin{itemize}
+  \item Хочется получить единственную точку касания
+  \item По возможности хотелось бы упростить вычисления
+\end{itemize}
+Картинки от Hui Zou
+\end{frame}
+
+\begin{frame}{ElasticNet, $l_1.1$, etc.}
+Можно пойти 2-мя способами:
+\begin{enumerate}
+  \item Добавить компоненту, которая будет отвечать за ``круглые бока'' (ElasticNet)
+  $$
+    \arg \min_\beta \|X\beta - y \| + \lambda_1 \|\beta\|_1 + \lambda_2 \|\beta\|_2
+  $$
+  \item Если жизнь все равно негладкая то гулять так гулять ($1 < q < 2$):
+  $$
+    \arg \min_\beta \|X\beta - y \| + \lambda \|\beta\|_q
+  $$
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Grouped LASSO}
+Иногда мы априорно знаем, что какие-то переменные похожи. Эту информацию можно использовать:
+  $$
+    \arg \min_\beta \|X\beta - y\| + \lambda \sum_{g} \sqrt{\sum_{j \in g} \beta_j^2}
+  $$
+Бывают и другие танцы для того, чтобы обеспечить structural sparsity
+\end{frame}
+
+\subsection{Объем данных vs $q$}
+\begin{frame}{Как выбирать $q$?}
+Есть теоретические работы на эту тему. Не помню кто, не помню как, но доказал, что в ML $q$ зависит от объема выборки. Для малых объемов работает $q = 0$, для бесконечных $q=2$. Все что посередине должны найти свой любимый $q$. \\
+
+\footnotesize
+Постараюсь к следующему разу привести чуть более точную ссылку
+\end{frame}
+
+\section{Регуляризация}
+\begin{frame}{Еще раз о регуляризации}
+$$\begin{array}{l}
+\arg \max_\beta P(y|X\beta) P(\beta) \\
+= \arg \max_\beta \sum_i log P(y_i|x_i\beta) + log P(\beta)
+\end{array}$$
+Данный фокус гораздо более общий, и подходит не только для линейных решений.
+\end{frame}
+
+\section{Домашнее задание}
+\begin{frame}{Результаты ДЗ второй недели}
+\tiny
+\begin{center}
+\begin{enumerate}
+\item deb8e1
+\item 1371ef
+\item 5fd1e0
+\item 85cd01
+\item 16d288
+\item aa0155
+\item f54b78
+\item a3807d
+\item 099f77
+\item fe14e8
+\item 611bf4
+\item 95afb4
+\item 11e31c
+\item fbcd3c
+\item 6fc4ef
+\item a434b2
+\item a8cb51
+\item f6c031
+\item 234ec9
+\item 3c287f
+\item 1bf2d7
+\item 15059b
+\item f737ec
+\item e5bda2
+\item dfba4d
+\item 91bd7c
+\end{enumerate}
+%Не отличаются , 2-17, 18-26
+\end{center}
+\end{frame}
+\begin{frame}{Домашнее задание}
+\begin{itemize}
+\item Датасет в домашнем задании прошлой недели и этой - одинаковый.
+\item Задача - мультиклассификация.
+\item Для ДЗ прошлой лекции можно имплементировать методы из прошлой лекции.
+\item Для ДЗ текущей лекции можно имплементировать методы из текущей лекции.
+\item Рейтинг будет строиться исходя из качества полученной мультиклассификации для каждой недели отдельно.
+\item В svn точно всё лежит.
+\end{itemize}
+\end{frame}
+\end{document}
