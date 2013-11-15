@@ -97,15 +97,60 @@
 $$
 \beta^Tx - \beta_0 = 0,
 $$ 
-где $\beta$ - перпендикуляр к разделяющей плоскости. Для линейно-разделимых данных: \
-$$
-c_i(\beta x_i - \beta_0) \ge 1
-$$
-Ширина полосы: \
-$$
-\frac{2}{\|\beta\|}
-$$
+где $\beta$ - перпендикуляр к разделяющей плоскости. %Для линейно-разделимых данных: \
+%$$
+%c_i(\beta x_i - \beta_0) \ge 1
+%$$
+%Ширина полосы: \
+%$$
+%\frac{2}{\|\beta\|}
+%$$
+
 \end{frame}
+
+
+\begin{frame}{Геометрическое решение I}
+\begin{center}
+\includegraphics[width=0.4\textwidth]{SVM_2.png}
+\end{center}
+Давайте вычислим расстояние между точкой $x_n$ и плоскостью $\beta^Tx - \beta_0 = 0$.
+Для точек $x'$ и $x''$:\
+$$
+\left\{  
+           \begin{array}{ll}  
+            \beta^T x' - \beta_0 = 0 \\  
+            \beta^T x'' - \beta_0 = 0 \\
+           \end{array}   
+           \right.
+\Rightarrow \beta^T (x' - x'') = 0
+$$
+
+\end{frame}
+
+\begin{frame}{Геометрическое решение II}
+\begin{center}
+\includegraphics[width=0.5\textwidth]{SVM_3.png}
+\end{center}
+\small
+Берём любую точку $x$ на плоскости. \
+Проекция $\hat{\beta}$ для $x_n - x$ на $\beta$: \
+$$\begin{array}{l}
+\hat{\beta} = \frac{\beta}{\|\beta\|} \Rightarrow distance = |\hat{\beta}^T (x_n - x)| = 0 \\
+distance = \frac{1}{\|w\|} |\beta^Tx_n - \beta^Tx | = \frac{1}{\|w\|} |\beta^Tx_n - \beta_0 - \beta^Tx + \beta_0 | = \frac{1}{\|w\|}
+\end{array}
+$$
+Тогда, собственно, зазор: $\frac{2}{\|\beta\|}$
+\end{frame}
+
+\begin{frame}{Задача оптимизации}
+$max\frac{2}{\|\beta\|} \Rightarrow min|\beta^Tx_i - \beta_0| = 1$, \
+\
+Или: \
+\
+$min\beta^T\beta \Rightarrow c_i(\beta^Tx_i - \beta_0) \ge 1$
+\end{frame}
+
+
 
 \subsection{Коэффициенты Лагранжа для решения задачи про максимальное расстояние}
 \begin{frame}{Лагранж}
