@@ -92,91 +92,60 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Решение}
-Ищем решение вида: \
-$$
-\beta^Tx - \beta_0 = 0,
-$$ 
-где $\beta$ - перпендикуляр к разделяющей плоскости. %Для линейно-разделимых данных: \
-%$$
-%c_i(\beta x_i - \beta_0) \ge 1
-%$$
-%Ширина полосы: \
-%$$
-%\frac{2}{\|\beta\|}
-%$$
-
-\end{frame}
-
-
-\begin{frame}{Геометрическое решение I}
-\begin{center}
-\includegraphics[width=0.4\textwidth]{SVM_2.png}
-\end{center}
-Давайте вычислим расстояние между точкой $x_n$ и плоскостью $\beta^Tx - \beta_0 = 0$.
-Для точек $x'$ и $x''$:\
-$$
-\left\{  
-           \begin{array}{ll}  
-            \beta^T x' - \beta_0 = 0 \\  
-            \beta^T x'' - \beta_0 = 0 \\
-           \end{array}   
-           \right.
-\Rightarrow \beta^T (x' - x'') = 0
-$$
-
-\end{frame}
-
-\begin{frame}{Геометрическое решение II}
-\begin{center}
-\includegraphics[width=0.5\textwidth]{SVM_3.png}
-\end{center}
-\small
-Берём любую точку $x$ на плоскости. \
-Проекция $\hat{\beta}$ для $x_n - x$ на $\beta$: \
-$$\begin{array}{l}
-\hat{\beta} = \frac{\beta}{\|\beta\|} \Rightarrow distance = |\hat{\beta}^T (x_n - x)| = 0 \\
-distance = \frac{1}{\|w\|} |\beta^Tx_n - \beta^Tx | = \frac{1}{\|w\|} |\beta^Tx_n - \beta_0 - \beta^Tx + \beta_0 | = \frac{1}{\|w\|}
-\end{array}
-$$
-Тогда, собственно, зазор: $\frac{2}{\|\beta\|}$
-\end{frame}
-
-\begin{frame}{Задача оптимизации}
-$max\frac{2}{\|\beta\|} \Rightarrow min|\beta^Tx_i - \beta_0| = 1$, \
-\
-Или: \
-\
-$min\beta^T\beta \Rightarrow c_i(\beta^Tx_i - \beta_0) \ge 1$
-\end{frame}
-
-
-
 \subsection{Коэффициенты Лагранжа для решения задачи про максимальное расстояние}
-\begin{frame}{Лагранж}
-По теореме Куна-Таккера: \
-$$
-\mathcal{L} = \frac{1}{2}\|\beta\|^2 - \sum_{i=1}^m\alpha_i(c_i(\beta x_i - \beta_0) - 1), \alpha_i \ge 0
-$$ 
-Сведём эту задачу к: \
-$$
-\left\{  
-           \begin{array}{ll}  
-            -\mathcal{L} = -\sum_{i=1}^m\alpha_i + \frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\alpha_i\alpha_jc_ic_j(x_ix_j) \\  
-            \alpha_i \ge 0 & \\
-            \sum_{i=1}^m\alpha_ic_i = 0
-           \end{array}   
-           \right.
-$$
-Тогда: \
-$$\begin{array}{l}
-\beta = \sum_{i=1}^m\alpha_ic_ix_i \\
-\beta_0 = \beta x_i - c_i, \alpha_i > 0
-\end{array}$$
-\end{frame}
-
 \subsection{Переход к дуальному решению}
 \subsection{Идея как можно на халяву это решить}
 \subsection{Kernel trick}
 \subsection{Сведение SVM к регуляризации (основная идея)}
+\subsection{Домашнее задание}
+\begin{frame}{Результаты ДЗ четвёртой недели}
+\tiny
+\begin{center}
+\begin{enumerate}
+\item ca876
+\item 3fc89
+\item e46c8
+\item 76a61
+\item 165f4
+\item 729da
+\item cd90b
+\item cdb5c
+\item 23449
+\item c8b18
+\item 5660e
+\item 257d3
+\item 2431e
+\item 346a9
+\item 6f1ba
+\item ab851
+\item 3ebe0
+\item 49dd1
+\item 1938b
+\end{enumerate}
+\end{center}
+\end{frame}
+
+\begin{frame}{Интерпретация результатов}
+Задача была придумать несколько таргетов.
+\begin{center}
+\begin{itemize}
+\item 1 место - очень круто;
+\item 2 место - почти очень круто;
+\item 3-4 места - знают, что такое целевая функция, помнят про "бесконечные потери";
+\item 5-10 места - знают, что такое целевая функция, но местами забыли про "бесконечные потери";
+\item 11-12 места - знают, что такое целевая функция, но забыли про "бесконечные потери" совсем;
+\item 13-19 места - перепутали целевую функцию с решающей, а особо отличившиеся с факторами.
+\end{itemize}
+\end{center}
+\end{frame}
+
+\begin{frame}{Домашнее задание}
+\begin{itemize}
+\item датасет тот же;
+\item сегодня узнали про новые методы - будем применять;
+\item howto.txt;
+\item дедлайн - 29 ноября.
+\end{itemize}
+\end{frame}
+
 \end{document}
