@@ -247,14 +247,14 @@ $$\begin{array}{c}
 \begin{frame}{Логистическая регрессия}
 Будем искать не дискриминантные функции, а напрямую границы между классами:
 $$
-log\left(\frac{P(y=u|x)}{P(y=k|x)}\right) = x^T \lambda_{u}
+log\left(\frac{P(y=u|x)}{P(y=k|x)}\right) = e^{x^T \lambda_{u}}
 $$
 Преобразование справа --- logit. Тогда вероятности можно найти так:
 $$
-p(y=u|x) = {x^T \lambda_{u} \over 1 + \sum_{v < k} x^T\lambda_v}, u < k
+p(y=u|x) = {e^{x^T \lambda_{u}} \over 1 + \sum_{v < k} e^{x^T\lambda_v}}, u < k
 $$
 $$
-p(y=k|x) = {1 \over 1 + \sum_{v < k} x^T\lambda_v}
+p(y=k|x) = {1 \over 1 + \sum_{v < k} e^{x^T\lambda_v}}
 $$
 \end{frame}
 
@@ -264,7 +264,7 @@ $$
 \arg \max_\Lambda \prod_i p(y_i|x_i, \Lambda)
 $$
 $$
-= \arg \max_\Lambda \sum_i log {x^T \lambda_{u} \over 1 + \sum_{v < k} x^T\lambda_v}
+= \arg \max_\Lambda \sum_i log {e^{x^T \lambda_{u}} \over 1 + \sum_{v < k} e^{x^T\lambda_v}}
 $$
 Как будем искать?
 \end{frame}
@@ -275,7 +275,7 @@ $$
 \arg \max_\Lambda \prod_i p(y_i|x_i, \Lambda)
 $$
 $$
-= \arg \max_\Lambda \sum_i log {x^T \lambda_{u} \over 1 + \sum_{v < k} x^T\lambda_v}
+= \arg \max_\Lambda \sum_i log {e^{x^T \lambda_{u}} \over 1 + \sum_{v < k} e^{x^T\lambda_v}}
 $$
 Как будем искать?
 \end{frame}
