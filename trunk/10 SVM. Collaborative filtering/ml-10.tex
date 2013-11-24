@@ -203,25 +203,141 @@ $$
 Теперь вопрос свелся к тому как найти оптимальный $M$.
 \end{frame}
 
-\begin{frame}{Как найти оптимальный $M$}
-Давайте строить последовательно: сначала первый столбец, потом второй etc. Введем меру:
-$$\begin{array}{l}
-\nu(f,\eta,x,y) = -\frac{1}{\eta} \log  \left(\frac{1}{l}\sum_{s=1}^{l} e^{-\eta m_{ys} f_s(x)}\right) \\
-\eta = \sum_{t=1}^T \alpha_t \\
-f_s(x) = \sum_{t=1}^T \alpha_t h_t(x, s) \\
-\\
-M_{f,\eta}(x,y) = \frac{1}{2}\left(\nu(f,\eta, x, y) - \max_{r\ne y}\nu(f,\eta,x,r)\right)
-\end{array}$$
-\end{frame}
-
 \section{Collaborative filtering}
 
 \subsection{Пример} % переработать http://habrahabr.ru/company/surfingbird/blog/139022/ на Сифона/Бороду
+\begin{frame}{Вася и Петя \& подарки}
+Вася и Петя собирали подарки для друзей из другого города. Друзья загадочные, но известно, что у них есть. Надо подобрать подарки так, чтобы им понравилось, используя знание о том, что обычно встречается вместе в домах.
+\end{frame}
+
 \subsection{Постановка задачи} % wiki
+\begin{frame}{Постановка задачи}
+Есть пользователи, есть товары. Надо найти подходящие пользователю товары, которых он не видел, используя информацию о том какие товары покупают вместе.
+$$\begin{array}{l}
+U = \{u_i\}_1^n, R = \{r_j\}_1^m \\
+X = \{(u, r, s) | u \in U, r \in R, s \in \mathbb{Z}_S \}
+\end{array}$$
+{\color{blue}www.netflixprize.com} проводит соревнование с призом в 1m\$. $n \simeq 480k, m \simeq 17k$.
+$$
+L(h, X) = -\sum_{(u,r,s) \in X} \|s - h(r,s)\|_2
+$$
+\end{frame}
+
+\begin{frame}{Принципиальные способы решения}
+\begin{itemize}
+  \item Храним весь опыт в памяти:
+  \begin{description}
+    \item[\color{green}+] просто, можно легко обновлять;
+    \item[\color{red}---] может быть тяжело по памяти, возможен только простой анализ, так как все работает on the fly.
+  \end{description}
+  \item Храним только профайлы для пользователей и товаров:
+  \begin{description}
+    \item[\color{green}+] легко шардируется, менее требовательно по памяти;
+    \item[\color{red}---] сложнее обновлять, для высокой отзывчивости надо городить охретектуру.
+  \end{description}
+\end{itemize}
+\end{frame}
 
 \subsection{Случай, когда матрица полная} % Воронцов, лекция в ВШЭ http://www.machinelearning.ru/wiki/images/e/e5/Voron-2008-11-10-cf.pdf
+
+\begin{frame}{Потоварные методы: линейная регрессия}
+Если есть звезды, то можно сделать все просто:
+$$
+h(u, r|X) = \sum_{\footnotesize\begin{array}{c}(u,q,s) \in X \\ q \ne r\end{array}} a_q s + b_q
+$$
+Slope One:
+$$
+h(u, r|X) = \frac{1}{\sum_{q \ne r} |X(r,q)|} \sum_{\footnotesize\begin{array}{c}(u,q,s) \in X \\ q \ne r\end{array}} |X(r,q)|(s + b_q)
+$$
+Все равно слишком много параметров: $m^2$!
+\end{frame}
+
+\begin{frame}{Потоварные методы: Amazon.com item-to-item}
+Дополнительно известна страница товара, на которой находится пользователь. Звезд нету, близость item'ов меряем так:
+$$\begin{array}{l}
+d(r,q) = {(X(r),X(q)) \over \|X(r)\| \|X(q)\|}
+\end{array}$$
+Ищем наиболее близкий текущему товар, его и рекоммендуем.
+\end{frame}
+
+\begin{frame}{Попользовательские методы}
+Пока все наши выводы не слишком зависили от пользователя. \\
+Можно сделать все тоже самое, но только по близким пользователям. Близость можно определить также:
+$$
+d(u_1, u_2) = {X(u_1) X(u_2) \over \|X(u_1)\| \|X(u_2)\|}
+$$
+или 
+$$
+d(u_1, u_2) = corr(X(u_1), X(u_2))
+$$
+\end{frame}
+
 \subsection{Разреженные матрицы: решение факторизацией} %  из головы
+\begin{frame}{Решение факторизацией}
+\small
+В конечном счете у нас всегда есть таблица $C \in \mathbb{R}^{n \times m}$, в которой содержатся как известные из $X$ части, так и неизвестные компоненты. При этом информации из $X$ существенно меньше, чем требуется для того, чтобы достроить оставшееся. Из курса алгебры мы знаем, что (теорема Эккарта-Янга):
+$$
+C_0 = \arg \min_{rank(C^{'}) \le r} \|C - C^{'}\|_F = U^T \Sigma_r V
+$$
+Регулируя $r$ можно добиться сопостовимого с $X$ количества информации в правой части. Решение исходной задачи можно получить из $C_0$.
+\end{frame}
+
 \subsection{Простое SVD разложение}  % Гантмахер
+\begin{frame}{Как построить разложение}
+Заметим, что:
+$$
+C_0^T C_0 = V^T \Sigma^2 V, C_0 C_0^T = U^T \Sigma^2 U
+$$
+Более того, так как $U$ и $V$ ортонормированны, найдя одну из них (конечно меньшую :)) мы можем получить вторую почти бесплатно. Для решения этой задачи есть мульен техник.
+\end{frame}
+
+\begin{frame}{Разложение напрямую работает плохо}
+\begin{itemize}
+  \item Слишком много пропущенных данных
+  \item Звезды у одного пользователя != звездам другого
+  \item Решения может ``колбасить'' из-за метода вычисления разложения, так как матрицы случайные
+\end{itemize}
+$$
+\arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + R(u) + R(v)
+$$
+Размер $u_u$ и $v_r$ определяет ранк разложения (обычно маленький).
+\end{frame}
+
 \subsection{Известные регуляризации} % Мучать Гулина
+\begin{frame}{Известные регуляризации}
+\end{frame}
+
+\subsection{Про что мы умолчали}
+\begin{frame}{Какие еще подходы бывают}
+\begin{itemize}
+  \item Co-clustering
+  \item Байесова модель поведения пользователя
+\end{itemize}
+\end{frame}
+
+\subsection{Проблема холодного старта}
+\begin{frame}{Проблема холодного старта}
+\end{frame}
+
 \subsection{Factorization machines} % Статья http://www.ismll.uni-hildesheim.de/pub/pdfs/Rendle2010FM.pdf
+
+\begin{frame}{Обобщение collaborative filtering}
+Последние много слайдов мы решали задачу регрессии. Давайте это прямо и напишем
+\begin{center}
+\includegraphics[width=1\textwidth]{FMSetup.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Factorization machine}
+\small
+$$
+h(x) = \beta_0^0 + \sum_i \beta_i^1 x_i + \sum_i \sum_{j > i} (\beta_i^2, \beta_j^2)x_i x_j
+$$
+и найдем
+$$
+\arg \min_\beta \|h(X) - y\|
+$$
+Такая постановка называется Factorization Machine (FM) второго порядка.
+\end{frame}
+
 \end{document}
