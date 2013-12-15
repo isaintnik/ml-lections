@@ -1,0 +1,340 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+\usepackage{cancel}
+
+\usepackage{tikz}                   
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\renewcommand{\CancelColor}{\color{red}}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\title{Методы оптимизации по Ю. Е. Нестерову\\\small{}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Содержание}
+\begin{frame}{Содержание}
+\begin{enumerate}
+  \item Общая постановка задачи
+  \item Области оптимизации
+  \item Локальные методы безусловной оптимизации
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{ML и оптимизация}
+  $$\begin{array}{l}
+  F_0 = \arg\max_F T(X|F) \\
+  F = F(x, \beta) \\
+  \beta \in \mathbb{B} \subset \mathbb{R}^n \\
+  \beta_0 = \arg\max_{\beta \in \mathbb{B}} T(\beta)
+  \end{array}$$
+\small
+Кажется это задача нелинейной (в общем случае) оптимизации.
+\end{frame}
+
+\begin{frame}{Постановка задачи оптимизации}
+  $$\begin{array}{l}
+  \min f_0(x) \\
+  f_j(x)?0, j = 1...m \\
+  x \in S \subset \mathbb{R}^n \\
+  \end{array}$$
+\small
+Вместо $?$ ставим $\ge$, $\le$ или $=$. $S$ - базовое допустимое множество.
+$$
+Q = \{x|x \in S, f_j(x) \le 0, j = 1...m\}
+$$
+$Q$ - допустимое множество. 
+\end{frame}
+
+\begin{frame}{Типы задач оптимизиации}
+\begin{itemize}
+  \item условные: $Q \subset \mathbb{R}^n$;
+  \item безусловные: $Q \equiv \mathbb{R}^n$;
+  \item гладкие: $f_j$ - дифференцируемы;
+  \item негладкие: $\exists k: f_k$ - не дифференцируема;
+  \item целочисленные: $f_i = \sin(\prod x_i) = 0, i = 1...n$;
+  \item etc.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Алгоритм оптимизации}
+  $$
+  \mathbb{P} = (\Sigma, \Omega, \Upsilon)
+  $$
+  Эффективность метода $M$ на задаче $P \in \mathbb{P}$ - это необходимые вычислительные затраты для приближённого решения задачи с точностью $\epsilon > 0$
+\end{frame}
+
+\begin{frame}{Общая итеративная схема}
+\begin{itemize}
+   \item Вход: $x_0, \epsilon > 0, k = 0, I_{-1} = \oslash$ 
+   \item Основной цикл:
+    \begin{enumerate}
+      \item $\Sigma(x_k)$;
+      \item $I_k = I_{k-1} \cup (x_k, \Sigma(x_k))$;
+      \item Применяем правила $M$ к $x_{k+1} = M(I_k)$;
+      \item Проверяем $\Upsilon(x_{k+1}, \epsilon)$, если не выполенено, то $k++$ и к шагу 1;
+    \end{enumerate}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Сложность метода}
+\begin{itemize}
+   \item Аналитическая сложность: число обращений к оракулу
+   \item Арифметическая сложность: общее число вычислений
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Виды оракулов}
+\begin{itemize}
+   \item нулевого порядка: $f(x_k)$ - сэмплирование, генетика, random walk, etc;
+   \item первого порядка: $(f(x_k), f'(x_k))$ - градиентный спуск, TWIST, FISTA, Fobos, etc;
+   \item второго порядка: $(f(x_k), f'(x_k), f''(x_k))$ - Ньютона.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Оценка сложности задач глобальной оптимизации}
+  $$\begin{array}{l}
+  f^* = \min x \in \mathbb{B}^{\ptopto} f(x) \\
+  \mathbb{B}^{\ptopto} = {x|x \in \mathbb{R}^n, x_i \in [0, 1], i = 1...n} \\
+  f \in C_{L_{\infty}}^{0,0} \\
+  \end{array}$$
+  Будем решать равномерными сетками.
+  $$\begin{array}{l}
+  f(\overline{x}) - f^* \le \frac{L}{2p} \\
+  \Rightarrow A \le ([\frac{L}{2\epsilon}] + 2)^n \\
+  \end{array}$$
+  $\Rightarrow$ применим сопротивляющийся оракул $A \ge ([\frac{L}{2\epsilon}])^n$
+\end{frame}
+
+\begin{frame}{Пример}
+  Пусть $L = 2, n = 10, \epsilon = 0.01$ \\
+  Пусть мы умеем вычислять $f$ за 100 ms \\
+  $\Rightarrow A \ge ([\frac{L}{2\epsilon}])^n = 10^{20}$ \\
+  $\Rightarrow$ процесс сойдётся за $10^{19}$ с $\gg$ $10^{11}$ лет (пр-полные/трудные задачи нервно курят!) \\
+  $\Rightarrow$ наверное нужно искать более эффективные методы/ограничения на задачи. \\
+\end{frame}
+
+\begin{frame}{Общая глобальная оптимизация}
+\begin{description}
+  \item [\color{blue}Цель:] найти глобальный экстремум
+  \item [\color{blue}Класс функций:] непрерывные
+  \item [\color{blue}Оракул:] 0-2
+  \item [\color{blue}Чего хотим:] хоть какая-то сходимость к глобальному решению
+  \item [\color{blue}Особенности:] в теории - не работает. Этих кошек надо учиться готовить в каждом конкретном случае
+\end{description}
+\end{frame}
+
+\begin{frame}{Общая нелинейная оптимизация}
+\begin{description}
+  \item [\color{blue}Цель:] найти локальный минимум
+  \item [\color{blue}Класс функций:] дифференцируемые
+  \item [\color{blue}Оракул:] 1-2
+  \item [\color{blue}Чего хотим:] быстро добежать до локального минимума
+  \item [\color{blue}Особенности:] множество решений, не всегда работает на больших размерностях
+\end{description}
+\end{frame}
+
+\begin{frame}{Выпуклая оптимизация}
+\begin{description}
+  \item [\color{blue}Цель:] найти глобальный минимум
+  \item [\color{blue}Класс функций:] выпуклые функции
+  \item [\color{blue}Оракул:] 1
+  \item [\color{blue}Чего хотим:] приемлемую скорость сходимости к минимуму
+  \item [\color{blue}Особенности:] ограниченная размерность, тяжело привести задачу к выпуклой
+\end{description}
+\end{frame}
+
+\begin{frame}{Полиномиальные методы внутренней точки}
+\begin{description}
+  \item [\color{blue}Цель:] найти глобальный минимум
+  \item [\color{blue}Класс функций:] выпуклые множества $Q$, функции с явно заданной структурой
+  \item [\color{blue}Оракул:] 2
+  \item [\color{blue}Чего хотим:] быструю сходимость к глобальному миниммуму, скорость может зависеть от структуры
+  \item [\color{blue}Особенности:] практически неограниченная размерность, задача рассматривается как белый ящик, над target функцией надо работать
+\end{description}
+\end{frame}
+
+
+\begin{frame}{Локальная аппроксимация целевой функции Тейлором}
+Будем надеяться, что в окрестности $x_k$ функция хорошо аппроксимируется:
+\begin{description}
+  \item [\color{blue}Линейно:] $f(y) = f(x) + f'(x)(y - x) + \circ(\|y - x\|)$
+  \item [\color{blue}Квадратично:] $f(y) = f(x) + f'(x)^T(y - x) + \frac{1}{2}(f''(x)(y - x ))^T(y - x) + \circ(\|y - x\|^2)$
+\end{description}
+Если $f \in C_{L}^{k,p}$, то можно делать какие-то выводы о сходимости.
+\end{frame}
+
+
+\begin{frame}{Градиентный метод I}
+$$\begin{array}{l}
+x_0 \in \mathbb{R}^n \\
+x_{k+1} = x_k - h_k f'(x_k), k= 0,... \\
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Градиентный метод II}
+\small
+Есть много методов выбора шага $x_k$:
+\begin{itemize}
+  \item Последовательность не зависит от истории $\{h_k\}_{0}^{\infty}$:
+  $$\begin{array}{l}
+  h_k = h > 0 \\
+  h_k = \frac{h}{log(k+2)} \\
+  \end{array}$$
+  \item Полная релаксация (градиентный спуск):
+  $$
+  h_k = \arg\min_{h \ge 0} f (x_k - hf'(x_k))
+  $$
+  \item Правило Голдштейна-Армийо: зафксируем $\alpha, \beta$ и найдём $x_{k+1}$:
+  $$\begin{array}{l}
+  \alpha f'^T(x_k - x_{k+1}) \le f(x_k) - f(x_{k+1}) \\
+  \beta f'^T(x_k - x_{k+1}) \ge f(x_k) - f(x_{k+1}) \\
+  \end{array}$$
+\end{itemize}
+
+\end{frame}
+
+
+\begin{frame}{Эффективность градиентного метода}
+$$\begin{array}{l}
+  f(x_k) - f(x_{k+1}) \ge h(1 - \frac{1}{2}Lh)\|f'(x_k)\|^2 \\
+  f(x_k) - f(x_{k+1}) \ge \frac{1}{2L}\|f'(x_k)\|^2 \\
+  f(x_k) - f(x_{k+1}) \ge \frac{2}{L}\alpha (1 - \beta) \|f'(x_k)\|^2 \\
+  f(x_k) - f(x_{k+1}) \ge \frac{\omega}{L}\|f'(x_k)\|^2 \\
+  \Rightarrow g_{N}^{*} \le \frac{1}{\sqrt{N+1}} (\frac{1}{\omega}L(f(x_0) - f^*))^{\frac{1}{2}}
+\end{array}$$
+
+В общем случае градиентные методы умеют сходиться не к минимуму, а к стационарной точке!
+\end{frame}
+
+
+\begin{frame}{Метод Ньютона}
+\small
+$$
+  x_{k+1} = x_k - (f''(x_k))^{-1}f'(x_k)
+$$
+Работает только близко от точки минимума (попробуйте $f(x) = \frac{x}{\sqrt{1 + x^2}}$, при начальной точке $x : |x| > 1$)!
+Демпфированный метод Ньютона:
+$$
+  x_{k+1} = x_k - h_k(f''(x_k))^{-1}f'(x_k)
+$$
+Ньютон сходится квадратично $f \in C_{M}^{2,2}, f''(x^*) \succeq I E, I > 0$:
+$$
+  \|x_k - x^*\| \le \frac{M\|x_k = x^*\|^2}{2(I - M\|x_k - x^*\|)}
+$$
+
+\end{frame}
+
+\begin{frame}{Методы переменной метрики I}
+$$\begin{array}{l}
+x_{k+1} = x_k - H_kf'(x_k)\\
+\lim_{k \to \infty} H_k = f''^{-1}\\
+H_{k+1}(f'(x_{k+1}) - f'(x_k)) = x_{k+1} - x_k \\
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Методы переменной метрики II}
+\small
+Есть много способов удовлетворить квазиньютоновское правило:
+$$
+  \Delta H_k = H_{k+1} - H_k, \delta_k = x_{k+1} - x_k, \gamma_k = f'(x_{k+1}) - f'(x_k)
+$$
+\begin{itemize}
+  \item Правило одноранговой коррекции:
+  $$
+    \Delta H_k = \frac{(\delta_k - H_k\gamma_k)(\delta_k - H_k\gamma_k)^T}{(\delta_k - H_k\gamma_k)^T\gamma_k}
+  $$
+  \item Правило Давидона-Флетчера-Пауэлла(ДФП):
+  $$
+    \Delta H_k = \frac{\delta_k\delta_{k}^{T}}{\gamma_{k}^{T}\delta_k} - \frac{H_k\gamma_k\gamma_{k}^{T}H_k}{(H_k\gamma_k)^T\gamma_k}
+  $$
+\end{itemize}
+Для квадратичных функций не более $n$ итераций.
+\end{frame}
+
+\begin{frame}{Методы переменной метрики III}
+\small
+Есть много способов удовлетворить квазиньютоновское правило:
+$$
+  \Delta H_k = H_{k+1} - H_k, \delta_k = x_{k+1} - x_k, \gamma_k = f'(x_{k+1}) - f'(x_k)
+$$
+\begin{itemize}
+  \item Правило Бройдена-Флетчера-Гольдфарба-Шенно (БФГД):
+  $$\begin{array}{l}
+    \Delta H_k = \frac{H_k\gamma_k\delta_{k}^{T} + \delta_k\gamma_{k}^{T}H_k}{(H_k\gamma_k)^T\gamma_k} - \beta\frac{H_k\gamma_k\gamma_{k}^{T}H_k}{(H_k\gamma_k)^T\gamma_k} \\
+    \beta = 1 + \frac{\gamma_{k}^{T}\delta_k}{(H_k\gamma_k)^T\gamma_k}
+  \end{array}$$
+\end{itemize}
+Для квадратичных функций не более $n$ итераций.
+\end{frame}
+
+\begin{frame}{Что мы сегодня узнали}
+
+\section{Домашнее задание}
+\end{frame}
+
+\begin{frame}{Результаты домашнего задания 5 недели}
+
+\end{frame}
+
+\begin{frame}{Результаты домашнего задания 6 недели}
+
+\end{frame}
+
+\begin{frame}{Домашнее задание}
+
+\end{frame}
+
+
+
+
+\end{document}
