@@ -319,22 +319,168 @@ $$
 
 \begin{frame}{Что мы сегодня узнали}
 
-\section{Домашнее задание}
 \end{frame}
 
-\begin{frame}{Результаты домашнего задания 5 недели}
+\section{Выпуклая оптимизация}
+
+\begin{frame}{ML и выпуклая оптимизация}
+Часто в ML мы можем поставить задачу в терминах выпуклых функций.
+$$\begin{array}{l}
+  \|Ax - b\|^2 \\
+  \|Ax - b\|^2 + \|x\|_1 \\
+  log\frac{1}{1+e^{-t}} \\
+  log\frac{1}{1+e^{c-t}} \\
+\end{array}$$
+\end{frame}
+
+
+\begin{frame}{Пример сведения к выпуклой оптимизации}
+\small
+Хотим элемент классификатора $h$ из деревьев решений:
+$$
+\arg\min_{h \in T}\sum_{i=1}^mlog\frac{1}{1+e^{(c - \alpha h(x_i))y_i}}
+$$
+Деревья - зло, но как их подбирать в случае MSE мы знаем. \\
+Разобьём задачку на 2 части:
+$$\begin{array}{l}
+  \arg\min_{\phi \in \mathbb{R}}\sum_{i=1}^mlog\frac{1}{1+e^{(c - \alpha \phi_i)y_i}} \\
+  \arg\min_{h \in T}\sum_{i=1}^m(h(x_i) - \phi_i)^2
+\end{array}$$
+Первая часть выпуклая(на самом деле вогнутая) в $\mathbb{R}^m$, вторая - понятная. \\
+$\Rightarrow$ важно научиться быстро и эффективно решать выпуклые задачи.
+\end{frame}
+
+\begin{frame}{Выпуклые функции}
+\small
+Есть много определений $\mathcal{F}^{1,1}$, вот некоторые из них:
+$$\begin{array}{l}
+  f(\alpha x + (1- \alpha)y) \le \alpha f(x) + (1-\alpha)f(y), \forall x,y ёшт \mathbb{R}^n, \alpha \in [0,1] \\
+  f(y) \ge f(x) + (f'(x))^T(y-x), \forall x,y \in \mathbb{R}^n \\
+  (f'(x) - f'(y))^T(x-y) \ge 0, \forall x,y \in \mathbb{R}^n 
+\end{array}$$
+Важнейшее для нас свойство: $f'(x) = 0 \Leftrightarrow x$ - глобальный максимум! Часто хотим чуть большего: $\mathcal{F}_L^{1,1}$, более того, сильной выпуклости $\mathcal{G}_{\mu, L}^{1,1}$:  \\
+$$
+f(y) \ge f(x) + (f'(x))^T(y-x) + \frac{1}{2}\mu\|x-y\|^2, \forall x,y \in \mathbb{R}^n, \mu \ge 0 
+$$
 
 \end{frame}
 
-\begin{frame}{Результаты домашнего задания 6 недели}
+\begin{frame}{Класс методов}
+Хотим искать решение в классе
+\begin{description}
+  \item [\color{blue}Модель:] $\arg\min_{x \in \mathbb{R}^{\ptopto}}f \in \mathcal{F}_L^{1,1}$
+  \item [\color{blue}Оракул:] локальный чёрный ящик первого порядка
+  \item [\color{blue}Решение:] $\overline{x} \in \mathbb{R}^n : f(\overline(x)) - f^* \le \epsilon$
+\end{description}
+В этом классе решения будут лучше, чем:
+$$
+f(x_k) - f^* \ge \farc{3L\|x_0-x\|^2}{32(k+1)^2}
+$$
+при числе шагов $k < \frac{1}{2}(n-1)$.
+\end{frame}
+
+\begin{frame}{Градиентный метод}
+
+На классе $\mathcal{F}_L^{1,1}$ и $\mathcal{G}_{\mu, L}^{1,1}$ градиентный метод с шагом $h_k=h=\frac{1}{L}$ сходится.
+$$\begin{array}{l}
+  f(x_k) - f^* \ge \frac{2L\|x_0-x\|^2}{k+4} \\
+  f(x_k) - f^* \ge \frac{L}{2}(\frac{L - \mu}{L + \mu})^{2k}\|x_0 - x^*\|^2
+\end{array}$$
+Скорость сходимости - линейна на $\mathcal{F}_L^{1,1}$, а далеко не квадратична. \\
+\textit{Утверждается, что релаксацией невозможно получить оптимальный метод первого порядка!}
+\end{frame}
+
+\begin{frame}{Оценивающие последовательности}
+Последовательности $\{\varphi_k(x)\}_{k=0}^{\infty}$ и $\{\lambda_k(x)\}_{k=0}^{\infty}, \lambda_k \ge 0$ - \textit{оценивающие}, если $\lambda \to 0$ и $\forall x \in \mathbb{R}^n, k \ge 0$:
+$$
+\varphi_k(x) \ge (1- \lambda_k)f(x) + \lambda_k\varphi_0(x)
+$$
+Введённые последовательности хороши этим:
+$$
+f(x_k) - f^* \le \lambda_k(\varphi_0 - f^*) \to 0
+$$
 
 \end{frame}
 
-\begin{frame}{Домашнее задание}
+\begin{frame}{Построение оценивающей последовательности}
+\small
+Пусть:
+\begin{enumerate}
+  \item $f \in \mathcal{G}_{\mu, L}^{1,1}(\mathbb{R}^n)$,
+  \item $\varphi_0(x)$ - произвольная функция в $\mathbb{R}^n$,
+  \item $\{y_k\}_{k=0}^{\infty}$ - произвольная последовательность в $\mathbb{R}^n$,
+  \item $\{a_k\}_{k=0}^{\infty}: a_k \in (0,1), \sum_ka_k = \infty$,
+  \item $\lambda_0=1$,
+\end{enumerate}
+тогда последовательности $\{\varphi_k(x)\}_{k=0}^{\infty}$ и $\{\lambda_k\}_{k=0}^{\infty}$:
+ $$\begin{array}{l}
+  \lambda_{k+1} = (1 - a_k)\lambda_k, \\
+  \varhpi_{k+1}(x) = (1 - a_k)\varphi_k(x) + a_k(f(y_k) + f'(y_k))^T(x-y_k) + \frac{\mu}{2}\|x - y_k\|^2
+\end{array}$$
+оценивающие, а если $\varphi_0(x) = \varphi_0^* + \frac{\gamma_0}{2}\|x - \upsilon_0\|^2$, то и все $\varphi_0(x)$ имеют такой же вид.
+\end{frame}
 
+\begin{frame}{Общая схема оптимального метода}
+\begin{enumerate}
+  \item Выберем $x_0 \in \mathbb{R}^n$ и $\gamma_0 > 0$, возмьмём $\upsilon_0=x_0$.
+  \item k-я итерация:
+  \begin{enumerate}
+    \item $a_k \in (0,1): La_k^2 = (1-a_k)\gamma_k + a_k\mu$, положим $\gamma_{k+1} = (1-a_k)\gamma_k + a_k\mu$
+    \item Выберем  \\ 
+    $y_k = \frac{a_k\gamma_k\upsilon_k + \gamma_{k+1}x_k}{\gamma_k + a_k\mu}$, \\
+     вычислим $f(y_k)$ и $f'(y_k)$
+    \item Найдём $x_{k+1} : f(x_{k+1}) \le f(y_{k+1}) - \frac{1}{2L}\|f'(y_k)\|^2$
+    \item $\upsilon_{k+1} = \frac{(1-a_k)\gamma_k\upsilon_k + a_k\mu y_k - a_kf'(y_k)}{\gamma_{k+1}}$
+  \end{enumerate}
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Скорость сходимости оптимального метода}
+Если всё делать по схеме, то:
+$$
+f(x_k) - f^* \le L\min\{(1-\sqrt{\frac{\mu}{L}})^k, \frac{4}{(k+2)^2}\}\|x_0-x^*\|^2
+$$
+\end{frame}
+
+\begin{frame}{Iterative Shrinkage/Thresholding Algorithm (ISTA)}
+\small
+Ограничимся задачей
+$$
+\arg\min_{x \in \mathbb{R}^n}\|Ax - b\| + R(x)
+$$
+В основном интересн случай, когда $R(x) = \lambda \|x\|_1$ ($l_1$ регуляризация) или $R(x)=\lambda\|Lx\|_2$ (регуляризация Тихонова).
+Заметим, что задача в случае $l_1$ негладкая.
+$$\begin{array}{l}
+x_{k+1} = \tau_{\lambda t_k}(x_k - 2t_kA^T(Ax_k - b)) \\
+\tau_{\alpha}^i = (|x_i| - \alpha)_{+}sign(x_i)
+\end{array}$$
+Такая штука, являясь по сути градиентным методом сходится со скоростью:
+$$
+f(x_k) - f^* \ge \alpha \frac{L\|x_k - x^*\|^2}{2k}
+$$
+Если шаг $t_k = t$, то $\alpha=2$, если шаг брать умнее, то $\alpha<1$.
+\end{frame}
+
+\begin{frame}{Fast Iterative Shrinkage/Thresholding Algorithm (FISTA)}
+Объединим ISTA и Нестерова.
+\begin{enumerate}
+  \item Выберем $x_0 \in \mathbb{R}^n$ и $\gamma_0 = 1$, возмьмём $y_0=x_0$.
+  \item k-я итерация:
+  \begin{enumerate}
+    \item $x_k = \arg\min_x(R(x) + \|x - (y_{k-1} - \frac{1}{L}f'(y_{k-1}))\|^2)$
+    \item $\gamma_{k+1} = \frac{1 + \sqrt{1+4\gamma_k^2}}{2}$
+    \item $y_k = x_k + (\frac{\gamma_{k-1}}{\gamma_{k+1}})(x_k + x_{k-1})$
+  \end{enumerate}
+\end{enumerate}
+Это добро сходится:
+$$
+f(x_k) - f^* \le \frac{\alpha L}{(k+1)^2}\|x_0 - x^*\|^2
+$$
 \end{frame}
 
 
-
+\begin{frame}{Что ещё бывает?}
+Область богата на исследования и приложения. Стоит почитать: Нестерова(strong recommend), FOBOS(google), TWIST, etc.
+\end{frame}
 
 \end{document}
