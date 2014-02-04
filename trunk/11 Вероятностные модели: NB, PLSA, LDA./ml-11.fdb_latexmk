@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1386942335 "ml-11.tex" "ml-11.pdf" "ml-11" 1386942336
+["pdflatex"] 1386945222 "ml-11.tex" "ml-11.pdf" "ml-11" 1386945224
   "/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2013/texmf-dist/tex/generic/babel-english/english.ldf" 1367878877 6963 2e0cb3d93aa64508bdb0db58ae900d97 ""
   "/usr/local/texlive/2013/texmf-dist/tex/generic/babel-russian/russianb.ldf" 1367878990 18675 63fcc9407825a54c733ae718bb76018d ""
@@ -182,10 +182,10 @@
   "images/Unigram.png" 1386925086 11723 66d5451f9f3fcfd40aef50f45f42097b ""
   "images/levels.png" 1386923121 617866 c7506dc6cd5830e440eb307926f5dda9 ""
   "images/pLSA.png" 1386926764 15763 3f7114bdf603dd55f7e6418a3962e93c ""
-  "ml-11.aux" 1386942336 10397 9eb4eec8b3435cc2f202df085ade1bf7 ""
-  "ml-11.nav" 1386942336 6491 398b2afbf5ce941600052355eb1a413f ""
-  "ml-11.out" 1386942336 337 1a8a8429bf0cd43ba40b9e4214ebb939 ""
-  "ml-11.tex" 1386942334 12001 99c99495d17d01577421380c00c3eff6 ""
+  "ml-11.aux" 1386945224 10528 a5f258cd9a37d90557eedeee2a8bbb4f ""
+  "ml-11.nav" 1386945224 6585 9ac5c921119d6c9f9b1ac369d33901e2 ""
+  "ml-11.out" 1386945224 338 eaad4954137bf000e27da3fc8309e653 ""
+  "ml-11.tex" 1386945221 12110 cd51c48d6ebe69c2bdf7509f367827f7 ""
   (generated)
   "ml-11.pdf"
   "ml-11.log"
