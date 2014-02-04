@@ -40,13 +40,26 @@
      \addtolength\displaywidth{-#1}}}
 \newcommand{\itemi}{\item[\checkmark]}
 
-\title{Генеративные вероятностные модели текстового поиска:\\\small{NB, LSI, PLSI, LDA}}
+\title{Генеративные вероятностные модели:\\\small{на примере текстов: NB, LSI, PLSI, LDA}}
 \author[]{\small{%
 И.~Куралёнок,
 Н.~Поваров}}
 \date{}
 
 \begin{document}
+
+\begin{frame}
+
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
 \begin{frame}{Немного о статистической обработке текстов}
 Пара фактов:
 \begin{itemize}
@@ -192,13 +205,14 @@ p(d) &= \sum_{z}p(z)\prod_{w_i} p(w_i|z)
 \end{frame}
 
 \begin{frame}{Вывод LDA I}
+\small
 Теперь все стало сильно сложнее:
 $$
 p(d|\alpha, \beta) = \int p(\theta | \alpha)\left(\prod_1^n\sum_{z}p(z_i|\theta)p(w_i|z_i,\beta)\right) d\theta
 $$
 Или, с учетом известных распределений:
 $$
-p(d|\alpha, \beta) = \int \left(\prod_1^k \theta^{\alpha_i-1}_i\right)\left(\prod_{i=1}^n\sum_{t=1}^k\prod_{j=1}^m(\theta_t\beta_{tj})^{w_i^j}\right)d\theta
+p(d|\alpha, \beta) = \frac{\Gamma\left(\sum_i\alpha_i)}{\prod_i \Gamma(\alpha_i)} \int \left(\prod_{t=1}^k \theta^{\alpha_t-1}_i\right)\left(\prod_{i=1}^n\sum_{t=1}^k\prod_{j=1}^m(\theta_t\beta_{tj})^{w_i^j}\right)d\theta
 $$
 А для коллекции еще и так:
 $$
@@ -239,6 +253,6 @@ $$
 \begin{itemize}
   \item Задание будет в svn.
   \item Домашнее задание за пятую неделю ещё проверяется, но пока - "ужас-ужас".
- end{itemize}
+\end{itemize}
 \end{frame}
 \end{document}
