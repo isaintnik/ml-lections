@@ -1,0 +1,166 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{animate}
+
+\usepackage{tikz}
+% \usepackage{enumitem}
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\renewcommand{\CancelColor}{\color{red}}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2013
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\newenvironment{mydescription}[1]
+  {\begin{list}{}%
+   {\renewcommand\makelabel[1]{\color{blue}##1:\hfill}%
+   \settowidth\labelwidth{\makelabel{#1}}%
+   \setlength\leftmargin{\labelwidth}
+   \addtolength\leftmargin{\labelsep}}}
+  {\end{list}}
+
+\title{Обучение метрики\\\small{по Tutorial on Metric Learning by Brian Kulis}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2013
+\end{center}
+\end{frame}
+
+\section{Содержание}
+\section{Постановка проблемы}
+\begin{frame}{Метрики в контексте IBL}
+В прошлый раз использовали несколько buzzword, сегодня поговорим об одном из них --- дистанции между точками
+\end{frame}
+
+\begin{frame}{Пример с Михалычем}
+\end{frame}
+
+\begin{frame}{Картинки с линейной разделимостью и тем что с ними хотим сделать}
+\end{frame}
+
+\begin{frame}{Mahalanobis distance}
+как пример того, что можно улучшить пространство линейным преобразованием
+\end{frame}
+
+\begin{frame}{Постановка задачи обучения метрики}
+Как задачи обучения с учителем
+\end{frame}
+
+
+\section{Обучение линейного преобразования}
+
+\begin{frame}{Варианты целевой функции}
+
+\end{frame}
+
+\begin{frame}{Варианты регуляризации}
+
+\end{frame}
+
+\begin{frame}{Варианты условий}
+
+\end{frame}
+
+\begin{frame}{MMC}
+\end{frame}
+
+
+\begin{frame}{MMC: алгоритм}
+\end{frame}
+
+
+\begin{frame}{Schultz and Joachims}
+\end{frame}
+
+\begin{frame}{Schultz and Joachims: Алгоритм}
+\end{frame}
+
+\begin{frame}{NCA}
+Как пример сильно другого таргета
+\end{frame}
+
+\begin{frame}{Онлайн постановка, POLA}
+\end{frame}
+
+\begin{frame}{POLA: алгоритм}
+\end{frame}
+
+
+\begin{frame}{ITML как пример LogDet}
+\end{frame}
+
+\begin{frame}{ITML алгоритм}
+\end{frame}
+
+\begin{frame}{Не-Махаланобисовы методы: LDF}
+Local distance functions setup
+\end{frame}
+
+\section{Кернелизация}
+\begin{frame}{Проблема линейной неразделимости}
+Где-то мы это уже видели, сделаем kernel
+\end{frame}
+
+\begin{frame}{Кернелизация ITML}
+\end{frame}
+
+\begin{frame}{Кернелизация ITML: алгоритм}
+\end{frame}
+
+\begin{frame}{Постановка kernel learning для metric learning}
+\end{frame}
+
+\section{Заключение}
+\begin{frame}{Что мы сегодня узнали}
+\begin{itemize}
+  \item Расстояние можно менять
+  \item Удобно работать с неметриками, убрав правило треугольника
+  \item Точно как поставить задачу обучения метрики
+  \item Есть несколько способов обучить линейное преобразование, в том числе online
+  \item Сообщество любителей ядер постаралось и на этой ниве, что позволяет решать линейно неразделимые задачи
+\end{itemize}
+\end{frame}
+\end{document}
