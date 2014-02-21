@@ -76,32 +76,189 @@
 \end{frame}
 
 \begin{frame}{Пример с Михалычем}
+Василий Петрович, хочет сталкиваться с Петром Михалычем чаще, причем желательно вдали от других рабочих завода.
+\begin{description}
+\item[Классы] разные люди
+\item[Точки] появление в пространстве/времени человека $c$
+\item[Действия] поговорить в громкоговоритель (одинаково повлиять на всех людей)
+\end{description}
+Надо помочь Петровичу правильно говорить в громкоговоритель.
 \end{frame}
 
-\begin{frame}{Картинки с линейной разделимостью и тем что с ними хотим сделать}
+\begin{frame}{Как может выглядеть задача}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-setup.png}
+\end{center}
 \end{frame}
 
-\begin{frame}{Mahalanobis distance}
-как пример того, что можно улучшить пространство линейным преобразованием
+\begin{frame}{Как может выглядеть задача}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-setup2.png}
+\end{center}
 \end{frame}
 
-\begin{frame}{Постановка задачи обучения метрики}
-Как задачи обучения с учителем
+\begin{frame}{Как может выглядеть решение}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-solution.png}
+\end{center}
 \end{frame}
 
+\begin{frame}{Как может выглядеть задача}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-setup3.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Как может выглядеть решение}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-solution2.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Mahalanobis distance (постановка)}
+\begin{description}
+\item[Классы] нету
+\item[Точки] какие-то точки, которых навалило
+\item[Направления] одинаково значимые направления, померянные разной линейкой
+\item[Действия] линейные преобразования пространства
+\end{description}
+$\Rightarrow$ хотим посчитать дистанцию, без учета линейки
+\end{frame}
+
+\begin{frame}{Mahalanobis distance (решение)}
+\begin{itemize}
+  \item $X = \{x_i | x_i \in \mathbb{R}^n\}$
+  \item $\mu(a,b) = \|a - b\|_2^2$
+\end{itemize}
+$\Rightarrow$
+$$\begin{array}{c}
+\Sigma = \sum_{i,j} \left(x_i - \bar{x}\right)\left(x_j - \bar{x}\right)^T \\
+\hat{\mu}(a,b) = \left(a - b\right) \Sigma^{-1} \left(a - b\right)
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Mahalanobis distance (решение)}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{mahalanobis.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Постановка задачи обучения метрики}{}
+{\color{blue}Дано:}
+\begin{enumerate}
+  \item Набор точек: $X = \{x_i | x_i \in \mathbb{R}^n\}$
+  \item Исходная метрика $\mu_0(a,b)$ (например $\|a - b\|_q$, etc.)
+  \item Условия группировки точек (классы/отношение расстояний/etc.): $T(X, \mu), \mu \in \mathcal{M}$
+\end{enumerate}
+{\color{blue}Найти:}\\
+$$
+\hat{\mu} = \arg \max_{\mu \in \mathcal{M}} T(X, \mu)
+$$
+\end{frame}
 
 \section{Обучение линейного преобразования}
 
-\begin{frame}{Варианты целевой функции}
+\begin{frame}{Постановка обучения Mahalanobis}{}
+Будем искать решения в классе:
+$$\begin{array}{ll}
+\mathcal{M} = \{&\mu_A(a,b) | \\
+& \mu_A(a,b) = (a - b)^T A (a - b), \\
+& A \in PSD(\mathbb{R}^{n \times n})\\
+\} &
+\end{array}$$
+\uncover<1>{Почему PSD?}\\
+\uncover<2>{Если будет отрицательное собственное число, получится отрицательное значение метрики для собственного вектора}
+\end{frame}
 
+\begin{frame}{Немного о метриках}{}
+\small
+Метрика это такое преобразование $\mu : X^2 \to \mathbb{R}$:
+\begin{enumerate}
+  \item $\mu(a,b) \ge 0$
+  \item $\mu(a,b) = 0 \Leftrightarrow a = b$
+  \item $\mu(a,b) = \mu(b,a)$
+  \item $\mu(a,c) \le \mu(a,b) + \mu(b,c)$
+\end{enumerate}
+$\mu_A$ --- не метрика. Метрикой является $\mu^{*} = \sqrt{\mu_A}$ в случае, когда $A \succ 0$. Такое добро зовется ``псевдометрика''.
+\end{frame}
+
+\begin{frame}{Вспоминая исходный пример}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-setup2.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Как может выглядеть решение}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{linsep-solution.png}
+\end{center}
+$$
+A = \left(\begin{array}{cc}
+1 & 0 \\
+0 & \epsilon
+\end{array}\right)
+$$
+\end{frame}
+
+\begin{frame}{Свойства Mahalanobis метрик}
+\begin{itemize}
+  \item Надо хранить матрицу $A$, которая большая и в общем случае dense
+  \item Работает только в случае линейной разделимости ``разных'' примеров
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.7\textwidth]{linnonsep.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Варианты целевой функции}
+\small
+Желания по тому какими свойствами должна обладать метрика можно выражать по-разному:\\
+{\color{blue}Условия близости/дальности}\\
+\footnotesize
+\begin{itemize}
+     \item Есть два множества $\mathcal{S}, \mathcal{D} \subset X^2$ точек, которые должны быть поближе/подальше
+     \item $(a,b) \in \mathcal{S} \Leftrightarrow \mu_A(a,b) \le l$,  $(a,b) \in \mathcal{D} \Leftrightarrow \mu_A(a,b) \ge u$
+\end{itemize} 
+{\small\color{blue}Условия относительной близости}\\
+\footnotesize
+\begin{itemize}
+     \item Зададим такое множество троек $\mathcal{K} \subset X^3$, в котором первая точка должна быть поближе ко второй чем к третьей
+     \item $(a,b,c) \in \mathcal{K} \Leftrightarrow \mu_A(a,b) \le \mu_A(a,c) - m$
+\end{itemize} 
+\small
+Оба эти случая мы можем аггрегировать простым суммированием введя расслабляющие коэффициенты
 \end{frame}
 
 \begin{frame}{Варианты регуляризации}
-
+Нас могут устраивать больше одни варианты $A$ нежели другие, мы можем выразить это регуляризацией:
+\begin{itemize}
+  \item Отклонение по Фробениусу от какой-то хорошей матрицы (например от прошлого оптимума):
+  $$
+  \|A - A_0\|_F^2
+  $$
+  \item LogDet divergence от хорошей матрицы: $D_{ld}(A,A_0) = tr(AA_0^{-1}) - \log \det(AA_0^{-1}) - d$
+  \item Простая фробениус норма $\|A\|_F$ --- аналог $l_2$
+  \item $tr(AC_0)$ --- аналог $l_1$
+\end{itemize}
 \end{frame}
 
-\begin{frame}{Варианты условий}
-
+\begin{frame}{Немного про LogDetDiv}
+\footnotesize
+Используется в основном в картинках. Пусть $X = V \Lambda V^T$, а $Y = U \Theta U^T$, тогда:
+$$\begin{array}{rl}
+D_{ld}(X,Y) &= tr(XY^{-1}) - \log \det(XY^{-1}) - d \\
+&= tr(Y^{-\frac{1}{2}}XY^{-\frac{1}{2}})  - \log \det (Y^{-\frac{1}{2}}XY^{-\frac{1}{2}}) - d \\
+&= tr(Y^{-\frac{1}{2}}XY^{-\frac{1}{2}} - \log Y^{-\frac{1}{2}}XY^{-\frac{1}{2}} - E) \\
+&= \sum_i\sum_j(v^T_i, u_j)^2\left(\frac{\lambda_i}{\theta_j} - \log(\frac{\lambda_i}{\theta_j}) - 1\right)
+\end{array}$$
+Обладает такими свойствами:
+\begin{itemize}
+\item Инвариантна к линейному обратимому преобразованию
+\item 0 только при равенстве, иначе позитивна
+\item Pythagorean условие на выпуклых множествах $\Omega$ (упрощенный треугольник)
+\item Несимметрична
+\item Можно расширить на полуопределенные матрицы
+\end{itemize}
 \end{frame}
 
 \begin{frame}{MMC}
