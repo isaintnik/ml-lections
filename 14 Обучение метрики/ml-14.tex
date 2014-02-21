@@ -262,17 +262,65 @@ D_{ld}(X,Y) &= tr(XY^{-1}) - \log \det(XY^{-1}) - d \\
 \end{frame}
 
 \begin{frame}{MMC}
+$$\begin{array}{l}
+max_A \sum_{(x_i, x_j) \in \mathcal{D}} \sqrt{\mu_A(x_i, x_j)} \\
+c(A) = \sum_{(x_i, x_j) \in \mathcal{S}} \mu_A(x_i, x_j) \le 1 \\
+A \succeq 0
+\end{array}$$
+
+\begin{itemize}
+  \item $\mathcal{D}$ это множество различающихся, а $\mathcal{S}$ - множество одинаковых
+  \item Пытаемся максимизировать сумму расстояний для различающихся
+  \item Хотим маленькую сумму расстояний одинаковых
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}{MMC: алгоритм}
+\begin{itemize}
+  \item Градиентный спуск сопровождается поиском подходящей $A$
+  \begin{itemize}
+    \item Ограничение $c(A)$ линейно по $A$, а значит разрешается дёшево
+  \end{itemize}
+  \item Несмотря на относительную простоту, алгоритм медленный
+  \item Не масштабируется
+\end{itemize}
 \end{frame}
 
 
 \begin{frame}{Schultz and Joachims}
+$$\begin{array}{l}
+min_A \|A\|_{F}^2 \\
+\mu_A(x_i, x_k) - \mu_{A}(x_i, x_j) \ge 1 \;\;\;\; \forall (i,j,k) \in \mathcal{R} \\
+A \succeq 0
+\end{array}$$
+В такой формулировке может не иметь решения, тогда
+
+$$\begin{array}{l}
+min_{A, \xi} \|A\|_{F}^2 + \gamma \sum_{(i,j,k) \in \mathcal{R}} \xi_{ijk} \\
+\mu_A(x_i, x_k) - \mu_{A}(x_i, x_j) \ge 1 - \xi_{ijk} \;\;\;\; \forall (i,j,k) \in \mathcal{R} \\
+\xi_{ijk} \ge 0 \;\;\; \forall (i,j,k) \in \mathcal{R} \\
+A \succeq 0
+\end{array}$$
+
 \end{frame}
 
 \begin{frame}{Schultz and Joachims: Алгоритм}
+\begin{itemize}
+  \item Главное упрощение:
+  \begin{itemize}
+    \item $A = M^TDM$, где $М$ фиксировано и известно, а $D$ - диагональная
+    $$\begin{array}{rl}
+      \mu_A(x_i, x_j) &= (x_i - x_j)^TA(x_ - x_j) \\
+      &= (x_i - x_j)^TM^TDM(x_ - x_j) \\
+      &= (Mx_i - Mx_j)^TD(Mx_ - Mx_j) \\
+\end{array}$$
+    \item Итоговая оптимизационная проблема очень похожа на SVM
+
+  \end{itemize}
+  \item С помощью $M$ метод можно кернелизировать
+  \item Алгоритм быстрый, но менее общий, чем Mahalanobis
+\end{itemize}
 \end{frame}
 
 \begin{frame}{NCA}
