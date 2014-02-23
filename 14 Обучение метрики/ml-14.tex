@@ -31,7 +31,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2014
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -65,7 +65,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2013
+\footnotesize СПб, 2014
 \end{center}
 \end{frame}
 
@@ -213,7 +213,7 @@ $$
 \begin{frame}{Варианты целевой функции}
 \small
 Желания по тому какими свойствами должна обладать метрика можно выражать по-разному:\\
-{\color{blue}Условия близости/дальности}\\
+{\color{blue}Условия группировки}\\
 \footnotesize
 \begin{itemize}
      \item Есть два множества $\mathcal{S}, \mathcal{D} \subset X^2$ точек, которые должны быть поближе/подальше
@@ -263,8 +263,8 @@ D_{ld}(X,Y) &= tr(XY^{-1}) - \log \det(XY^{-1}) - d \\
 
 \begin{frame}{MMC}
 $$\begin{array}{l}
-max_A \sum_{(x_i, x_j) \in \mathcal{D}} \sqrt{\mu_A(x_i, x_j)} \\
-c(A) = \sum_{(x_i, x_j) \in \mathcal{S}} \mu_A(x_i, x_j) \le 1 \\
+max_A \sum_{(a, b) \in \mathcal{D}} \sqrt{\mu_A(a, b)} \\
+c(A) = \sum_{(a, b) \in \mathcal{S}} \mu_A(a, b) \le 1 \\
 A \succeq 0
 \end{array}$$
 
@@ -291,14 +291,14 @@ A \succeq 0
 \begin{frame}{Schultz and Joachims}
 $$\begin{array}{l}
 min_A \|A\|_{F}^2 \\
-\mu_A(x_i, x_k) - \mu_{A}(x_i, x_j) \ge 1 \;\;\;\; \forall (i,j,k) \in \mathcal{R} \\
+\mu_A(x_i, x_k) - \mu_{A}(x_i, x_j) \ge 1 \;\;\;\; \forall (x_i,x_j,x_k) \in \mathcal{K} \\
 A \succeq 0
 \end{array}$$
 В такой формулировке может не иметь решения, тогда
 
 $$\begin{array}{l}
 min_{A, \xi} \|A\|_{F}^2 + \gamma \sum_{(i,j,k) \in \mathcal{R}} \xi_{ijk} \\
-\mu_A(x_i, x_k) - \mu_{A}(x_i, x_j) \ge 1 - \xi_{ijk} \;\;\;\; \forall (i,j,k) \in \mathcal{R} \\
+\mu_A(x_i, x_k) - \mu_{A}(x_i, x_j) \ge 1 - \xi_{ijk} \;\;\;\; \forall (x_i,x_j,x_k) \in \mathcal{K} \\
 \xi_{ijk} \ge 0 \;\;\; \forall (i,j,k) \in \mathcal{R} \\
 A \succeq 0
 \end{array}$$
@@ -323,39 +323,126 @@ A \succeq 0
 \end{itemize}
 \end{frame}
 
-\begin{frame}{NCA}
-Как пример сильно другого таргета
+\begin{frame}{Neighbourhood Components Analysis}
+$$
+\max_{A \succeq 0} \sum_{(i,j)\in\mathcal{S}} {e^{-\mu_A(x_i,x_j)} \over \sum_{k\ne i} e^{-\mu_A(x_i, x_k)}}
+$$
+Минимизируем LOO kNN классификатор:
+\small
+\begin{itemize}
+  \item если честный LOO, то получим прерывную функцию;
+  \item вместо значения 0/1 из ближайшего соседа, переписываем в soft max моделируя вероятность так:
+  $$
+  p_{ij} = {e^{-\mu_A(x_i,x_j)} \over \sum_{k\ne i} e^{-\mu_A(x_i, x_k)}}
+  $$
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Neighbourhood Components Analysis}{Алгоритм и свойства}
+Оптимизация:
+\begin{itemize}
+  \item Проблема невыпукла
+  \item Переписываем $A = G^TG$, чтобы не думать про $A \succeq 0$
+  \item Градиентный спуск по компонентам $G$
+\end{itemize}
+Свойства:
+\begin{itemize}
+  \item Легко контролировать ранк $A$, контролируя ранк $G$
+  \item Простая безусловная оптимизация
+  \item Без гарантий глобальной сходимости
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Онлайн постановка, POLA}
+Часто данные приходят последовательно. Попробуем строить $\mu_A$ последовательно:
+\begin{itemize}
+  \item На каждом шагу наблюдаем тройку: $(a_t,b_t,y_t)$, если $y_t = 1$, то хотим точки поближе, если $y_t = -1$ --- сделаем подальше.
+  \item Будем оптимизировать такой loss \uncover<2>{(hinge loss)}
+  $$
+  l(A, y) = \max(0, y_t(\mu_A(a_t,b_t) - b) + 1)
+  $$
+  \item Оптимизировать будем (как и в любой online постановке):
+  $$
+  R_T = \sum_{t=1}^{T} l_t(A^*, b^*) - \sum_{t=1}^{T} l_t(A_t, b_t) 
+  $$
+\end{itemize}
 \end{frame}
 
 \begin{frame}{POLA: алгоритм}
+\begin{enumerate}
+  \item Введем 2 выпуклых множества:
+  $$\begin{array}{c}
+  C_t = \{(A,b) | l_t(A,b) = 0\} \\
+  C_A = \{(A,b) | A \succeq 0 b > 0\}
+  \end{array}$$
+  \item Научимся проецировать на эти множетсва (есть идеи как?)
+  \item На каждом шагу будем сначала проэцировать на новый $C_t$, а потом на $C_A$ 
+\end{enumerate}
 \end{frame}
 
 
 \begin{frame}{ITML как пример LogDet}
+Так долго говорили про LogDet, надо бы где-нибудь поиспользовать :).
+$$\begin{array}{l}
+\min_{K\in PSD(\mathbb{R}^{m\times m})} T(K,K_0) \\
+\left\{\begin{array}{l}
+(a - b)^T A (a - b) \le u, \forall (a,b) \in \mathcal{S} \\
+(a - b)^T A (a - b) \ge l, \forall (a,b) \in \mathcal{D} \\
+\end{array}\right.
+\end{array}$$
+Там много математики, но смысл в том, что можно свести к такому построению матрицы:
+$$A_{t+1} = A_t + \beta_t A_t (x_i - x_j)(x_i - x_j)^TA_t$$
 \end{frame}
 
-\begin{frame}{ITML алгоритм}
-\end{frame}
-
-\begin{frame}{Не-Махаланобисовы методы: LDF}
-Local distance functions setup
+\begin{frame}{Не-Махаланобисовы методы: LDF}{Local distance functions}
+\small
+Хотим сделать громкоговоритель локальнее: в столовой --- один, в цеху --- другой.
+Для этого пожертвуем сложностью модели, забыв о зависимости по осям:
+$$
+\mu(a,b) = \sum_m w_a(m) d(a_{m}, b_{m})
+$$
+Заметим, что несмотря на несимметричность модели, мы все же можем построить kNN. \\
+$\Rightarrow$ можно поставить задачу совместной оптимизации $w$. Например так:
+$$\begin{array}{l}
+\min_{w} \sum_i \|w_i\|_q \\
+\mu(a, b) - \mu(a, c) \ge 1, \forall (a, b, c) \in \mathcal{K} \\
+w_i\ge 0, \forall i
+\end{array}$$
+\footnotesize Сравните постановку с Schultz and Joachims
 \end{frame}
 
 \section{Кернелизация}
 \begin{frame}{Проблема линейной неразделимости}
-Где-то мы это уже видели, сделаем kernel
+Где-то мы это уже видели, сделаем ядро!
+\begin{center}
+\includegraphics[height=0.7\textheight]{kernel.png}
+\end{center}
 \end{frame}
 
 \begin{frame}{Кернелизация ITML}
-\end{frame}
-
-\begin{frame}{Кернелизация ITML: алгоритм}
+Вспомним шаг алгоритма:
+$$A_{t+1} = A_t + \beta_t A_t (x_i - x_j)(x_i - x_j)^TA_t$$
+Домножим слева/справа на матрицу $X$ и раскроем скобки в терминах новых скалярных произведений ($x^TAy$):
+$$X^TA_{t+1}X = X^TA_tX + \beta_t X^T A_tX(e_i - e_j)(e_i - e_j)^TX^TA_tX$$
+Тогда в терминах ядер ($k^t_{ij} = x_i^T A_t x_j$):
+$$K^{t+1} = K^{t} \beta_t K^{t} (e_i - e_j)(e_i - e_j)^T K^{t}$$
+Также можно делать и с другими алгоритмами, которые мы сегодня рассмотрели
 \end{frame}
 
 \begin{frame}{Постановка kernel learning для metric learning}
+\small
+Давайте ограничемся только квадратом евклидовой метрики (уже в kernel space):
+$$\|a - b\|_2^2 = x_i^Tx_i + x_j^T x_j - 2 x_i^T x_j$$
+Что можно переписать в терминах ядер:
+$$k_{ii} + k_{jj} - 2 k_{ij}$$
+Будем считать, что условия у нас заданы в терминах группировки. Тогда оптимизацию можно переписать:
+$$\begin{array}{l}
+\min_{K\in PSD(\mathbb{R}^{m\times m})} T(K,K_0) \\
+\left\{\begin{array}{l}
+k_{ii} + k_{jj} - 2 k_{ij} \le u, \forall (i,j) \in \mathcal{S} \\
+k_{ii} + k_{jj} - 2 k_{ij} \ge l, \forall (i,j) \in \mathcal{D} \\
+\end{array}\right.
+\end{array}$$
 \end{frame}
 
 \section{Заключение}
