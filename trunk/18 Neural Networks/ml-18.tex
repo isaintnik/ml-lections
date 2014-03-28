@@ -70,13 +70,79 @@
 \end{frame}
 \section{Постановка задачи и виды} % про сведение решающей функции к комбинации зависимых переменных инженерным способом
 
-\begin{frame}{Еще раз про задачу обучения}
-\end{frame}
-
-\begin{frame}{Одновременная оптимизация и создание факторов}
+\begin{frame}{Постановка задачи обучения}{}
+{\color{blue}С построением фичей}: повесим на клиента датчики \\
+\textit{Наша цель повесить датчики правильно, зная какую информацию мы хотим получить.}\\
+Похоже на glass box\\
+~\\
+{\color{blue}Без построения фичей}: льется поток неведомых данных \\
+\textit{Хотим выделить сигналы, имеющие отношение к искомому} \\
+Похоже на black box
 \end{frame}
 
 \begin{frame}{Пример с милиционером и бабушкой}
+
+\end{frame}
+
+\begin{frame}{Немного рассуждений}
+\small
+\textbf{А можно ли одновременно оптимизировать и выделение полезной информации и обучение?}\\
+\begin{itemize}
+\uncover<2->{\item Ограничимся линейными моделями как в решающей функции, так и в построении FE}
+\only<2>{$$
+F = \sum_i w_i \left(v_i^T x\right) 
+$$}
+\uncover<3->{\item Но так все сведется к линейной регрессии! Давайте добавим какое-нибудь нелинейное преобразование}
+\only<3>{$$
+F = \sum_i w_i g\left(v_i^T x\right)
+$$}
+\uncover<4->{\item Если преобразование монотонное, то можно его для красоты применить и к результату}
+\only<4>{$$
+F = g\left(\sum_i w_i g\left(v_i^T x\right)\right)
+$$}
+\uncover<5->{\item Дополним рекурсией и будем подбирать не одну функцию а несколько}
+\only<5->{$$
+F_i = g\left(\mathbf{w}_{di}^T g(W_{d-1}g(\ldots g(W_{0}x))\right)
+$$}
+\end{itemize}
+\uncover<6->{$\Rightarrow$Понятно, что так писать не удобно.}
+\end{frame}
+
+\begin{frame}{Персептрон Розенблатта}
+\small
+$$
+F_i = g\left(\mathbf{w}_{di}^T g(W_{d-1}g(\ldots g(W_{0}x))\right)
+$$
+Как можно видеть, система состоит из некоторого количества блоков $g(W_tu)$. Если блок 1, $g = sign(x)$ и мы подбираем одну функцию, то
+\begin{center}
+\includegraphics[width=0.4\textwidth]{Simple_perceptron}
+\end{center}
+это элементарный персептрон Розенблатта. Если блоков много, то сложный :).
+\end{frame}
+
+\begin{frame}{Немного истории}
+\begin{enumerate}
+  \item ``кибернетическая модель мозга'' 1957
+  \item ЭВМ Mark I 1960
+  \item Minsky, Papert ``Perceptrons: an introduction to computational geometry'' 1969
+  \item Mark III 1985
+  \item Krizhevsky, A., Sutskever, I. and Hinton, G. E. ``ImageNet Classification with Deep Convolutional Neural Networks''
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Типы нейро компьютеров}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{neurocomp-types}
+\end{center}
+\end{frame}
+
+\section{Биология и основные понятия} % подробно про функции разных кусков
+\begin{frame}{}
+\begin{center}
+\Huge
+Но на самом деле все было не так!
+\end{center}
 \end{frame}
 
 \begin{frame}{Виды нейронных сетей}
@@ -85,14 +151,10 @@ C FE и без FE
 
 \end{frame}
 
-\section{Биология и основные понятия} % подробно про функции разных кусков
 \section{Персептронные сети и обратное распространение ошибки} % понятие персептрона, BP, расширения персептронных сетей W-нейроны и прочая херня
 \begin{frame}{Поняте персептрона}
 \end{frame}
 
-\begin{frame}{Про нейро компьютеры}
-http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.50.4453&rep=rep1&type=pdf
-\end{frame}
 
 \section{Ассоциотивная память} % Сети Хопфилда, Bolzman machine
 
