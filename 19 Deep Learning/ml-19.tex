@@ -70,10 +70,17 @@
 \end{frame}
 \section{Понятие глубокого обучения} % про сведение решающей функции к комбинации зависимых переменных инженерным способом
 
-\begin{frame}{Что такое глубокое обучение}
-% from intro-to-deep-learning.pdf на столе
+\begin{frame}{Глубокое обучение}{Определение по Simona Ullo}
+\small
+''A \textbf{relatively recently developed}$^1$ set of generative machine learning techniques that \textbf{autonomously}$^2$ generate \textbf{high-level representation}$^3$ from raw data sources, and using these representations can perform typical machine learning tasks such as classification, regression and clustering''\\ 
+\begin{enumerate}
+\uncover<2->{\item back to 80s: learning neural networks --- multiple layers with non-linear transformations(backpropagation)}
+\uncover<3->{\item from hand-crafted features to feature learning}
+\uncover<4->{\item hierarchical representation increasing level of abstraction}
+\end{enumerate}
+\uncover<5->{2 + 3 = automated discovery of abstraction}
 \end{frame}
-
+ 
 \begin{frame}{Что считать достаточно глубоким?}{Известные методы со сложной решающей функцией}
 \begin{minipage}{0.45\textwidth}\small
 \begin{itemize}
@@ -198,15 +205,32 @@ $2 \cdot 1000\times1000\times3 + 998 \cdot 56 \times 4 \simeq 6.2Mb$
 
 \begin{frame}{Dropout}
 \small
-Если начальные веса рандомны, то при обучении производные будут сильно неравномерны. Это приведет к вырождению связей и небольшому числу эффективных зависимостей $\Rightarrow$ никаких ЗБЧ $\Rightarrow$ Dropout 
+Если начальные веса рандомны, то при обучении производные будут сильно неравномерны. Это приведет к вырождению связей и небольшому числу эффективных зависимостей $\Rightarrow$ никаких ЗБЧ $\Rightarrow$ Dropout:
+\begin{enumerate}
+  \item Добавим в вес связи бернуллевскую случайную компоненту
+  \item Будем учитывать эту компоненту на этапе обучения (при распространении ошибки) и/или на этапе работы
+\end{enumerate}
 \end{frame}
 
-\begin{frame}{Некоторые практические результаты работы ConvNet}
+\begin{frame}{Известные результаты успешного DL}
+\small
+\begin{itemize}
+  \item Handwriting Recognition and OCR (late 1980s to mid 1990s)\\
+\textit{Supervised convolutional nets operating on pixels}
+  \item Face \& People Detection (early 1990s to mid 2000s)\\
+\textit{Supervised convolutional nets operating on pixels (YLC 1994, 2004, Garcia 2004)}
+  \item Low-Res Object Recognition: road signs, house numbers (early 2010's)\\
+\textit{Supervised convolutional net operating on pixels}
+  \item Speech Recognition II (circa 2011) \\
+\textit{Deep neural nets for acoustic modeling}
+  \item Object Recognition II, Semantic Labeling (2012, Hinton, YLC,...) \\
+\textit{Supervised convolutional nets operating on pixels}
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Deep learning: что забыли?}
 \textbf{\color{blue}Нелинейность:} диалоги о нелинейности до сих пор ведутся, но пока выигрывает ReLU \\
-\textbf{\color{blue}Другие виды сетей:} нет им числа: DBM, DBN, любое другое поделие с более 2-х скрытых слоев \\
+\textbf{\color{blue}Другие виды сетей:} нет им числа: DBN, DBM, любое другое поделие с более 2-х скрытых слоев \\
 \textbf{\color{blue}DL как чистый RL:} снимем последний слой сети, и посмотрим как можно использовать получившиеся факторы
 \end{frame}
 
