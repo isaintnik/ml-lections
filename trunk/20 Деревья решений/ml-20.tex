@@ -171,14 +171,30 @@
 
 \section{Алгоритм CART}
 
-\begin{frame}{CART}{Classification and Regression Tree (L. Breiman, J. Friedman, et.al.)}
+\begin{frame}{CART I}{Classification and Regression Tree (L. Breiman, J. Friedman, et.al.)}
 \small
 Строим классификатор или регрессию. Дерево бинарное. Алгоритм:\\
-{\color{blue}$T$:} \footnotesize $T(l) = Gini(l) = \sum_l \sum_c p(y_i = c | i \in l)(1 - p(y_i=c|i \in l) = \sum_l (1 - \sum_c p(y_i=c|i \in l)^2)$ \\\small
+{\color{blue}$T$:} \footnotesize $T(l)$ \\\small
 {\color{blue}$X$:} все возможные разбиения по каждому фактору \\
-{\color{blue}$E$:} пока можно найти разбиение $l_{t+1}: Gini(l_t) > Gini(l_{t+1})$\\
+{\color{blue}$E$:} пока можно найти разбиение $l_{t+1}: T(l_t) > T(l_{t+1})$\\
 {\color{blue}$L$:} создаем 2 листа с средневыборочным значением в каждом \\
 {\color{blue}$P$:} нет
+\end{frame}
+
+\begin{frame}{CART II}{Classification and Regression Tree (L. Breiman, J. Friedman, et.al.)}
+Чувства прекрасного для CART:
+\begin{itemize}
+  \item В случае классификации, применяем impurity index:
+  \begin{itemize}
+    \item $T(L) = Gini(L) = \sum_l \sum_c p(y_i = c | i \in l)(1 - p(y_i=c|i \in l) = \sum_l (1 - \sum_c p(y_i=c|i \in l)^2)$
+    \item $T(L) = H(L|X) = -\sum_{x\in X} p(l(x)) p(x|l(x)) \log p(x|l(x))$
+    \item $T(L) = \frac{1}{|L|} \sum_{l\in L} \sum_{i \in l} I(y_i \ne y_l)$
+  \end{itemize}
+  \item В случае регрессии:
+  $$
+  T(L) = \sum_{l\in L} D_l
+  $$
+\end{itemize}
 \end{frame}
 
 \section{Почему это может работать}
@@ -197,8 +213,8 @@
 Сколько всего информации в дереве:
 \begin{itemize}
   \item Информация о способе разбиения в каждом ноде: $\log(n) + \log(|f_l|)$
-  \item Информация о получившемся разбиении: $\sum_{l_i} \frac{|l_i|}{|X|} \log (|l_i|)$
-  \item Значения в листьях: $|l|\times32bit$
+  \item Информация о получившемся разбиении: $\sum_{l \in L} \frac{|l|}{|X|} \log (|l|)$
+  \item Значения в листьях: $|L|\times32bit$
 \end{itemize}
 $\Rightarrow$ Круто оптимизировать разбиения фичи \\
 $\Rightarrow$ Мы можем построить prior по тому, сколько в дереве информации (сага о $\log$)
@@ -213,20 +229,20 @@ $$
 \end{frame}
 
 \begin{frame}{Диалоги о дисперсии}
-$$
-T(X, l) = \arg 
-$$
-В случае MSE минимизируем суммарную дисперсию на каждом сплите.
-
-Дисперсия растет с числом точек, нам интересно, что будет на бесконечности. Можно использовать исправленную дисперсию, но помогает не всегда и есть варианты.
-
+\small
+В случае MSE минимизируем суммарную дисперсию на каждом сплите. Дисперсия растет с числом точек, нам интересно, что будет на бесконечности.
+\begin{center}
+\includegraphics[height=0.5\textheight]{D.png} 
+\end{center}
+Можно использовать исправленную дисперсию, но помогает не всегда и есть варианты.
 \end{frame}
-\begin{frame}{Диалоги о ожидании} % Stein paradox
+
+\begin{frame}{Диалоги о ожидании I} % Stein paradox
 Только что мы поняли, что среднее отклонение по выборке работает плохо. А как же быть со средним выборочным в качестве мат ожидания. \\
 Проведем такой эксперимент: возьмем случайный нормальный вектор с единичной матрицей ковариаций и ненулевым, сравнимым с 1 ожиданием $\mu$. Хотим найти $\hat{\theta}: \min \|\theta - \mu\|$. В этом случае очевидное решение $\hat{\theta} = \frac{1}{n}\sum x_i$, окажется неоптимальным. % см код DispersionTest
 \end{frame}
 
-\begin{frame}{Диалоги о ожидании} % Stein paradox
+\begin{frame}{Диалоги о ожидании II} 
 Нам парадокс Штайна интересен в двух аспектах:
 \begin{enumerate}
   \item Вычисляя среднее в листе, мы можем считать, что у нас есть 1 реализация вектора размерности $n$ и применить магию js-поправки.
@@ -234,7 +250,7 @@ $$
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Диалоги о ожидании} % Stein paradox
+\begin{frame}{Диалоги о ожидании III} % Stein paradox
 Все было бы хорошо, если бы:
 \begin{itemize}
   \item Поправка была бы устойчива к ошибкам; % см test1FoldErr10 где js сливает наиву в одну калитку
@@ -252,7 +268,7 @@ $$
   \item Деревья решений = разделяй и влавствуй
   \item Жадность + ограничение информации в делении = Profit
   \item Есть много чувств прекрасного, и хорошее еще не изобретено
-  \item Пара трюков для ускорения процесса вычисления
+  \item Много нюансов есть в очень простых вещах, даже в вычислении среднего :)
 \end{itemize}
 \end{frame}
 \end{document}
