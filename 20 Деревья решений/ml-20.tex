@@ -85,7 +85,7 @@
 По сути герои использовали дерево решений. Вот какими свойствами этот способ обладает:
 \begin{enumerate}
   \item Легко интерпретировать (хотя тяжело понять :))
-  \item Стремление к однородности групп получившихся в результате деления
+  \item Стремление к однородности групп, получившихся в результате деления
   \item Деление всего множества
   \item Жадность
 \end{enumerate}
@@ -113,7 +113,7 @@
   \item Дикие
   \uncover<2->{\item Пеньки}
   \uncover<3->{\item Забывчивые}
-  \uncover<4->{\item Нечеткие}
+  \uncover<4->{\item Нечёткие}
 \end{itemize}
 \begin{center}
 \only<1>{\includegraphics[height=0.4\textheight]{zooDT.png}}
@@ -197,6 +197,13 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}{CART II}{Classification and Regression Tree (L. Breiman, J. Friedman, et.al.)}
+В чем же разница между разными ЧП:
+\begin{center}
+\includegraphics[width=0.7\textwidth]{Gini.png}
+\end{center}
+\end{frame}
+
 \section{Почему это может работать}
 \begin{frame}{Тонкости}
 На практике мы используем варианты CART, поэтому дальше только о нем.
@@ -212,8 +219,8 @@
 \begin{frame}{Немного о информации}
 Сколько всего информации в дереве:
 \begin{itemize}
-  \item Информация о способе разбиения в каждом ноде: $\log(n) + \log(|f_l|)$
-  \item Информация о получившемся разбиении: $\sum_{l \in L} \frac{|l|}{|X|} \log (|l|)$
+  \item Информация о способе разбиения в каждом ноде: $\log(n + 1) + \log(|f_l| + 1)$
+  \item Информация о получившемся разбиении: $\sum_{l \in L} \frac{|l|}{|X|} \log (|l| + 1)$
   \item Значения в листьях: $|L|\times32bit$
 \end{itemize}
 $\Rightarrow$ Круто оптимизировать разбиения фичи \\
@@ -225,7 +232,7 @@ $\Rightarrow$ Мы можем построить prior по тому, сколь
 $$
 X \subset \mathbb{R}^{n\times m}, b: \mathbb{R}^n \to \{0,1\}^N
 $$
-По хорошему, хотим $\hat{b} = \arg_b \max T\left(V,\arg \max_F(b) T(L,F)\right)$, но это дорого и долго, поэтому используем эмпирику, например медианное разбиение с фиксированным количеством слотов.
+По хорошему, хотим $\hat{b} = \arg \max_b T\left(V,\arg \max_{F(b)} T(L,F)\right)$, но это дорого и долго, поэтому используем эмпирику, например медианное разбиение с фиксированным количеством слотов.
 \end{frame}
 
 \begin{frame}{Диалоги о дисперсии}
@@ -258,6 +265,11 @@ $$
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Работающие деревья}
+\large
+\center
+\uncover<2>{To be continued}
+\end{frame}
 
 % \section{Пара трюков}
 % \subsection{Гистограммы}
