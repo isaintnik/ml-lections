@@ -1,0 +1,131 @@
+\documentclass[14pt, fleqn, xcolor={dvipsnames, table}]{beamer}
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[english,russian]{babel}
+\usepackage{amssymb,amsfonts,amsmath,mathtext}
+\usepackage{cite,enumerate,float,indentfirst}
+\usepackage{cancel}
+\usepackage{graphicx}
+\usepackage{animate}
+\usepackage{ulem}
+
+\usepackage{tikz}
+% \usepackage{enumitem}
+\usetikzlibrary{shadows}
+
+% \usepackage{enumitem}
+% \setitemize{label=\usebeamerfont*{itemize item}%
+%   \usebeamercolor[fg]{itemize item}
+%   \usebeamertemplate{itemize item}}
+
+\graphicspath{{images/}}
+
+\usetheme{Madrid}
+\usecolortheme{seahorse}
+\renewcommand{\CancelColor}{\color{red}}
+
+\setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{footline}{
+  \leavevmode%
+  \hbox{%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    И. Кураленок, Н. Поваров, Яндекс
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
+    Санкт-Петербург, 2014
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
+  Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
+  \end{beamercolorbox}}%
+  \vskip0pt%
+}
+\newcommand\indentdisplays[1]{%
+     \everydisplay{\addtolength\displayindent{#1}%
+     \addtolength\displaywidth{-#1}}}
+\newcommand{\itemi}{\item[\checkmark]}
+
+\newenvironment{mydescription}[1]
+  {\begin{list}{}%  
+   {\renewcommand\makelabel[1]{\color{blue}##1:\hfill}%
+   \settowidth\labelwidth{\makelabel{#1}}%
+   \setlength\leftmargin{\labelwidth}
+   \addtolength\leftmargin{\labelsep}}}
+  {\end{list}}
+
+\title{GBDT. Смешанные модели. \\\small{Немного о работающих алгоритмах}}
+\author[]{\small{%
+И.~Куралёнок,
+Н.~Поваров}}
+\date{}
+\begin{document}
+
+\begin{frame}
+\maketitle
+\small
+\begin{center}
+\vspace{-60pt}
+\normalsize {\color{red}Я}ндекс \\
+\vspace{80pt}
+\footnotesize СПб, 2014
+\end{center}
+\end{frame}
+
+\section{Gradient Bossted Descision Trees}
+\begin{frame}{От CART к лесам}
+\end{frame}
+
+\begin{frame}{Случай произвольной целевой функции}
+\end{frame}
+
+\begin{frame}{VC оценка для GBDT}
+\end{frame}
+
+\begin{frame}{Стабильность работы GBDT}{в зависимости от целевой функции}
+\end{frame}
+
+\begin{frame}{Распределение трудоемкости в GBDT}
+\end{frame}
+
+\section{Смешанные модели}
+
+\begin{frame}{BagBoo}
+\end{frame}
+
+\begin{frame}{BooBag}
+\end{frame}
+
+\begin{frame}{Где это добро применять?}
+\end{frame}
+
+\section{Деревья, которые работают}
+
+\begin{frame}{Еще раз о информации в дереве}
+\end{frame}
+
+\begin{frame}{Деревянная регуляризация}
+\end{frame}
+
+\begin{frame}{Исправление дисперсии}
+\end{frame}
+
+\begin{frame}{Я.ЗабывчивыеДеревья от Cliff Brunk}
+\end{frame}
+
+\section{Парные производные}
+
+\begin{frame}{Парные производные от Андрея Гулина}{или как устроен -F/-U}
+\end{frame}
+
+\section{Заключение}
+
+\begin{frame}{Что мы сегодня узнали}
+\begin{itemize}
+  \item Как раскладывать целевую функцию в ряд деревьев
+  \item Какие характеристики важны в бустинге
+  \item Как играть в гольф из лука
+  \item Можно ли сделать еще более работающие деревья
+  \item Подробности решающей функции можно использовать для еще более точного разложения
+\end{itemize}
+\end{frame}
+
+\end{document}
