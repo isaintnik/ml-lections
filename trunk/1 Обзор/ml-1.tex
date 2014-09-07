@@ -57,31 +57,7 @@
 \end{center}
 \end{frame}
 
-\begin{frame}
-\frametitle{Что почитать?}
-\begin{itemize}
-  \item Википедия (лучше en)
-\end{itemize}
-\begin{itemize}
-  \item T. Hastie, R. Tibshirani, J. Friedman “The elements of Statistical Learning”
-  \item T. Mitchell “Machine Learning”
-\end{itemize}
-\begin{itemize}
-  \item Труды конференций: ICML, KDD, NIPS, CIKM, etc.
-  \item Журналы: JMLR, JML, JIS, NC
-  \item Видео курс: www.ml-class.org
-\end{itemize}
-\end{frame}
-
-\begin{frame}
-\frametitle{Какие у нас цели?}
-\begin{itemize}
-	\item Уметь сформулировать задачу в терминах ML
-	\item Найти подходящий класс решающих алгоритмов по формулировке
-	\item Ориентироваться в области и знать ``где посмотреть'' существующие решения
-	\item Понимать границы применимости
-\end{itemize}
-\end{frame}
+\section{Формальное описание курса}
 
 \begin{frame}
 \frametitle{Что нужно, чтобы понять?}
@@ -101,6 +77,34 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Какие у нас цели?}
+\begin{itemize}
+	\item Уметь сформулировать задачу в терминах ML
+	\item Найти подходящий класс решающих алгоритмов по формулировке
+	\item Ориентироваться в области и знать ``где посмотреть'' существующие решения
+	\item Понимать границы применимости
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\frametitle{Что почитать?}
+\begin{itemize}
+  \item Википедия (лучше en)
+\end{itemize}
+\begin{itemize}
+  \item T. Hastie, R. Tibshirani, J. Friedman “The elements of Statistical Learning”
+  \item T. Mitchell “Machine Learning”
+\end{itemize}
+\begin{itemize}
+  \item Труды конференций: ICML, NIPS, CIKM, KDD, etc.
+  \item Журналы: JML, JMLR, JIS, NC, etc.
+  \item Видео курс: www.ml-class.org
+\end{itemize}
+\end{frame}
+
+\section{Введение}
+
+\subsection{Определения}
 
 \begin{frame}
 \frametitle{Машинное обучение: определения (I)}
@@ -112,18 +116,21 @@ A computer program is said to learn from experience E with respect to some class
 \begin{frame}
 \frametitle{Машинное обучение: определения (II)}
 \begin{quote}
-Machine learning - The ability of a machine to improve its performance based on previous results.
+Machine learning --- the ability of a machine to improve its performance based on previous results.
 \begin{flushright}\textbf{Webster}\end{flushright}
 \end{quote}
 \end{frame}
 \begin{frame}
 \frametitle{Машинное обучение: определения (III)}
 \begin{quote}
-Машинное обучение — обширный подраздел искусственного интеллекта, изучающий методы построения алгоритмов, способных обучаться.
+Машинное обучение —-- обширный подраздел искусственного интеллекта, изучающий методы построения алгоритмов, способных обучаться.
 \begin{flushright}\textbf{ru.wikipedia.org}\end{flushright}
 \end{quote}
 \end{frame}
+% Вывод такой: нету единого понимания о чем все это. Также нету структуры, которая была бы стандартной,
+% поэтому дальше мы придумали свою собственную.
 
+\subsection{Минутка истории}
 \begin{frame}
 \frametitle{Машинное обучение: немного истории}
 \begin{small}
@@ -137,26 +144,45 @@ Machine learning - The ability of a machine to improve its performance based on 
 \end{small}
 \end{frame}
 
+\subsection{Понятия и обозначения}
 \begin{frame}
 \frametitle{Основные понятия}
 \begin{itemize}
 	\item Область работы $=$ Universe $=\Gamma$.
-	\item Решающая функция $=$ Decision Function $= F_0 \in F$ -- класс решающих функций.
-	\item Опыт $=$ Data Set $=D = X \times Y$.
+	\item Решающая функция $=$ Decision Function $=$ $F_0 \in F$ -- класс решающих функций.
+	\item Опыт $=$ Data Set $=$ $D = X \times Y$.
 	\item Целевая функция $=$ Target $=T(y,F(x))$.
 \end{itemize}
-\begin{small}
-Только сегодня (!):
-$$
-\arg \max_{F(B)} A(F)
-$$
-\begin{itemize}
-	\item A -- то что \underline{хотим} получить
-	\item B -- на основании чего оптимизируем
-\end{itemize}
-\end{small}
 \end{frame}
 
+\begin{frame}{Задача обучения}
+В ML оптимизация часто проводится в одних условиях, а эксплуатация в других. 
+$$
+\arg \max_{F, B: F_0 = B(F)} A(\Gamma, F_0)
+$$
+\begin{itemize}
+	\item $A$ --- цели эксплуатации (например деньги) на всей области работы $\Gamma$
+	\item $B$ --- способ оптимизации, который реализуем
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Как устроена эксплуатация}{На самомделе, как она \_может\_ быть устроена}
+Будем считать, что работа на разных элементах $\Gamma$ независима. Тогда эксплуатацию $A$ можно представить так:
+$$
+A=\mu_{x \sim U(\Gamma)} T_A(F_0(x))
+$$
+\end{frame}
+
+\begin{frame}{Как устроена оптимизация}{На самомделе, как она \_может\_ быть устроена}
+Способ оптимизации $B$, в свою очередь, такая штука:
+$$
+F_0 = B(F, D) = \arg \max_{F} T_B(D, F) = \arg \max_{F} T_B(Y,F(X));
+$$
+
+В рамках этой лекции, мы не будем рассматривать разницу между $T_A$ и $T_B$, поэтому будем считать, что они одинаковы $T$.
+\end{frame}
+
+\subsection{Классификация методов ML}
 \begin{frame}
 \frametitle{Классификация машинного обучения}
 ML можно делить по:
@@ -177,7 +203,7 @@ ML можно делить по:
 \end{itemize}
 \end{frame}
 
-
+\subsubsection{В зависимости от способа получения опыта}
 \begin{frame}
 \frametitle{Классификация машинного обучения: опыт}
 \begin{itemize}
@@ -195,12 +221,11 @@ ML можно делить по:
 \begin{frame}
 \frametitle{Transductive learning}
 \begin{enumerate}
-	\item Фиксируем множество примеров $D$
-	\item Фиксируем примеры, на которых хотим работать $\Gamma_0$
-	\item Обучаемся на доступных примерах, используя информацию о всех
+	\item Все множество, на котором работаем задано перечислением $\Gamma_0$
+	\item Для части данных известен ответ, и они формируют $D$
 \end{enumerate}
 $$
-F_0 = \arg \max_{F(D)} \mu_{\xi \sim U\left(\Gamma_0\right)}T(y_{\xi}, F(x_{\xi}))
+F_0=B(F, D, \Gamma_0)
 $$
 \end{frame}
 
@@ -212,7 +237,7 @@ $$
 	\item Обучаемся на доступных примерах, используя информацию о всех
 \end{enumerate}
 $$
-F_0 = \arg \max_{F(D)} \mu_{\xi \sim U\left(\Gamma\right)}T(y_{\xi}, F(x_{\xi}))
+F_0 = B(F, D)
 $$
 \end{frame}
 
@@ -220,37 +245,28 @@ $$
 \frametitle{Стохастическая оптимизация\footnote{Одна из возможных версий предмета :).}}
 \begin{enumerate}
 	\item Определяем генеральную совокупность $\Gamma$
-	\item Обучаемся на следующем примере пока не надоест
+	\item Обучаемся на следующем примере пока не надоест (до момента $t_0$)
 \end{enumerate}
 $$\begin{array}{l}
-F_0 = \arg \max_{F(d_i \sim \Gamma)} \mu_{\xi \sim U\left(\Gamma\right)}T(y_{\xi}, F(x_{\xi})) \\
-\end{array}$$
-\end{frame}
-
-\begin{frame}
-\frametitle{Интерактивное обучение (online)}
-\begin{enumerate}
-	\item Определяем генеральную совокупность $\Gamma$
-	\item Обучаемся на всех доступных примерах
-	\item Получаем следующую точку, исходя из работы решающей функции и переходим к п.~3
-\end{enumerate}
-$$\begin{array}{l}
-F_0 = \arg \max_{F(D_i)} \mu_{\xi \sim U\left(\Gamma\right)}T(y_{\xi}, F(x_{\xi})) \\
-D_i = D_{i-1} \cup (x_i, y_i), (x_i, y_i) \sim \Psi_{F(D_{i-1})}\left(\Gamma \setminus D_{i-1}\right)
+D_0 = \emptyset \\
+D_{t+1} = D_{t} \cup \left(x_i \sim U(\Gamma)\right) \\
+F_0^t=B(F, D_i) \\
+A(F_0) = A(F_0^{t_0}, \Gamma)
 \end{array}$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Активное обучение}
 \begin{enumerate}
-	\item Фиксируем множество примеров $X$
 	\item Определяем генеральную совокупность $\Gamma$
 	\item Обучаемся на всех доступных примерах
-	\item Пополняем множество примеров по просьбе алгоритма $A$ и переходим к п.~3
+	\item Пополняем множество примеров по просьбе алгоритма $\mathcal{A}$ и переходим к п.~2, если $\mathcal{A}$ не требует больше данных останавливаемся в $t_0$
 \end{enumerate}
 $$\begin{array}{l}
-F_0 = \arg \max_{F(D_i)} \mu_{\xi \sim U\left(\Gamma\right)}T(y_{\xi}, F(x_{\xi})) \\
-D_i = D_{i-1} \cup (x_i, y_i), (x_i, y_i) \sim \Psi_{A(F(D_{i-1}))}\left(\Gamma \setminus D_{i-1})\right)
+D_0 = \emptyset \\
+D_{t+1} = D_{t} \cup \{\mathcal{A}(D_t, F_t)\} \\
+F_0^t = B(F, D_{t}) \\
+A(F_0, \Gamma) = A(F_0^{t_0}, \Gamma)
 \end{array}$$
 \end{frame}
 
@@ -260,11 +276,28 @@ D_i = D_{i-1} \cup (x_i, y_i), (x_i, y_i) \sim \Psi_{A(F(D_{i-1}))}\left(\Gamma 
 	\item Введем стоимость получения информации по точке $c(d)$ и бюджет обучения $B$
 	\item Определяем генеральную совокупность $\Gamma$
 	\item Обучаемся на всех доступных примерах
-	\item Пополняем множество примеров по просьбе алгоритма $A$, пока не закончился бюджет $\sum_i c(d_i) < B$ и переходим к п.~3
+	\item Пополняем множество примеров по просьбе алгоритма $\mathcal{A}$, пока не закончился бюджет $\sum_t c({x_t, y_t}) < C$ и переходим к п.~3
 \end{enumerate}
 $$\begin{array}{l}
-F_0 = \arg \max_{F(D_i)} \mu_{\xi \sim U\left(\Gamma\right)}T(y_{\xi}, F(x_{\xi})) \\
-D_i = D_{i-1} \cup (x_i, y_i), (x_i, y_i) \sim \Psi_{A(F(D_{i-1}),c)}\left(\Gamma \setminus D_{i-1}\right)
+D_0 = \emptyset \\
+D_{t+1} = D_{t} \cup \{\mathcal{A}(D_t, F_t)\} \\
+F_0^t = B(F, D_{t}) \\
+A(F_0, \Gamma) = A(F_0^{t_0}, \Gamma)
+\end{array}$$
+\end{frame}
+
+\begin{frame}
+\frametitle{Интерактивное обучение (online)}
+\begin{enumerate}
+	\item Определяем генеральную совокупность $\Gamma$
+	\item Обучаемся на всех доступных примерах
+	\item Получаем следующую точку, исходя из работы решающей функции и переходим к п.~2
+\end{enumerate}
+$$\begin{array}{l}
+D_0 = \emptyset \\
+D_{t+1} = D_{t} \cup \{(x_{t+1}, y_{t+1})\} \\
+F_0^t = B(F, D_{t}) \\
+A(F_0, \Gamma) = \sum_{t, x_t \in \Gamma} T_A(y_t, F_0^t(x_t)) \\
 \end{array}$$
 \end{frame}
 
@@ -273,18 +306,20 @@ D_i = D_{i-1} \cup (x_i, y_i), (x_i, y_i) \sim \Psi_{A(F(D_{i-1}),c)}\left(\Gamm
 \begin{enumerate}
 	\item Фиксируем множество возможных действий $M$, $x\in M$.
 	\item Каждое действие ведет к $y \sim \xi_x$.
-	\item Исходя из известных данных выбираем $x$, получаем ответ ``природы'' $y$.
-	\item Обновляем модель $\xi_i, \forall i \in M$.
+	\item Обновляем модель $\xi_{ti}, \forall i \in M$.
 	\item Повторяем с п.3 пока не надоест.
 \end{enumerate}
 $$\begin{array}{l}
-F_0 = \arg \min_{F(D_i)} \mu_{\xi \sim F\left(M\right)} y_{opt} - y_{\xi} \\
-D_i = D_{i-1} \cup (x_i, y_i)
+D_0 = \emptyset \\
+D_{t+1} = D_{t} \cup \{(x_{t+1} \in M, y_{t+1})\} \\
+F_0^t = B(F, D_{t}, \xi_t) \\
+A(F_0, \Gamma) = \sum_{t, x_t \in \Gamma} T_A(y_t, F_0^t(x_t)) \\
 \end{array}$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Обучение с подкреплением\footnote{На самом деле, это уже AI.}}
+\small
 \begin{enumerate}
 	\item Фиксируем множество возможных действий $M$, ``поле'' $X$, множество возможных ответов среды $S = S_o \cup S_n$.
 	\item В терминах $S$ сформирулируем целевую функцию $T$.
@@ -292,6 +327,12 @@ D_i = D_{i-1} \cup (x_i, y_i)
 	\item Сделаем следующий ход исходя из оптимальности восстановленного состояния.
 	\item Обновим $Y$ тем, что нашли в новой точке перейдем к п.3
 \end{enumerate}
+$$\begin{array}{l}
+D_0 = \emptyset \\
+D_{t+1} = D_{t} \cup \{(x_{t+1} \in M, y_{t+1})\} \\
+F_0^t = B(F, D_{t}, \xi_t) \\
+A(F_0, \Gamma) = \sum_{t, x_t \in \Gamma} T_A(y_t, F_0^t(x_t)) \\
+\end{array}$$
 \end{frame}
 
 \begin{frame}
