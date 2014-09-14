@@ -35,7 +35,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2014
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -62,7 +62,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2013
+\footnotesize СПб, 2014
 \end{center}
 \end{frame}
 
@@ -94,7 +94,7 @@
 
 \section{Векторизация и факторы}
 \begin{frame}
-\frametitle{Векторизация\footnote{В данном случае не про графику.}}
+\frametitle{Векторизация\footnote{В таком значении никто другой это слово не применяет!}}
 \begin{description}
 \leftmargin=-5em
 \itemindent=0em
@@ -139,7 +139,7 @@
     \renewcommand\dtlintalign{p{1.5em}}
     \renewcommand\dtldisplayvalign{c}
     \renewcommand\dtldisplayafterhead{\hline\\}
-    \renewcommand\dtlheaderformat[1]{\textbf{#1}}
+    % \renewcommand*\dtlheaderformat[1]{\textbf{#1}}
     \DTLloaddb[noheader,%
     headers={Пол,СШБ,Город,Тип Шк,Проп.,Род.,Пиво,Друзей,D,Ряд,iPad,Голова,Баллы}%
     ]{data}{sample_set_filtered.csv}
@@ -150,9 +150,9 @@
 \section{Решающая и целевая функции}
 \begin{frame}[t]\frametitle{Решающая функция}
     $$\begin{array}{c}
-      h_{w_0}(x) = w_0^{T}x \\
+      h_{\hat{\beta}}(x) = \hat{\beta}^{T}x \\
       \\
-      w_0, x \in \mathbb{R}^n \\
+      \hat{\beta}, x \in \mathbb{R}^n \\
       \end{array}
     $$
 \begin{itemize}
@@ -193,9 +193,9 @@
 
 \begin{frame}[t]\frametitle{Решающая функция}
     $$\begin{array}{c}
-      h_{w_0,b_0}(x) = w_0^{T}x + b_0 \\
+      h_{\hat{\beta},\hat{b}}(x) = \hat{\beta}^{T}x + \hat{b} \\
       \\
-      w_0, x \in \mathbb{R}^n, b_0 \in \mathbb{R} \\
+      \hat{\beta}, x \in \mathbb{R}^n, \hat{b} \in \mathbb{R} \\
       \end{array}
     $$
 \begin{itemize}
@@ -208,7 +208,7 @@
 
 \begin{frame}[t]\frametitle{Целевая функция}
     $$
-      (w_0,b_0) = \arg\min_{(w,b)} \sum_{(x_i,y_i) \in L} \| h_{w,b}(x_i) - y_i \|
+      (\hat{\beta},\hat{b}) = \arg\min_{(\beta,b)} \sum_{(x_i,y_i) \in L} \| h_{\beta,b}(x_i) - y_i \|
     $$
 \begin{itemize}
   \item MSE --- годное первое приближение в $\mathbb{R}$
@@ -219,21 +219,21 @@
 \begin{frame}[t]\frametitle{Решение и его интерпретация}
     $$
       \begin{array}{ll}
-      (w_0, b_0) &= \arg\min_w \sum_{(x_i,y_i) \in L} \left\| x_i^Tw + b - y_i \right\| \\
-       &= \arg\min_w \left\|X^Tw + b - y\right\|^2 \\
+      (\hat{\beta}, \hat{b}) &= \arg\min_\beta \sum_{(x_i,y_i) \in L} \left\| x_i^T\beta + b - y_i \right\| \\
+       &= \arg\min_\beta \left\|X^T\beta + b - y\right\|^2 \\
        &\left\{\begin{array}{l}
-        w_0 = \left(XX^T\right)^{-1}X(y - 1b) \\
-        b_0 = \frac{1}{n} \sum_{i=1}^n y_i
+        \hat{\beta} = \left(XX^T\right)^{-1}X(y - \mathbf{1}b) \\
+        \hat{b} = \frac{1}{n} \sum_{i=1}^n y_i
        \end{array}\right.
       \end{array}
     $$
     Вот что получилось:
     {\scriptsize
     $$\begin{array}{ll}
-      w_0 &= -0.24, 1.17, -5.82, 0.32, 0.30, -2.33, 1.77, -0.01, -0.00, 0.13, 0.03, -0.08\\
-      b_0 &= 17.04 \\
+      \hat{\beta} &= -0.24, 1.17, -5.82, 0.32, 0.30, -2.33, 1.77, -0.01, -0.00, 0.13, 0.03, -0.08\\
+      \hat{b} &= 17.04 \\
       T&= 83.06 \\
-      \sqrt{\frac{T(w_0, b_0)}{n}} &= 1.72\\
+      \sqrt{\frac{T(\hat{\beta}, \hat{b})}{n}} &= 1.72\\
     \end{array}
     $$}
 \end{frame}
@@ -263,17 +263,17 @@
 Хотим простого: $0$ мат. ожидание и $1$ дисперсию.
 $$
 \begin{array}{ll}
-y_i=\frac{x_i-m_i}{\sigma_i}
+x'_{ij}=\frac{x_j-\bar{x}_i}{\sigma_i}
 \end{array}
 $$
 
 {\em Это стандартная техника, но немного (2 слайда) подумайте насколько она нам подходит.}
 
 {\scriptsize $$\begin{array}{ll}
-  w_0 &= -0.16, 0.74, -1.47, 0.19, 0.16, -0.67, 1.19, -0.05, -0.02, 0.27, 0.11, -0.08\\
-      b_0 &= 17.04 \\
-      T(w_0, b_0) &= 82.72 \\
-      \sqrt{\frac{T(w_0, b_0)}{n}} &= 1.72 \\
+  \hat{\beta} &= -0.16, 0.74, -1.47, 0.19, 0.16, -0.67, 1.19, -0.05, -0.02, 0.27, 0.11, -0.08\\
+      \hat{b} &= 17.04 \\
+      T(\hat{\beta}, \hat{b}) &= 82.72 \\
+      \sqrt{\frac{T(\hat{\beta}, \hat{b})}{n}} &= 1.72 \\
   \end{array}
 $$}
 \end{frame}
@@ -322,7 +322,7 @@ $$}
 \begin{frame}[t]\frametitle{По невязке}
 В нашем случае невязка -- целевая функция
 $$
-T(w_0,b_0) = \sum_{(x_i,y_i) \in L} \left\| h_{w_0,b_0}(x_i) - y_i \right\|
+T(\hat{\beta},\hat{b}) = \sum_{(x_i,y_i) \in L} \left\| h_{\hat{\beta},\hat{b}}(x_i) - y_i \right\|
 $$
 \begin{itemize}
   \item Просто посчитать
@@ -339,8 +339,8 @@ $$
   \begin{array}{ll}
     DS = L \cup T, L \cap T = \o \\
     \\
-    (w_0,b_0) = \arg\min_(w,b) \sum_{(x_i,y_i) \in L} \left\| x_i^Tw + b - y_i \right\| \\
-    T_T = \sum_{(x_i,y_i) \in T} \left\| h_{w_0}(x_i) - y_i \right\|
+    (\hat{\beta},\hat{b}) = \arg\min_{(\beta,b)} \sum_{(x_i,y_i) \in L} \left\| x_i^T\beta + b - y_i \right\| \\
+    T_T = \sum_{(x_i,y_i) \in T} \left\| h_{\hat{\beta}}(x_i) - y_i \right\|
   \end{array}
 $$
 \end{frame}
@@ -357,7 +357,7 @@ $$
 \subsection{Стабильность решения}
 
 \begin{frame}[t]\frametitle{По стабильности решения}
-Поделим несколько раз и посмотрим на то как меняется $(w_0,b_0)$.
+Поделим несколько раз и посмотрим на то как меняется $(\hat{\beta},\hat{b})$.
 \begin{itemize}
   \item Стабильные компоненты заслуживают веры
   \item Если все нестабильно --- беда-беда
@@ -368,16 +368,16 @@ $$
 \scriptsize
 $$\begin{array}{rl}
 T_L= 6.82 & T_T = 1401.87 \\ 
-\sqrt{\frac{T_L(w_0, b_0)}{n}} = 0.70 & \sqrt{\frac{T_T(w_0, b_0)}{n}} = 10.01 \\ 
-\multicolumn{2}{l}{w_0 = (3.12, -2.39, 0.13, 1.94, -1.09, 0.53, -7.56, -0.04, 0.95, 2.27, 3.23, 3.80)~~b_0 = 17.07} \\ 
+\sqrt{\frac{T_L(\hat{\beta}, \hat{b})}{n}} = 0.70 & \sqrt{\frac{T_T(\hat{\beta}, \hat{b})}{n}} = 10.01 \\ 
+\multicolumn{2}{l}{\hat{\beta} = (3.12, -2.39, 0.13, 1.94, -1.09, 0.53, -7.56, -0.04, 0.95, 2.27, 3.23, 3.80)~~\hat{b} = 17.07} \\ 
 \\ 
 T_L= 0.00 & T_T = 2127.48 \\ 
-\sqrt{\frac{T_L(w_0, b_0)}{n}} = 0.00 & \sqrt{\frac{T_T(w_0, b_0)}{n}} = 11.19 \\ 
-\multicolumn{2}{l}{w_0 = (-4.49, -6.03, 0.43, -2.16, 0.84, 0.90, -0.91, -0.81, -4.45, 1.98, 1.53, 1.53)~~b_0 = 18.27} \\ 
+\sqrt{\frac{T_L(\hat{\beta}, \hat{b})}{n}} = 0.00 & \sqrt{\frac{T_T(\hat{\beta}, \hat{b})}{n}} = 11.19 \\ 
+\multicolumn{2}{l}{\hat{\beta} = (-4.49, -6.03, 0.43, -2.16, 0.84, 0.90, -0.91, -0.81, -4.45, 1.98, 1.53, 1.53)~~\hat{b} = 18.27} \\ 
 \\ 
 T_L= 20.45 & T_T = 305.87 \\ 
-\sqrt{\frac{T_L(w_0, b_0)}{n}} = 1.17 & \sqrt{\frac{T_T(w_0, b_0)}{n}} = 4.85 \\ 
-\multicolumn{2}{l}{w_0 = (0.04, 2.34, -0.33, -0.67, -0.62, -0.65, 2.38, 2.02, -1.34, 0.32, 1.45, -0.34)~~b_0 = 16.87} \\ 
+\sqrt{\frac{T_L(\hat{\beta}, \hat{b})}{n}} = 1.17 & \sqrt{\frac{T_T(\hat{\beta}, \hat{b})}{n}} = 4.85 \\ 
+\multicolumn{2}{l}{\hat{\beta} = (0.04, 2.34, -0.33, -0.67, -0.62, -0.65, 2.38, 2.02, -1.34, 0.32, 1.45, -0.34)~~\hat{b} = 16.87} \\ 
 \end{array}$$
 \end{frame}
 
@@ -386,20 +386,20 @@ T_L= 20.45 & T_T = 305.87 \\
 \scriptsize
 \center{$$
 \begin{array}{ll} 
-{w_0}_{1} & -0.87 \pm 11.45 \\
-{w_0}_{2} & -0.27 \pm 9.28 \\
-{w_0}_{3} & -1.34 \pm 16.78 \\
-{w_0}_{4} & 1.06 \pm 17.27 \\
-{w_0}_{5} & 0.46 \pm 3.82 \\
-{w_0}_{6} & 0.03 \pm 13.75 \\
-{w_0}_{7} & 0.94 \pm 6.32 \\
-{w_0}_{8} & 0.08 \pm 19.94 \\
-{w_0}_{9} & -0.94 \pm 18.65 \\
-{w_0}_{10} & 0.97 \pm 13.10 \\
-{w_0}_{11} & 0.02 \pm 6.97 \\
-{w_0}_{12} & 0.57 \pm 13.07 \\
+{\hat{\beta}}_{1} & -0.87 \pm 11.45 \\
+{\hat{\beta}}_{2} & -0.27 \pm 9.28 \\
+{\hat{\beta}}_{3} & -1.34 \pm 16.78 \\
+{\hat{\beta}}_{4} & 1.06 \pm 17.27 \\
+{\hat{\beta}}_{5} & 0.46 \pm 3.82 \\
+{\hat{\beta}}_{6} & 0.03 \pm 13.75 \\
+{\hat{\beta}}_{7} & 0.94 \pm 6.32 \\
+{\hat{\beta}}_{8} & 0.08 \pm 19.94 \\
+{\hat{\beta}}_{9} & -0.94 \pm 18.65 \\
+{\hat{\beta}}_{10} & 0.97 \pm 13.10 \\
+{\hat{\beta}}_{11} & 0.02 \pm 6.97 \\
+{\hat{\beta}}_{12} & 0.57 \pm 13.07 \\
 \\
-b_0 & 17.04 \pm 0.47 \\
+\hat{b} & 17.04 \pm 0.47 \\
 \\
 Mean~error: & 13.26 \pm 46.89 \\
 \end{array}
@@ -466,11 +466,11 @@ $$}
 \footnotesize
 \center{$$
 \begin{array}{ll} 
-{w_0}_{2} & 1.24 \pm 0.67 \\
-{w_0}_{7} & 0.90 \pm 0.69 \\
-{w_0}_{12} & -0.02 \pm 0.60 \\
+{\hat{\beta}}_{2} & 1.24 \pm 0.67 \\
+{\hat{\beta}}_{7} & 0.90 \pm 0.69 \\
+{\hat{\beta}}_{12} & -0.02 \pm 0.60 \\
 \\
-b_0 & 17.03 \pm 0.49 \\
+\hat{b} & 17.03 \pm 0.49 \\
 \\
 Mean~error: & 2.72 \pm 0.42 \\
 \end{array}
