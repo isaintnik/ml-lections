@@ -131,6 +131,8 @@
 \end{tabular}
 \end{center}
 \end{frame}
+
+
 \begin{frame}[t]\frametitle{Множество на котором обучаемся $L$}
 \tiny
     \DTLsetseparator{,}
@@ -139,7 +141,7 @@
     \renewcommand\dtlintalign{p{1.5em}}
     \renewcommand\dtldisplayvalign{c}
     \renewcommand\dtldisplayafterhead{\hline\\}
-    % \renewcommand*\dtlheaderformat[1]{\textbf{#1}}
+    \renewcommand*\dtlheaderformat[1]{\textbf{#1}}
     \DTLloaddb[noheader,%
     headers={Пол,СШБ,Город,Тип Шк,Проп.,Род.,Пиво,Друзей,D,Ряд,iPad,Голова,Баллы}%
     ]{data}{sample_set_filtered.csv}
@@ -193,9 +195,9 @@
 
 \begin{frame}[t]\frametitle{Решающая функция}
     $$\begin{array}{c}
-      h_{\hat{\beta},\hat{b}}(x) = \hat{\beta}^{T}x + \hat{b} \\
+      h_{\hat{\beta}}(x) = \hat{\beta}^{T}x \\
       \\
-      \hat{\beta}, x \in \mathbb{R}^n, \hat{b} \in \mathbb{R} \\
+      \hat{\beta}, x \in \mathbb{R}^n \\
       \end{array}
     $$
 \begin{itemize}
@@ -208,7 +210,7 @@
 
 \begin{frame}[t]\frametitle{Целевая функция}
     $$
-      (\hat{\beta},\hat{b}) = \arg\min_{(\beta,b)} \sum_{(x_i,y_i) \in L} \| h_{\beta,b}(x_i) - y_i \|
+      \hat{\beta} = \arg\min_{\beta} \sum_{(x_i,y_i) \in L} \| h_{\beta}(x_i) - y_i \|
     $$
 \begin{itemize}
   \item MSE --- годное первое приближение в $\mathbb{R}$
@@ -219,21 +221,19 @@
 \begin{frame}[t]\frametitle{Решение и его интерпретация}
     $$
       \begin{array}{ll}
-      (\hat{\beta}, \hat{b}) &= \arg\min_\beta \sum_{(x_i,y_i) \in L} \left\| x_i^T\beta + b - y_i \right\| \\
-       &= \arg\min_\beta \left\|X^T\beta + b - y\right\|^2 \\
-       &\left\{\begin{array}{l}
-        \hat{\beta} = \left(XX^T\right)^{-1}X(y - \mathbf{1}b) \\
-        \hat{b} = \frac{1}{n} \sum_{i=1}^n y_i
-       \end{array}\right.
+      \hat{\beta} &= \arg\min_\beta \sum_{(x_i,y_i) \in L} \left\| x_i^T\beta - y_i \right\| \\
+       &= \arg\min_\beta \left\|X^T\beta- y\right\|^2 \\
+       &\left\
+        \hat{\beta} = \left(XX^T\right)^{-1}Xy
+       \right.
       \end{array}
     $$
     Вот что получилось:
     {\scriptsize
     $$\begin{array}{ll}
-      \hat{\beta} &= -0.24, 1.17, -5.82, 0.32, 0.30, -2.33, 1.77, -0.01, -0.00, 0.13, 0.03, -0.08\\
-      \hat{b} &= 17.04 \\
+      \hat{\beta} &= 17.04, -0.24, 1.17, -5.82, 0.32, 0.30, -2.33, 1.77, -0.01, -0.00, 0.13, 0.03, -0.08 \\
       T&= 83.06 \\
-      \sqrt{\frac{T(\hat{\beta}, \hat{b})}{n}} &= 1.72\\
+      \sqrt{\frac{T(\hat{\beta})}{n}} &= 1.72\\
     \end{array}
     $$}
 \end{frame}
@@ -270,10 +270,9 @@ $$
 {\em Это стандартная техника, но немного (2 слайда) подумайте насколько она нам подходит.}
 
 {\scriptsize $$\begin{array}{ll}
-  \hat{\beta} &= -0.16, 0.74, -1.47, 0.19, 0.16, -0.67, 1.19, -0.05, -0.02, 0.27, 0.11, -0.08\\
-      \hat{b} &= 17.04 \\
-      T(\hat{\beta}, \hat{b}) &= 82.72 \\
-      \sqrt{\frac{T(\hat{\beta}, \hat{b})}{n}} &= 1.72 \\
+  \hat{\beta} &= 17.04, -0.16, 0.74, -1.47, 0.19, 0.16, -0.67, 1.19, -0.05, -0.02, 0.27, 0.11, -0.08\\
+      T(\hat{\beta}) &= 82.72 \\
+      \sqrt{\frac{T(\hat{\beta})}{n}} &= 1.72 \\
   \end{array}
 $$}
 \end{frame}
@@ -322,7 +321,7 @@ $$}
 \begin{frame}[t]\frametitle{По невязке}
 В нашем случае невязка -- целевая функция
 $$
-T(\hat{\beta},\hat{b}) = \sum_{(x_i,y_i) \in L} \left\| h_{\hat{\beta},\hat{b}}(x_i) - y_i \right\|
+T(\hat{\beta}) = \sum_{(x_i,y_i) \in L} \left\| h_{\hat{\beta}}(x_i) - y_i \right\|
 $$
 \begin{itemize}
   \item Просто посчитать
@@ -339,7 +338,7 @@ $$
   \begin{array}{ll}
     DS = L \cup T, L \cap T = \o \\
     \\
-    (\hat{\beta},\hat{b}) = \arg\min_{(\beta,b)} \sum_{(x_i,y_i) \in L} \left\| x_i^T\beta + b - y_i \right\| \\
+    \hat{\beta} = \arg\min_{\beta} \sum_{(x_i,y_i) \in L} \left\| x_i^T\beta - y_i \right\| \\
     T_T = \sum_{(x_i,y_i) \in T} \left\| h_{\hat{\beta}}(x_i) - y_i \right\|
   \end{array}
 $$
@@ -357,7 +356,7 @@ $$
 \subsection{Стабильность решения}
 
 \begin{frame}[t]\frametitle{По стабильности решения}
-Поделим несколько раз и посмотрим на то как меняется $(\hat{\beta},\hat{b})$.
+Поделим несколько раз и посмотрим на то как меняется $\hat{\beta}$.
 \begin{itemize}
   \item Стабильные компоненты заслуживают веры
   \item Если все нестабильно --- беда-беда
@@ -368,16 +367,16 @@ $$
 \scriptsize
 $$\begin{array}{rl}
 T_L= 6.82 & T_T = 1401.87 \\ 
-\sqrt{\frac{T_L(\hat{\beta}, \hat{b})}{n}} = 0.70 & \sqrt{\frac{T_T(\hat{\beta}, \hat{b})}{n}} = 10.01 \\ 
-\multicolumn{2}{l}{\hat{\beta} = (3.12, -2.39, 0.13, 1.94, -1.09, 0.53, -7.56, -0.04, 0.95, 2.27, 3.23, 3.80)~~\hat{b} = 17.07} \\ 
+\sqrt{\frac{T_L(\hat{\beta}}{n}} = 0.70 & \sqrt{\frac{T_T(\hat{\beta})}{n}} = 10.01 \\ 
+\multicolumn{2}{l}{\hat{\beta} = (17.07, 3.12, -2.39, 0.13, 1.94, -1.09, 0.53, -7.56, -0.04, 0.95, 2.27, 3.23, 3.80)} \\ 
 \\ 
 T_L= 0.00 & T_T = 2127.48 \\ 
-\sqrt{\frac{T_L(\hat{\beta}, \hat{b})}{n}} = 0.00 & \sqrt{\frac{T_T(\hat{\beta}, \hat{b})}{n}} = 11.19 \\ 
-\multicolumn{2}{l}{\hat{\beta} = (-4.49, -6.03, 0.43, -2.16, 0.84, 0.90, -0.91, -0.81, -4.45, 1.98, 1.53, 1.53)~~\hat{b} = 18.27} \\ 
+\sqrt{\frac{T_L(\hat{\beta})}{n}} = 0.00 & \sqrt{\frac{T_T(\hat{\beta})}{n}} = 11.19 \\ 
+\multicolumn{2}{l}{\hat{\beta} = (18.27, -4.49, -6.03, 0.43, -2.16, 0.84, 0.90, -0.91, -0.81, -4.45, 1.98, 1.53, 1.53)} \\ 
 \\ 
 T_L= 20.45 & T_T = 305.87 \\ 
-\sqrt{\frac{T_L(\hat{\beta}, \hat{b})}{n}} = 1.17 & \sqrt{\frac{T_T(\hat{\beta}, \hat{b})}{n}} = 4.85 \\ 
-\multicolumn{2}{l}{\hat{\beta} = (0.04, 2.34, -0.33, -0.67, -0.62, -0.65, 2.38, 2.02, -1.34, 0.32, 1.45, -0.34)~~\hat{b} = 16.87} \\ 
+\sqrt{\frac{T_L(\hat{\beta})}{n}} = 1.17 & \sqrt{\frac{T_T(\hat{\beta})}{n}} = 4.85 \\ 
+\multicolumn{2}{l}{\hat{\beta} = (16.87, 0.04, 2.34, -0.33, -0.67, -0.62, -0.65, 2.38, 2.02, -1.34, 0.32, 1.45, -0.34)} \\ 
 \end{array}$$
 \end{frame}
 
@@ -386,6 +385,7 @@ T_L= 20.45 & T_T = 305.87 \\
 \scriptsize
 \center{$$
 \begin{array}{ll} 
+{\hat{\beta}}_{0} & 17.04 \pm 0.47 \\
 {\hat{\beta}}_{1} & -0.87 \pm 11.45 \\
 {\hat{\beta}}_{2} & -0.27 \pm 9.28 \\
 {\hat{\beta}}_{3} & -1.34 \pm 16.78 \\
@@ -399,7 +399,7 @@ T_L= 20.45 & T_T = 305.87 \\
 {\hat{\beta}}_{11} & 0.02 \pm 6.97 \\
 {\hat{\beta}}_{12} & 0.57 \pm 13.07 \\
 \\
-\hat{b} & 17.04 \pm 0.47 \\
+
 \\
 Mean~error: & 13.26 \pm 46.89 \\
 \end{array}
@@ -470,7 +470,7 @@ $$}
 {\hat{\beta}}_{7} & 0.90 \pm 0.69 \\
 {\hat{\beta}}_{12} & -0.02 \pm 0.60 \\
 \\
-\hat{b} & 17.03 \pm 0.49 \\
+{\hat{\beta}}_{0} & 17.03 \pm 0.49 \\
 \\
 Mean~error: & 2.72 \pm 0.42 \\
 \end{array}
@@ -530,6 +530,27 @@ $$}
 \end{center}
 \end{frame}
 
+\section{Домашнее задание}
+\begin{frame}{Задача}
+
+\begin{itemize}
+  \item Дано: исходные данные этой лекции
+  \item Задача: зарулить по качеству наш результат.
+  \item java или python
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Где брать домашние задания}
+\begin{itemize}
+  \item svn checkout http://ml-lections.googlecode.com/svn/trunk/ ml-lections-read-only
+  \item Бонусом - лекции в tex.
+  \item Лекции находятся в разных папках. В папке лекции есть папка homework.
+  \item Помимо датасетов содержат файл howto.txt
+  \item Вопросы: saintnik@yandex-team.ru
+\end{itemize}
+
+\end{frame}
+
 % \begin{frame}[t]\frametitle{Полезна ли информация, которую несет фактор?}
 
 % \subsubsection{Интерпретируемость в рамках модели}
@@ -583,5 +604,7 @@ $$}
 %   \item Наличие планшета
 % \end{itemize}    
 % \end{frame}
+
+
 
 \end{document} 
