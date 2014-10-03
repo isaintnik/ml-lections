@@ -117,25 +117,26 @@ $$
   \end{array}$$.
 }
 \only<3>{
-  {\color{blue} Вариант 2}\\
+  {\color{blue} Вариант 2}\\ \small
+  Предположим, что посетителей много, и нету таких, которые доставляют особенно сильно. Тогда задача сводится к определению ``жалобщиков'':
+  $$
+  \mathcal{M}(X,F_0) = t_0-\bar{|\delta y|} \sum_{(x, y)} sign(\delta y) F_0(x)
+  $$
+  В этом случае, можно рассматривать $y'$ как новую цель, и решать задачу классификации в $T = p(X|F)$, где $p$ --- вероятность проблемности
+}
+\only<4>{
+  {\color{blue} Вариант 3}\\
   На практике делать опрос типа: ``а вы бы жаловаться пошли?'' --- не удобно, поэтому можно иначе:
   $$\begin{array}{c}
-  \mathcal{T}(X, F') = \sum_{(x,y)} \left(y_a - F'(x)\right)^2\\
-  \mathcal{T}(X, F'') = \sum_{(x,y)} \left(y_b - F''(x)\right)^2\\
+  \mathcal{T}(X_a, F') = \sum_{(x,y_a)} \left(y_a - F'(x)\right)^2\\
+  \mathcal{T}(X_b, F'') = \sum_{(x,y_b)} \left(y_b - F''(x)\right)^2\\
   F(x) = \left\{\begin{array}{ll}
   0 & F'(x) > F''(x)\\
   1 & F'(x) \le F''(x) \\
   \end{array}\right.
   \end{array}$$.
 }
-\only<4>{
-  {\color{blue} Вариант 3}\\ \small
-  Предположим, что посетителей много, и нету таких, которые доставляют особенно сильно. Тогда задача сводится к определению ``жалобщиков'':
-  $$
-  \mathcal{M}(X,F_0) = t_0-\bar{y} \sum_{(x, y)} y'(y) F_0(x)
-  $$
-  В этом случае, можно рассматривать $y'$ как новую цель, и решать задачу классификации в $T = p(X|F)$, где $p$ --- вероятность проблемности
-}
+
 \end{frame}
 
 \begin{frame}{Проблема в построении}
@@ -155,14 +156,13 @@ $$
 Можно исходить из трех соображений:
 \begin{enumerate}
   \item {\color{blue}$\mathcal{T} \equiv \mathcal{M}$:} усреднение $\mathcal{M}$ по всему доступному опыту;
-  \item {\color{blue}$\max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)$:} вероятностное моделирование происходящего: как можно получить $\mathcal{M}$ из удобного $\mathcal{T}$.
   \item {\color{blue}$\arg\max_{F} \mathcal{T}(F, L) = \arg\max_{F} \mathcal{M}(F, L)$:}~\\
   \begin{itemize}
     \item регрессия по ``очкам'': введем для каждого наблюдения стоимость, и будем ее приближать по $\mathcal{T}$;
     \item принцип максимальной энтропии;
     \item принцип минимального описания;
   \end{itemize}
-
+  \item {\color{blue}$\max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)$:} вероятностное моделирование происходящего: как можно получить $\mathcal{M}$ из удобного $\mathcal{T}$.
 \end{enumerate} 
 \end{frame}
 
