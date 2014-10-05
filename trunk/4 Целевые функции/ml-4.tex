@@ -62,7 +62,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2013
+\footnotesize СПб, 2014
 \end{center}
 \end{frame}
 
@@ -124,7 +124,6 @@ $$
   \mathcal{T}(X,p) &= \sum I\{\delta y \le 0\} \log p(x) + I\{\delta y > 0\}\log \left(1-p(x)\right) \\
   F_0 &= \left[\begin{array}{l}0, p(x) \le 0.5\\ 1, p(x) > 0.5\\ \end{array}\right.
   \end{array}$$
-  В этом случае, можно рассматривать $y'$ как новую цель, и решать задачу классификации в $T = p(X|F)$, где $p$ --- вероятность проблемности
 }
 \only<4>{
   {\color{blue} Вариант 3}\\
@@ -218,7 +217,7 @@ $$
 \begin{frame}{Почему это работает}
 Пусть задана метрика $\mathcal{M}$, хотим получить решение $F$, которое ее максимизирует. Введем дополнительную интерпретацию наблюдений $s(y_i) \in \mathbb{R}$. Будем предсказывать $s(y_i)$:
 $$
-F_0 = \arg\min_F \sum_i \|F(x) - s(y_i)\|_{l_q})
+F_0 = \arg\min_F \sum_i \|F(x) - s(y_i)\|_{l_q}
 $$
 \begin{itemize}
   \item формирование $s(y)$ --- отдельная проблема;
@@ -230,7 +229,7 @@ $$
 \begin{frame}{Виды невязки $l_q$}
 Невязку можно интерпретировать по-разному и в зависимости от интерпретации подбирать $q$:
 $$
-l_q(x,b) = \|x - b\|_{l_q} = \left(\sum_i\|x_i - b_i\|^q\right)^\frac{1}{q}
+l_q(x,b) = \|x - b\|_{l_q} = \left(\sum_i|x_i - b_i|^q\right)^\frac{1}{q}
 $$
 Все чуть менее гладко, чем хотелось бы, но и такие штуки оптимизируются с помощью односторонних градиентов.
 \end{frame}
@@ -501,12 +500,33 @@ NB: Чем больше мы в области, тем больше знания
 \end{frame}
 
 \section{ДЗ}
+\begin{frame}{Результаты ДЗ второй недели}
+\scriptsize
+\begin{center}
+\begin{enumerate}
+\item fdbe4e
+\item 6f9680
+\item 68b679
+\item e65928
+\item a4d725
+\item 0bde0b
+\item 76a53b
+\item bc2ae4
+\item fbdc00
+\item 3af84f
+\item ace231
+\item 39ebe9
+\item 4b4041
+\end{enumerate}
+%Не отличаются 2-4 место, 5-7, 8-13
+\end{center}
+\end{frame}
+
 \begin{frame}{Задание на дом}
 \begin{itemize}
   \item Придумать таргеты для некоторых задач; 
   \item Точные задачи приведены в файле howto.txt; 
-  \item Дедлайн 18 октября.
+  \item Дедлайн 10 октября.
 \end{itemize}
-М.: Издательство МЦНМО, 2010
 \end{frame}
 \end{document}
