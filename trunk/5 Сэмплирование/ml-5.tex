@@ -28,7 +28,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2014
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -55,11 +55,10 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2013
+\footnotesize СПб, 2014
 \end{center}
 \end{frame}
 
-\section{Содержание}
 \begin{frame}{Содержание}
 \begin{enumerate}
   \item Понятие сэмплирования
@@ -81,6 +80,9 @@
 \end{enumerate}
 \end{frame}
 
+\section{Создание обучающей выборки}
+
+\subsection{Сэмплирование}
 \begin{frame}{Понятие сэмплирования}
 \textit{Сэмплирование} --- метод исследования множества путём анализа его подмножеств. \\
 Применяется когда:
@@ -142,12 +144,47 @@
 \begin{itemize}
    \item природа и размер возможного сэмпла;
    \item наличие дополнительной информации об элементах;
-   \item необходимя точность измерений;
+   \item необходимая точность измерений;
    \item точность отдельных измерений в сэмплировании;
    \item стоимость измерений.
 \end{itemize}
 \end{frame}
 
+\subsection{О чем еще надо подумать при создании обучающей выборки}
+\begin{frame}{Как делать не нужно}{Байки про ошибки в создании обучающей выборки}
+\begin{itemize}
+  \item Соотношение положительных и отрицательных примеров % Про LTR без фильтрации
+  \item Все решения одинаково бесполезны % YLTRC T1 identity of observation
+  \item Ошибка в данных больше разницы между методами % РОМИП 2003
+  \item Правда в глазах смотрящего (про ошибки в примерах) % "Моя формула не может не выигрывать у прода!"
+  \item Нужно следить за распределением важных параметров, независимо от способа сбора данных % от poyarkov@
+  \item Устаревшие данные % Окна с Дмитрием Нагиевым
+  \item Correlation vs. Causation % от poyarkov@ 
+  \item Зависимость результата от одной точки % Надо поднять vk.com, остальные запросы не важны!
+  \item Закодировать ответ в DS %
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Создание DS --- тоже оптимизация}
+\end{frame}
+
+\begin{frame}{Заключение о построении DS}
+Это все область выборочного контроля про которую много написано:\\
+...
+
+\end{frame}
+
+\section{Переборные методы}
+
+\begin{frame}{Переборные методы как частный случай сэмплирования}
+
+\end{frame}
+
+\begin{frame}{Как устроено пространство решений}
+
+\end{frame}
+
+\subsection{Формальная постановка}
 \begin{frame}{Возвращаясь к ML}
 $$
 F_0 = \arg\max_F p(F|X)
@@ -181,13 +218,14 @@ $$
 \end{enumerate}
 \end{frame}
 
+\subsection{Случайное блуждание}
 \begin{frame}{Случайное блуждание I}
 Чтобы построить порядок обхода можно воспользоваться такой схемой:
 
 $$\begin{array}{l}
-F = F(x, \lambda), \lambda \in \mathbb{R}^n \\
-F_t = F(x, \lambda_t) \\
-\lambda_{t+1} = \lambda_t + \xi~~~~C(\lambda_{t+1} | \{\lambda_i\}_0^t) \\
+F = F(x, \beta), \beta \in \mathbb{R}^n \\
+F_t = F(x, \beta_t) \\
+\beta_{t+1} = \beta_t + \xi~~~~C(\beta_{t+1} | \{\beta_i\}_0^t) \\
 \end{array}$$
 
 \begin{itemize}
@@ -203,8 +241,8 @@ F_t = F(x, \lambda_t) \\
 \begin{frame}{Случайное блуждание II}
 На что стоит обратить внимание при построении блуждания:
 \begin{itemize}
-  \item размерность $\lambda$ может быть меньше чем кажется;
-  \item ограничения на $\lambda$ существенно осложняют процедуру.
+  \item размерность $\beta$ может быть меньше чем кажется;
+  \item ограничения на $\beta$ существенно осложняют процедуру.
 \end{itemize}
 \end{frame}
 
@@ -218,11 +256,12 @@ F_t = F(x, \lambda_t) \\
 \end{itemize}
 \end{frame}
 
+\subsection{Hill climbing}
 \begin{frame}{Simple hill climbing}
 $$\begin{array}{l}
 \xi \sim U(\{\xi_i\}_1^{2n}), \xi_{i\frac{i}{2}} = -1^{i~mod~2}\omega, \xi_{ij} = 0, j \neq \frac{i}{2},\\
 \\
-C(\lambda_{t+1}|\lambda_t) = \frac{p(F(\lambda_{t+1})|X)}{p(F(\lambda_t)|X)} > 1 \\
+C(\beta_{t+1}|\beta_t) = \frac{p(F(\beta_{t+1})|X)}{p(F(\beta_t)|X)} > 1 \\
 \end{array}$$
 Свойства:
 \begin{itemize}
@@ -247,6 +286,7 @@ C(\lambda_{t+1}|\lambda_t) = \frac{p(F(\lambda_{t+1})|X)}{p(F(\lambda_t)|X)} > 1
 $\Rightarrow$ Можно рестартить hill climbing из разных начальных точек
 \end{frame}
 
+\subsection{Сэмплирование марковскими процессами}
 \begin{frame}{Интуиция}
 Мы бы хотели получить сэмплирование, а для этого:
 \begin{itemize}
@@ -259,21 +299,21 @@ $\Rightarrow$ Markov Chain Monte-Carlo (MCMC)
 
 \begin{frame}{Metropolis-Hastings алгоритм}
 
-Введем $p(\lambda_1|\lambda_2)$, отвечающую за локальность.
+Введем $p(\beta_1|\beta_2)$, отвечающую за локальность.
 $$\begin{array}{l}
-\alpha = \frac{p(F_{\lambda_{t+1}}|X)p(\lambda_{t+1}|\lambda_t)}{p(F_{\lambda_t}|X)p(\lambda_t|\lambda_{t+1})}\\
+\alpha = \frac{p(F_{\beta_{t+1}}|X)p(\beta_{t+1}|\beta_t)}{p(F_{\beta_t}|X)p(\beta_t|\beta_{t+1})}\\
 \\
 \psi \sim U(0,1)\\
 \\
-C(\lambda_{t+1}|\lambda_t) = \left\{  
+C(\beta_{t+1}|\beta_t) = \left\{  
            \begin{array}{ll}  
             1,& \alpha \ge \psi \\  
             0 &\\  
            \end{array}   
            \right.  
 \end{array}$$
-Например, $p(\lambda_{t+1}|\lambda_t) \sim N(\lambda_t,\sigma^2E)$ \\
-Если $p(\lambda_1 | \lambda_2) = p(\lambda_2 | \lambda_1)$ --- это Metropolis \\ 
+Например, $p(\beta_{t+1}|\beta_t) \sim N(\beta_t,\sigma^2E)$ \\
+Если $p(\beta_1 | \beta_2) = p(\beta_2 | \beta_1)$ --- это Metropolis \\ 
 \end{frame}
 
 \begin{frame}{Свойства}
@@ -307,11 +347,12 @@ $\Rightarrow$ \textit{Точно придём в максимум!} \\
 
 \begin{frame}{Сложности в использовании}
 \begin{itemize}
-  \item Сходимость зависит от выбора $p(\lambda_{t+1}|\lambda_{t})$
+  \item Сходимость зависит от выбора $p(\beta_{t+1}|\beta_{t})$
   \item Если хотим использовать разумное распределение, оно многомерное $\Rightarrow$ его сложно реализовывать
 \end{itemize}
 \end{frame}
 
+\subsection{Expectation-Maximization}
 \begin{frame}{Пример с дартс I}
 \small
 Вася и Петя повесели на стене мишень и поиграли в дартс. На следующий день пришел их бригадир Юра и задался вопросом кто из подчиненных будет заделывать дырки в стенах.
@@ -327,7 +368,7 @@ $\Rightarrow$ \textit{Точно придём в максимум!} \\
 
 \begin{frame}{Пример с дартс II}
 \small
-При фиксированных параметрах вероятность увидить дырки $\{x_j\}, x_j \in \mathbb{R}^2$
+При фиксированных параметрах вероятность увидеть дырки $\{x_j\}, x_j \in \mathbb{R}^2$
 $$
 LL = \sum_j \log(\pi N(m_A, \Sigma_A)(x_j) + (1 - \pi) N(m_B, \Sigma_B)(x_j))
 $$
@@ -352,34 +393,35 @@ $$
 
 \begin{frame}{Expectation maximization алгоритм}
 \small
-Фокус, который мы проделали называется $EM$-алгоритм. Пускай данные у нас состоят из видимой части $L$ и скрытой $Z$, $X = (L,Z)$. Мы хотим найти оптимальные параметры $\lambda$:
+Фокус, который мы проделали называется $EM$-алгоритм. Пускай данные у нас состоят из видимой части $L$ и скрытой $Z$, $X = (L,Z)$. Мы хотим найти оптимальные параметры $\beta$:
 $$
-LL(p(L|\lambda)) = LL(p(X|\lambda))
+LL(p(L|\beta)) = LL(p(X|\beta))
 $$
 \begin{enumerate}
-  \item Возьмем какой-то $\lambda_0$
+  \item Возьмем какой-то $\beta_0$
   \item Посчитаем ожидание (expectation step):
   $$
-  E(\lambda | \lambda_t) = \mu\left(LL(\lambda,X) | Z,\lambda_t \right)
+  E(\beta | \beta_t) = \mu\left(LL(\beta,X) | Z,\beta_t \right)
   $$
   \item Проведем оптимизацию (maximization step):
   $$
-  \lambda_{t+1} = \arg \max_{\lambda} E(\lambda | \lambda_t)
+  \beta_{t+1} = \arg \max_{\beta} E(\beta | \beta_t)
   $$
   \item Перейти к второму шагу до сходимости
 \end{enumerate}
 \end{frame}
 
+\subsection{Сэмплирование Гиббса как расширение EM}
 \begin{frame}{Алгоритм Гиббса}
-В Метрополисе есть проблема: многомерное распределение $p(F|X) = p(\lambda|X)$. Можно попробовать рассматривать его по частям.
+В Метрополисе есть проблема: многомерное распределение $p(F|X) = p(\beta|X)$. Можно попробовать рассматривать его по частям.
 \begin{enumerate}
-  \item Начнем с какого-то $\lambda$
-  \item Сгенерируем $\lambda_{t+1}$ по правилам
+  \item Начнем с какого-то $\beta$
+  \item Сгенерируем $\beta_{t+1}$ по правилам
 $$
-p(\lambda_{t + 1,i} | X, \lambda_{t+1,1},\ldots,\lambda_{t+1, i-1}, \lambda_{t, i+1},\ldots, \lambda_{t,n})
+p(\beta_{t + 1,i} | X, \beta_{t+1,1},\ldots,\beta_{t+1, i-1}, \beta_{t, i+1},\ldots, \beta_{t,n})
 $$
   \item Будем бегать по $i=1\ldots n$, пока не сойдется
-  \item Полученная $\lambda$ --- следующая точка сэмплирования
+  \item Полученная $\beta$ --- следующая точка сэмплирования
   \item Пока хочется идем в п.2
 \end{enumerate}
 \end{frame}
@@ -397,13 +439,14 @@ $$
 
 \begin{frame}{Как можно построить $p(F|X)$ для RMSE}
 $$\begin{array}{l}
-p(\lambda|X) = \frac{e^{-c\|F(\lambda|X) - Y\|_2}}{Z} \\
+p(\beta|X) = \frac{e^{-c\|F(\beta|X) - Y\|_2}}{Z} \\
 \\
-Z = \int\limits_{\lambda} e^{-c\|F(\lambda|X) - Y\|}d\lambda
+Z = \int\limits_{\beta} e^{-c\|F(\beta|X) - Y\|}d\beta
 \end{array}$$
 Если максимизируем, то надеемся задрать $Y$ так, чтообы $Z$ был определён. 
 \end{frame}
 
+\section{Заключение}
 \begin{frame}{Заключение}
 Сэмплирование очень полезная вещь:
 \begin{itemize}
