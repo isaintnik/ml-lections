@@ -96,7 +96,7 @@
 \begin{frame}{Алгоритм сэмплирования}
 \begin{enumerate}
    \item Понять какое множество мы изучаем
-   \item Осознать что из этого множества мы можем измерить
+   \item Осознать, что из этого множества мы можем измерить
    \item Определить количество измерений
    \item Разработать план сэмплирования
    \item Провести сэмплирование
@@ -126,9 +126,9 @@
    \begin{itemize}
     \item Простое вероятностное
     \item Систематическое
-    \item Стратифицированное
     \item Пропорциональное
     \item Кластерное
+    \item Стратифицированное
    \end{itemize}
    \item Невероятностное сэмплирование
    \begin{itemize}
@@ -138,6 +138,23 @@
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Простое вероятностное}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Simple}
+\end{center}
+\end{frame}
+
+\begin{frame}{Кластерное}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Cluster}
+\end{center}
+\end{frame}
+
+\begin{frame}{Стратифицированное}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{Stratified}
+\end{center}
+\end{frame}
 
 \begin{frame}{Как выбрать нужное?}
 Надо учитывать:
@@ -177,13 +194,13 @@ F_0 =& \arg \max_{F} \mu_{\xi \sim D} T(y_{\xi}, F(x_{\xi})) \\
 $$
 D = \arg \max_{D} \mu_{\eta \sim \Gamma} T(y_{\eta}, \arg \max_{F} \mu_{\xi \sim D} T(y_{\xi}, F(x_{\xi}))(x_\eta))
 $$
-Это такая переборная оптимизация
+Это такая оптимизация
 \end{frame}
 
 \begin{frame}{Заключение о построении DS}
 Это все область выборочного контроля про которую много написано:\\
 
-Создание хорошего обучаещего множества --- половина успеха. У меня нету универсальной схемы как такое делать, и есть ощущение, что это на грани искуства.
+Создание хорошего обучаещего множества --- половина успеха. У меня нету универсальной схемы как такое делать, и есть ощущение, что это на грани искусcтва.
 \end{frame}
 
 \section{Переборные методы}
@@ -279,7 +296,7 @@ C(\beta_{t+1}|\beta_t) = \frac{p(F(\beta_{t+1})|X)}{p(F(\beta_t)|X)} > 1 \\
 \begin{itemize}
   \item простой;
   \item быстро сходится;
-  \item зависим от выбора начальной точки.
+  \item зависим от выбора начальной точки;
   \item etc.
 \end{itemize}
 \end{frame}
@@ -476,7 +493,8 @@ Z = \int\limits_{\beta} e^{-c\|F(\beta|X) - Y\|}d\beta
   \item $N(t) = (\frac{1}{1 + e^{at+b}})N_0$
   \item Ищем $a$, $b$, $N_0$
   \item Можно прямо hill climbing
-  \item Можно подумать и воспользоваться алгоритмом Гиббса 
+  \item Можно подумать и воспользоваться алгоритмом Гиббса (это будет плюсом)
+  \item Дедлайн 17 октября
 \end{itemize}
 \end{frame}
 
