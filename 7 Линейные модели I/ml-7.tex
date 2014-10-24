@@ -92,7 +92,7 @@ $$
 {\partial T \over \partial X} = 2 X^T\left(X\beta - y\right) = 0
 $$
 $$
-\beta_0 = (X^TX)^{-1}X^Ty
+\hat{\beta} = (X^TX)^{-1}X^Ty
 $$
 \end{frame}
 
@@ -104,7 +104,7 @@ $$
 \end{center}
 Об этом говорит (если нам все удалось):
 $$
-X^T(y - \hat{y}) = X^T(y - X\beta_0) = 0
+X^T(y - \hat{y}) = X^T(y - X\hat{\beta}) = 0
 $$
 В случае, если $rank(X) < n$ ортогональность остается!
 \end{frame}
@@ -128,9 +128,9 @@ $$
 $$
 Var(\beta) = \left(X^TX\right)^{-1}\frac{1}{m - n - 1}\|y - \hat{y}\|_2
 $$
-А если еще и предположить, что $y=\beta_1^Tx + \epsilon$ и $\epsilon \sim N(0,\sigma)$:
+А если еще и предположить, что $y={\beta^*}^Tx + \epsilon$ и $\epsilon \sim N(0,\sigma)$:
 $$
-\beta_0 \sim N(\beta_1, \left(X^TX\right)^{-1}\sigma^2)
+\hat{\beta} \sim N(\beta^*, \left(X^TX\right)^{-1}\sigma^2)
 $$
 а наблюдаемая $\sigma$ для $y$ распределена по $\chi^2$:
 $$
@@ -138,16 +138,16 @@ $$
 $$
 \end{frame}
 
-\begin{frame}{А точно $\beta_{0_i} \ne 0$?}
+\begin{frame}{А точно $\hat{\beta}_i \ne 0$?}
 Введем такую штуку ($Z$-score):
 $$
-z_i = \frac{\beta_{0_i}}{\hat{\sigma}\sqrt{v_i}}
+z_i = \frac{\hat{\beta}_i}{\hat{\sigma}\sqrt{v_i}}
 $$
-где $v_i$ --- диагональный элемент $\left(X^TX\right)^{-1}$. Если подумать что $\beta_{0_i} = 0$, то:
+где $v_i$ --- диагональный элемент $\left(X^TX\right)^{-1}$. Если подумать что $\hat{\beta}_i = 0$, то:
 $$
 z_i \sim T_{m-n-1}
 $$
-Чем больше $Z$-score, тем более мы уверены, что $\beta_{0_i} \ne 0$
+Чем больше $Z$-score, тем более мы уверены, что $\hat{\beta}_i \ne 0$
 \end{frame}
 
 \subsection{Теорема Гаусса-Маркова}
@@ -258,7 +258,7 @@ p(j) = \frac{m_j}{m},\\
 \begin{frame}{Логистическая регрессия}
 Будем искать не дискриминантные функции, а напрямую границы между классами:
 $$
-log\left(\frac{p(j|x)}{p(k|x)}\right) = x^T \beta_{u}
+0 = log\left(\frac{p(j|x)}{p(k|x)}\right) = x^T \beta_{u}
 $$
 Преобразование справа --- logit. Тогда вероятности можно найти так:
 $$
@@ -280,8 +280,15 @@ $$
 Как будем искать?
 \end{frame}
 
-\begin{frame}{Оптимизация логистическая регрессия}
-$\frac{\partial T}{\partial x}$
+\begin{frame}{Оптимизация логистической регрессии}
+Сумма выпуклых --- выпукла, будем смотреть на каждую точку в отдельности.
+$$
+\log {e^{x^T\beta_y} \over 1 + \sum_{v} e^{x^T\beta_v}}
+$$
+$$
+x^T\beta_y - \log \left(1 + \sum_{v} e^{x^T\beta_v}\right)
+$$
+Левая часть -- выпукла, правая часть --- комбинация выпуклой и линейной, выпукла. Градиентный спуск спасет отцов!
 \end{frame}
 
 \begin{frame}{Когда что?}
