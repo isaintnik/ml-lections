@@ -40,6 +40,16 @@
      \addtolength\displaywidth{-#1}}}
 \newcommand{\itemi}{\item[\checkmark]}
 
+\AtBeginSection[]
+{  
+ \addtocounter{framenumber}{-1}
+ \begin{frame}<beamer>
+   \frametitle{План}
+   \small
+   \tableofcontents[currentsection]
+ \end{frame}
+}
+
 \title{Линейные модели: жатые чувства, SVM (начнем)\\\small{}}
 \author[]{\small{%
 И.~Куралёнок,
@@ -59,6 +69,7 @@
 \footnotesize СПб, 2013
 \end{center}
 \end{frame}
+
 \section{Постановка задачи восстановления сигнала}
 \subsection{Пример}
 \begin{frame}{Пример}
@@ -69,14 +80,15 @@
 \begin{center}
 \includegraphics[width=0.7\textwidth]{CS-ProblemSetup-1.png}
 \end{center}
-\vspace{-1em}
-\small
+\vspace{-2em}
 \begin{itemize}
-  \item Хотим восстановить сигнал $x^0$
-  \item Хотим как можно меньше ``смотреть в телевизор''
-  \item Матрица $A$ в данном случате --- то, что происходит в голове Сергея Юрьевича
+  \item В телевизоре хотят сказать $x^0$ ($\beta^*$)
+  \item Матрица $A$ ($X$) --- язык передачи
+  \item $y^0$ ($y$) --- то, что мы видим
 \end{itemize}
-\footnotesize Картинка из Tutorial ICML2010 by Irina Rish \& Genady Grabarnik
+\footnotesize
+$\Rightarrow$ Хотим устроить язык передачи так, чтобы минимизировать количество наблюдений, для восстановления $\hat{\beta}$ как можно ближе к правде $\beta^*$\\
+\tiny Картинка из Tutorial ICML2010 by Irina Rish \& Genady Grabarnik
 \end{frame}
 
 \begin{frame}{Сюрприз compressed sensing}
@@ -111,39 +123,58 @@ $\Rightarrow$ где-то мы уже такое видели
 
 \subsection{Разложение сигнала в Фурье и постановка в нахождении коэффициентов}
 \begin{frame}{Постановка в терминах RFP I}
-Нам надо перевести произвольный сигнал (в нашем примере он же во времени!) в линейную комбинацию:
-$$\begin{array}{c}
-\hat{x_\omega} = \sum_{\omega \in \mathbb{Z}_n} x_j e^{-2\pi i \omega j \over n} \\
-\mathcal{F}x = \hat{x}
+\small
+Будем рассматривать множество возможных наблюдений как ось времени, тогда можно рассматривать передачу информации о загаданном $\beta^*$ как моделирование сигнала через разложение в Фурье. При этом, для простоты, будем считать, что количество возможных наблюдений совпадает с размерностью вектора $\beta^*$, в этом случае мы можем рассматривать преобразование как линейную систему DFT: 
+$$\begin{array}{rl}
+y & = \mathcal{F} \beta^* \\
+& = \sum_{t = 1}^n \beta_t e^{-2\pi i \omega t \over n}
 \end{array}$$
-После того как мы все посчитаем в терминах $\hat{x_\omega}$, восстановить телевизор мы сможем по IDFT ($\mathcal{F}^{-1}=\frac{1}{n}\mathcal{F^*}$).
+Возвращаясь к примеру, для Сергея Юрьевича ситуация выглядит как-то так:
+$$
+\beta^* = \mathcal{F}^{-1} \mathcal{F} \beta^* = \frac{1}{n}\mathcal{F^*} \mathcal{F} \beta^*
+$$
 \end{frame}
 
 \section{LASSO для восстановления сигнала}
+
 \begin{frame}{Постановка в терминах RFP II}
   $$\begin{array}{l}
   \arg \min_\beta\|\beta\|_1\\
-  y = X\beta
+  \|y - X\beta\| < \epsilon
   \end{array}$$
  В новых обозначениях:
 $$\begin{array}{l}
 \arg \min_\beta \|\beta\|_1 \\
-(\mathcal{F}\beta)_k = (\mathcal{F}x)_k, k \in \Omega
+\|(\mathcal{F}\beta)_\Omega - (\mathcal{F}\beta^*)_\Omega\| < \epsilon
 \end{array}$$
 \end{frame}
+
+\begin{frame}{LASSO для восстановления сигнала}
+Для начала решим задачу в которой наблюдения точные:
+$$
+y = (\mathcal{F}\beta^*)_k, k \in \Omega
+$$
+При этом будем решать 
+$$\begin{array}{l}
+\arg \min_\beta \|\beta\|_1 \\
+(\mathcal{F}\beta)_k = (\mathcal{F}\beta^*)_k, k \in \Omega
+\end{array}$$
+с равными размерностями $\beta^*$ и $\mathcal{F}\beta^*$.
+\end{frame}
+
 
 \subsection{Теорема о качестве восстановленного сигнала (Candes et al. 2006)}
 \begin{frame}{Теорема о качестве восстановленного сигнала для RFP}
 \small
 \begin{theorem}[Candes et al. (2006)]
 \begin{itemize}
-\item[] $x\in\mathbb{C}^n : \{i \in \mathbb{Z}_n|x_i \ne 0\} = T \subset \mathbb{Z}_n$ 
+\item[] $\beta\in\mathbb{C}^n, |\{i \in \mathbb{Z}_n|\beta^*_i \ne 0\}| = S$ 
 \item[] $\Omega \subset \mathbb{Z}_n$ --- одно из равновероятных множеств размера $n$
 \item[] зафиксируем точность $B$
 \end{itemize}
-$\Rightarrow$ c вероятностью $P \ge 1 - O(n^{-B})$ мы можем точно восстановить $x$, если:
+$\Rightarrow$ c вероятностью $P \ge 1 - O(n^{-B})$ мы можем точно восстановить $\beta^*$, если:
 $$
-\|\Omega\| \ge C^{'}_B|T|\log m
+|\Omega| \ge C^{'}_B S \log n
 $$
 где $C^{'}_B \simeq 23(B + 1)$
 \end{theorem}
@@ -184,18 +215,17 @@ $$
 \begin{frame}{А что же с произвольно построенным $X$?}
 Пока Сергей Юрьевич получал закодированный в Фурье сигнал и раскодировал его обратным Фурье. А что, если кодировани и раскодирование сигнала происходит как-то иначе. Положим, что так:
 $$
-(\Phi \beta)_\Omega = (\Psi x)_\Omega
+\beta^* = \Phi^{-1} \Phi \beta^* = \Psi \Phi \beta^*
 $$
-В данном случае мы верим в то, что $dim(\Phi)=dim(\Psi)$, более того, будем рассматривать ортонормированные $\Phi, \Psi$
-
+Будем рассматривать ортонормированные $\Phi, \Psi$
 \end{frame}
 
 \begin{frame}{Когерентность базисов}
 \small
 \begin{definition}
-Для пары ортонормальных базисов назовем
+Для пары ортонормированных базисов назовем
 $$
-\mu(\Phi, \Psi) = \sqrt{n}\max_{i,j} |\phi_i, \psi_j|
+\mu(\Phi, \Psi) = \sqrt{n}\max_{i,j} |(\phi_i, \psi_j)|
 $$
 \textbf{когерентностью}.
 \end{definition}
@@ -208,7 +238,7 @@ $$
 \begin{frame}{Теорема о качестве восстановленного сигнала для произвольных базисов}
 \small
 \begin{theorem}[Candes and Romberg (2006)]
-Для фиксированной $\delta > 0$ и $x \in \mathbb{R}^n$, $|\{i | x_i \ne 0\}| < S$. Выберем $\Omega$ точек для наблюдения равномерно из $\mathbb{Z}_n$ без повторений. Если
+Для фиксированной $\delta > 0$ и $x \in \mathbb{R}^n$, $|\{i | \beta^*_i \ne 0\}| < S$. Выберем $\Omega$ точек для наблюдения равномерно из $\mathbb{Z}_n$ без повторений. Если
 $$|\Omega| \ge C \mu^2(\Phi,\Psi)S\log {n\over\delta}$$
 тогда решение LASSO:
 $$\begin{array}{l}
@@ -220,17 +250,26 @@ $$\begin{array}{l}
 \end{frame}
 
 \subsection{LASSO persistency theorem (Bickel et al., 2009)}
-\begin{frame}{Что дальше?}
+\begin{frame}{Возвращаемся к случаю шумных наблюдений}
 \small
+Воспользовавшись построенной теорией для точных наблюдений, введем ряд дополнительных ограничений:
 \begin{enumerate}
-  \item Вводим ограничение на модельную матрицу (Restricted Isomenry Property), которое позволяет перейти от условий на модуль образа к условиям на модуль исходного вектора
+  \item Вводим ограничение на модельную матрицу (Restricted Isomenry Property): 
+  $$\begin{array}{l}
+  \exists \delta(S = |\{i | x \ne 0\}|): \\
+  (1-\delta(S)) \|x\|_2 \le \|Ax\|_2 \le (1 + \delta(S)) \|x\|_2
+  \end{array}$$
   \item В введенных условиях получаем ограничение на робастность в рамках восстановления сигнала
   \item Переходим от когерентности к условиям на собственные числа модельной матрицы
 \end{enumerate}
-В итоге получается, что (LASSO persistency theorem, Bickel et al., 2009):
+\end{frame}
+\begin{frame}{LASSO persistency theorem}
+Во введенных условиях оказывается, что (LASSO persistency theorem, Bickel et al., 2009):
 $$
 \|\hat{\beta} - \beta^*\| \le O\left(\sqrt{\log n \over m}\right)
 $$
+Сравним полученное с условиями на несмещенное решение, где мы могли легко убежать бесконечно далеко от заданного $\beta^*$. 
+
 \end{frame}
 
 \begin{frame}{Что мы узнали про CS}
@@ -358,12 +397,12 @@ $$
 $$ 
 $$
 \left\{  
-           \begin{array}{ll}  
-            -\mathcal{L} = -\sum_{i=1}^m\lambda_i + \frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\lambda_i\lambda_j y_i y_j (x_i x_j) \\  
-            \lambda_i \ge 0 & \\
-            \sum_{i=1}^m\lambda_i y_i = 0
-           \end{array}   
-           \right.
+  \begin{array}{ll}  
+  -\mathcal{L} = -\sum_{i=1}^m\lambda_i + \frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\lambda_i\lambda_j y_i y_j (x_i x_j) \\  
+  \lambda_i \ge 0 & \\
+  \sum_{i=1}^m\lambda_i y_i = 0
+  \end{array}   
+  \right.
 $$
 Тогда: \
 $$\begin{array}{l}
@@ -380,11 +419,11 @@ $$\begin{array}{l}
 \end{itemize}
 \end{frame}
 
-\subsection{Переход к дуальному решению}
-\subsection{Идея как можно на халяву это решить}
-\subsection{Kernel trick}
-\subsection{Сведение SVM к регуляризации (основная идея)}
-\subsection{Домашнее задание}
+% \subsection{Переход к дуальному решению}
+% \subsection{Идея как можно на халяву это решить}
+% \subsection{Kernel trick}
+% \subsection{Сведение SVM к регуляризации (основная идея)}
+\section{Домашнее задание}
 
 
 
