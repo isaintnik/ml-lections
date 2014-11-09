@@ -40,6 +40,16 @@
      \addtolength\displaywidth{-#1}}}
 \newcommand{\itemi}{\item[\checkmark]}
 
+\AtBeginSection[]
+{  
+ \addtocounter{framenumber}{-1}
+ \begin{frame}<beamer>
+   \frametitle{План}
+   \small
+   \tableofcontents[currentsection]
+ \end{frame}
+}
+
 \title{Линейные модели: SVM (продолжение). Collaborative filtering.\\\small{}}
 \author[]{\small{%
 И.~Куралёнок,
@@ -62,11 +72,29 @@
 
 % Классные слайды http://www.cs.nyu.edu/~mohri/icml2011-tutorial/tutorial-icml2011-1.pdf
 \section{SVM (продолжение)}
-\begin{frame}{Что мы узнали в прошлый раз}
+\begin{frame}{Что мы узнали в прошлый раз I}
+Вид двойственной задачи в случае линейной разделимости:
+$$\begin{array}{l}
+\arg \min_\lambda -\sum_{i=1}^m\lambda_i + \frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\lambda_i\lambda_j y_i y_j (x_i x_j) \\ 
+\left\{  
+  \begin{array}{ll}  
+  \lambda_i \ge 0 & \\
+  \sum_{i=1}^m\lambda_i y_i = 0
+  \end{array}   
+  \right.
+\end{array}$$
+Из решения двойственной задачи, можно получить решения прямой:
+$$\begin{array}{l}
+\beta = \sum_{i=1}^m\lambda_i y_i x_i \\
+\beta_0 = \beta x_i - y_i, \lambda_i > 0
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Что мы узнали в прошлый раз II}
 \small
 \begin{itemize}
   \item Было бы классно найти такую плоскость, которая сильнее всего поделит на классы
-  \item Если множества линейно разделимы, то надо минимизировать $\|w\|$
+  \item Если множества линейно разделимы, то надо минимизировать $\|\beta\|$
   \item Если перейти к дуальной задаче, зависимость от $x$ окажется только через скалярные произведения, которые мы можем ``организовать'' по своему разумению
   \item В дуальном решении условия очень просты и можно организовать безусловную оптимизацию заменой переменных
   \item Количество компонент оптимизации пропорционально квадрату количества точек, что много
@@ -81,9 +109,9 @@
 \end{center}
 Перенесем точки-``нарушители'' на границу и добавим к целевой функции стоимость этого переноса:
 $$\begin{array}{l}
-\arg \min \|w\| + c\sum_i \xi_i \\
+\arg \min \|\beta\| + c\sum_i \xi_i \\
 \left\{\begin{array}{l}
-y_i(\beta^T x_i - b) + \xi_i \ge 1 \\
+y_i(\beta^T x_i - \beta_0) + \xi_i \ge 1 \\
 \xi_i \ge 0
 \end{array}\right.
 \end{array}$$
@@ -91,12 +119,12 @@ y_i(\beta^T x_i - b) + \xi_i \ge 1 \\
 
 \begin{frame}{Решение с мягкими границами}
 \small
-Прямая задача:
+Прямая задача (заметим, что $dim(\lambda) = 2 m$):
 $$\begin{array}{ll}
-\arg \min_{w,\xi,b} \max_{\lambda} & \|w\| \\
+\arg \min_{\beta,\xi} \max_{\lambda} & \|\beta\| \\
   & + c\sum_i \xi_i \\
-  & - \sum_i \lambda_{i} \left(y_i (w x_i - b) + \xi_i - 1\right) \\
-  & - \sum_i \lambda_{i+n} \xi_i \\
+  & - \sum_i \lambda_{i} \left(y_i (\beta x_i - \beta_0) + \xi_i - 1\right) \\
+  & - \sum_i \lambda_{i+m} \xi_i \\
 \lambda_i > 0
 \end{array}$$
 
@@ -112,7 +140,7 @@ $$
 \right.
 \end{array}
 $$
-Где-то мы такое уже видели.
+Где-то мы такое (почти) уже видели. Решать такое надо условной оптимизацией, при этом задача не всегда выпукла (если $((x_i,x_j)) \succeq 0$).
 \end{frame}
 
 \begin{frame}{Нелинейные решения в SVM (Ядра)}
@@ -141,39 +169,55 @@ $$
 \end{description}
 В этом случае решение будет выглядеть иначе:
 $$
-h(x) = sign \left(\sum_i \lambda_i y_i (K(x_i, x) + b)\right)
+h(x) = sign \left(\sum_i \lambda_i y_i (K(x_i, x) + \beta_0)\right)
 $$
 Заметим, что можно выкинуть все точки в которых $\lambda_i = 0$ (это какие?).
+\end{frame}
+
+\begin{frame}{Как подобрать ядро для решения задачи?}
 \end{frame}
 
 \subsection{Сведение SVM к линейной системе с регуляризацией} % из книжки
 
 \begin{frame}{SVM и регуляризация}
 \small
-Вспомним как выглядит наша решающая функция (без ядер): $h(x) = sign(x^T w + b)$. Тогда проблему можно переформулировать так:
+Вспомним как выглядит наша решающая функция (без ядер): $h(x) = sign(x^T \beta + \beta_0)$. Тогда проблему можно переформулировать так:
 $$
-\min \sum_i (1 - y_i h(x_i))_+ + \frac{\lambda}{2} \|w\|^2
+\min \sum_i (1 - y_i h(x_i))_+ + \frac{\lambda}{2} \|\beta\|^2
 $$
-А это минимизация hinge loss с $l_2$ регуляризацией. Теперь тоже самое, но с ядрами, $h(x) = sign \left(\sum_i \lambda_i y_i (K(x_i, x) + b)\right)$:
+А это минимизация hinge loss с $l_2$ регуляризацией. Теперь тоже самое, но с ядрами, $h(x) = sign \left(\sum_i \lambda_i y_i (K(x_i, x) + \beta_0)\right)$:
 $$
-\min \sum_i (1 - y_i h(x_i))_+ + \frac{\lambda}{2} w^T K w
+\min \sum_i (1 - y_i h(x_i))_+ + \frac{\lambda}{2} \beta^T K \beta
 $$
 где $K : k_{ij} = K(x_i, x_j)$. Нас никто не ограничивает hinge loss, можно все тоже самое, но с любым другим лосем!
 \end{frame}
 
+\subsection{Регрессия в ядрах}
 \begin{frame}{Kernel Ridge Regression}
 \small
-Если применима к любым функциям потерь, то почему не к $l_q$? Нормировка $b$ нам теперь не нужна, поэтому:
+Если применима к любым функциям потерь, то почему не к $l_q$? Нормировка $\beta_0$ нам теперь не нужна, поэтому:
 $$
-h(x) = sign \left(\sum_i \lambda_i K(x_i, x)\right)
+h(x) = \sum_i \lambda_i K(x_i, x)
 $$
 Поигравшись в подстановку получим:
 $$
-\min_\lambda с \lambda^T\lambda - 2 \lambda y - \lambda^T K \lambda
+\min_\lambda \|y - h(x)\|_2 + \frac{\lambda}{2}\beta^TK\beta
+$$
+
+$$
+\min_\lambda y^T y - 2 y^T h(x) + h(x)^T h(x) + \frac{\lambda}{2}\beta^TK\beta
+$$
+
+$$
+\min_\lambda - 2 y^T K \lambda  + \lambda K^T K \lambda^T + \frac{\lambda}{2}\beta^TK\beta
+$$
+
+$$
+\min_\lambda \lambda^T\lambda - 2 \lambda^T y + \lambda^T K \lambda
 $$
 или
 $$
-\min_\lambda \lambda (K + cE) \lambda - 2\lambda^T y
+\min_\lambda \lambda^T (K + cE) \lambda - 2\lambda^T y
 $$
 или
 $$
@@ -209,7 +253,8 @@ $$
 
 \section{Collaborative filtering}
 
-\subsection{Пример} % переработать http://habrahabr.ru/company/surfingbird/blog/139022/ на Сифона/Бороду
+\subsection{Пример}
+% переработать http://habrahabr.ru/company/surfingbird/blog/139022/ на Сифона/Бороду
 % \begin{frame}{Вася и Петя \& подарки}
 % Вася и Петя собирали подарки для друзей из другого города. Друзья загадочные, но известно, что у них есть. Надо подобрать подарки так, чтобы им понравилось, используя знание о том, что обычно встречается вместе в домах.
 % \end{frame}
@@ -286,7 +331,6 @@ $$
 Регулируя $r$ можно добиться сопостовимого с $X$ количества информации в правой части. Решение исходной задачи можно получить из $C_0$.
 \end{frame}
 
-\subsection{Простое SVD разложение}  % Гантмахер
 \begin{frame}{Как построить разложение}
 Заметим, что:
 $$
@@ -338,7 +382,6 @@ AICc(h, y, X) = AIC(h,y,X) + \frac{2d(h)(d(h) + 1)}{|X| - d(h) - 1}
 $$
 \end{frame}
 
-\subsection{Про что мы умолчали}
 \begin{frame}{Какие еще подходы бывают}
 \begin{itemize}
   \item Co-clustering
@@ -377,6 +420,8 @@ $$
 \end{itemize}
 \end{frame}
 
+\section{Заключение}
+
 \begin{frame}{Что мы сегодня узнали I}
 \small
 Про SVM
@@ -408,7 +453,7 @@ $$
 \end{itemize}
 \end{frame}
 
-\subsection{Домашнее задание}
+\section{Домашнее задание}
 \begin{frame}{Результаты 5-й недели}
 \begin{itemize}
   \item В формулировку домашних заданий закрался баг.

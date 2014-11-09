@@ -59,6 +59,16 @@
 \end{center}
 \end{frame}
 
+\AtBeginSection[]
+{  
+ \addtocounter{framenumber}{-1}
+ \begin{frame}<beamer>
+   \frametitle{План}
+   \tableofcontents[currentsection]
+ \end{frame}
+}
+
+
 \section{Variance линейных моделей слишком велик!}
 \begin{frame}{Переобозначение параметра решающей функции!}
 $\lambda$ --- мало. С сегодняшнего дня вместо него $\beta$
