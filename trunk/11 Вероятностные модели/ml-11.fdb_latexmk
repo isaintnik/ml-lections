@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1386945222 "ml-11.tex" "ml-11.pdf" "ml-11" 1386945224
+["pdflatex"] 1416127688 "ml-11.tex" "ml-11.pdf" "ml-11" 1416127690
   "/usr/local/texlive/2013/texmf-dist/tex/context/base/supp-pdf.mkii" 1337017135 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/local/texlive/2013/texmf-dist/tex/generic/babel-english/english.ldf" 1367878877 6963 2e0cb3d93aa64508bdb0db58ae900d97 ""
   "/usr/local/texlive/2013/texmf-dist/tex/generic/babel-russian/russianb.ldf" 1367878990 18675 63fcc9407825a54c733ae718bb76018d ""
@@ -179,16 +179,17 @@
   "/usr/local/texlive/2013/texmf-dist/tex/latex/xcolor/xcolor.sty" 1169481954 55224 a43bab84e0ac5e6efcaf9a98bde73a94 ""
   "images/LDA.png" 1386928282 23880 8fa7d221a698e7a095a09362fec35003 ""
   "images/Mixture.png" 1386926239 13593 284ba46064b44fc924efb49db3b49e03 ""
+  "images/MoreComplexSample.png" 1416127109 14069 3630098904c49569df5c2e732cf95e10 ""
   "images/Unigram.png" 1386925086 11723 66d5451f9f3fcfd40aef50f45f42097b ""
   "images/levels.png" 1386923121 617866 c7506dc6cd5830e440eb307926f5dda9 ""
   "images/pLSA.png" 1386926764 15763 3f7114bdf603dd55f7e6418a3962e93c ""
-  "ml-11.aux" 1386945224 10528 a5f258cd9a37d90557eedeee2a8bbb4f ""
-  "ml-11.nav" 1386945224 6585 9ac5c921119d6c9f9b1ac369d33901e2 ""
-  "ml-11.out" 1386945224 338 eaad4954137bf000e27da3fc8309e653 ""
-  "ml-11.tex" 1386945221 12110 cd51c48d6ebe69c2bdf7509f367827f7 ""
+  "ml-11.aux" 1416127690 10659 fd49a1ac1e9b9f2f224175bb2ef2f0e7 ""
+  "ml-11.nav" 1416127690 6680 97073b4e45157ce000334bbd79c75ebb ""
+  "ml-11.out" 1416127690 338 eaad4954137bf000e27da3fc8309e653 ""
+  "ml-11.tex" 1416127687 12527 f03bcbba5ceb7b61f7d138fef3db6305 ""
   (generated)
-  "ml-11.pdf"
-  "ml-11.log"
   "ml-11.out"
+  "ml-11.log"
   "ml-11.nav"
   "ml-11.aux"
+  "ml-11.pdf"
