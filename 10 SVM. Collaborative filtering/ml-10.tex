@@ -28,7 +28,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2014
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -66,7 +66,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2013
+\footnotesize СПб, 2014
 \end{center}
 \end{frame}
 
@@ -175,6 +175,11 @@ $$
 \end{frame}
 
 \begin{frame}{Как подобрать ядро для решения задачи?}
+\begin{enumerate}
+\item Cross-fold
+\item Исследование топологии $\Phi(x)$ \\
+\small напримир, точки одного класса должны быть поближе, другого --- подальше.
+\end{enumerate}
 \end{frame}
 
 \subsection{Сведение SVM к линейной системе с регуляризацией} % из книжки
@@ -195,33 +200,18 @@ $$
 \subsection{Регрессия в ядрах}
 \begin{frame}{Kernel Ridge Regression}
 \small
-Если применима к любым функциям потерь, то почему не к $l_q$? Нормировка $\beta_0$ нам теперь не нужна, поэтому:
-$$
-h(x) = \sum_i \lambda_i K(x_i, x)
-$$
-Поигравшись в подстановку получим:
-$$
-\min_\lambda \|y - h(x)\|_2 + \frac{\lambda}{2}\beta^TK\beta
-$$
+Если применима к любым функциям потерь, то почему не к $l_q$? Рассмотрим задачу оптимизации:
+$$\begin{array}{l}
+\min \sum \xi^2 \\
+\left\{\begin{array}{l}
+  y_i - \beta^T \phi(x_i) = \xi_i, \forall i \\
+  \|\beta\| \le B
+\end{array}\right.
+\end{array}$$
 
+Такое мы уже делали, поэтому приведу лишь результат ($\lambda = \lambda(B)$):
 $$
-\min_\lambda y^T y - 2 y^T h(x) + h(x)^T h(x) + \frac{\lambda}{2}\beta^TK\beta
-$$
-
-$$
-\min_\lambda - 2 y^T K \lambda  + \lambda K^T K \lambda^T + \frac{\lambda}{2}\beta^TK\beta
-$$
-
-$$
-\min_\lambda \lambda^T\lambda - 2 \lambda^T y + \lambda^T K \lambda
-$$
-или
-$$
-\min_\lambda \lambda^T (K + cE) \lambda - 2\lambda^T y
-$$
-или
-$$
-\lambda = \left(K + с E\right)^{-1}y
+\beta^* = 2 \lambda \left(K + \lambda E\right)^{-1}y
 $$
 \end{frame}
 
@@ -361,15 +351,6 @@ $$\begin{array}{c}
 \arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + 2 \left(d(u) + d(v)\right) \sigma^2_\epsilon \\
 \arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + log |X| \left(d(u) + d(v)\right) \sigma^2_\epsilon\\
 \end{array}$$
-\end{frame}
-
-\begin{frame}{Еще один подход к регуляризации}
-\small
-Есть случайная величина $\xi$, будем считать среднее средневыборочное значение, получим, например, такой график:
-\begin{center}
-\includegraphics[height=0.5\textheight, width=0.8\textwidth]{D.png}
-\end{center}
-когда мы получаем реализацию дисперсии, то находимся где-то на этом графике, но ведем себя так как будто в бесконечности.
 \end{frame}
 
 \begin{frame}{Akaike information criterion}

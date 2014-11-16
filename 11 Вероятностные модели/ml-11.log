@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.9.15)  13 DEC 2013 18:33
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013) (format=pdflatex 2013.9.15)  16 NOV 2014 11:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2317,19 +2317,7 @@ Package pdftex.def Info: images/LDA.png used on input line 205.
 (pdftex.def)             Requested size: 167.73676pt x 78.14316pt.
  [13
 
- <./images/LDA.png>]
-! Missing \right. inserted.
-<inserted text> 
-                \right .
-l.221 \end{frame}
-                 
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-[14
+ <./images/LDA.png>] [14
 
 ]
 Overfull \hbox (8.65703pt too wide) detected at line 232
@@ -2342,7 +2330,17 @@ Overfull \hbox (8.65703pt too wide) detected at line 232
 
 ] [17
 
-] [18
+]
+<images/MoreComplexSample.png, id=524, 227.85126pt x 221.82875pt>
+File: images/MoreComplexSample.png Graphic file (type png)
+
+<use images/MoreComplexSample.png>
+Package pdftex.def Info: images/MoreComplexSample.png used on input line 260.
+(pdftex.def)             Requested size: 133.7705pt x 130.23729pt.
+ [18
+
+ <./images/MoreComplexSample.png>]
+[19
 
 ]
 \tf@nav=\write6
@@ -2354,11 +2352,11 @@ Overfull \hbox (8.65703pt too wide) detected at line 232
 \tf@snm=\write8
 \openout8 = `ml-11.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 258.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 258.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 269.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 269.
  (./ml-11.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 258.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 258.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 269.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 269.
 Package rerunfilecheck Info: File `ml-11.out' has not changed.
 (rerunfilecheck)             Checksum: EAAD4954137BF000E27DA3FC8309E653;338.
 
@@ -2366,13 +2364,13 @@ Package rerunfilecheck Info: File `ml-11.out' has not changed.
 LaTeX Font Warning: Size substitutions with differences
 (Font)              up to 1.0pt have occurred.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 258.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 269.
  ) 
 Here is how much of TeX's memory you used:
- 19903 strings out of 493311
- 371923 string characters out of 6137850
+ 19912 strings out of 493311
+ 372110 string characters out of 6137850
  453657 words of memory out of 5000000
- 22777 multiletter control sequences out of 15000+600000
+ 22783 multiletter control sequences out of 15000+600000
  20765 words of font info for 60 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
  56i,14n,69p,1086b,670s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -2397,10 +2395,10 @@ e/2013/texmf-dist/fonts/type1/public/cm-super/sfss0800.pfb></usr/local/texlive/
 13/texmf-dist/fonts/type1/public/cm-super/sfss1200.pfb></usr/local/texlive/2013
 /texmf-dist/fonts/type1/public/cm-super/sfss1440.pfb></usr/local/texlive/2013/t
 exmf-dist/fonts/type1/public/cm-super/sfss2074.pfb>
-Output written on ml-11.pdf (18 pages, 965918 bytes).
+Output written on ml-11.pdf (19 pages, 977194 bytes).
 PDF statistics:
- 625 PDF objects out of 1000 (max. 8388607)
- 548 compressed objects within 6 object streams
- 44 named destinations out of 1000 (max. 500000)
- 244 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 654 PDF objects out of 1000 (max. 8388607)
+ 574 compressed objects within 6 object streams
+ 46 named destinations out of 1000 (max. 500000)
+ 249 words of extra memory for PDF output out of 10000 (max. 10000000)
 
