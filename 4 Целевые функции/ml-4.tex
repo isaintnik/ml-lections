@@ -35,7 +35,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2015
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -62,7 +62,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2014
+\footnotesize СПб, 2015
 \end{center}
 \end{frame}
 
@@ -107,6 +107,7 @@ $$
   \item[$\mathcal{M}$] $\mathcal{M}(X,F_0) = t_0 - \sum_{(x,y_a,y_b)} (y_a F_0(x) + y_b (1 - F_0(x))$ время сна;
   \item[$\mathcal{T}$] способы оценить проверку входящих:
 \end{mydescription}
+\footnotesize
 \only<2>{
   {\color{blue} Вариант 1}\\
   Преобразуем таргет:
@@ -124,6 +125,7 @@ $$
   \mathcal{T}(X,p) &= \sum I\{\delta y \le 0\} \log p(x) + I\{\delta y > 0\}\log \left(1-p(x)\right) \\
   F_0 &= \left[\begin{array}{l}0, p(x) \le 0.5\\ 1, p(x) > 0.5\\ \end{array}\right.
   \end{array}$$
+  В этом случае, можно рассматривать $I\{\delta y \le 0\}$ как новую цель, и решать задачу классификации.
 }
 \only<4>{
   {\color{blue} Вариант 3}\\
@@ -187,6 +189,14 @@ $$
 \end{description} 
 \end{frame}
 
+\begin{frame}{Параметры невязки}
+В зависимости от постановки задачи нам могут быть важны разные аспекты:
+\begin{itemize}
+  \item Устойчивость к выбросам $\Rightarrow$ преобразования $y_i$
+  \item Вклад каждого наблюдения $\Rightarrow$ способы усреднения по наблюдениям $\Rightarrow$ $l_q$
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Средние значения бывают разные}
 Последнюю проблему можно решить с помощью других средних:
 
@@ -201,6 +211,7 @@ $$
 A(\{x_i\}) = f^{-1}\left(\frac{1}{n} \sum_i f(x_i)\right)
 $$
 В этих терминах все средние отличаются лишь отображением $f$;
+\footnotesize
 \begin{description}
   \item[арифметическое]: $f(x) = x$; 
   \item[геометрическое]: $f(x) = \log x$; 
@@ -274,6 +285,7 @@ $$
 \subsection{Вероятностные модели}
 
 \begin{frame}{Моделирование вахтера}
+\small
 Попробуем объяснить происходящее, зная как оно бывает:
 \begin{description}
   \item[Местные] проблемные только если выпьют;
@@ -283,15 +295,22 @@ $$
     \item[Неприличные] могут нахамить, могут создать проблемы.
   \end{description}
 \end{description}
-Составим из этой картины мира вероятностную модель, и оптимизируем ее.
+Составим из этой картины мира вероятностную модель.
+\tiny
+$$
+P(Trouble|x) = P(Local|x) P(Drunk|x) + (1 - P(Local|x)) (1 - (1 - P(Drunk|x)) (1 - P(Idiot|x))
+$$
+\small
+Исходя из принципа, который нам нравится больше всего, найдем опримальные выражения для $P(*|x)$.
 \end{frame}
 
 \begin{frame}{Оптимизация вероятностной модели}
 $$
 \arg \max_F p(F|X)
 $$
+\small
 \begin{itemize}
-  \item В вероятностях проще рассуждать о жизни
+  \item В вероятностях проще рассуждать о жизни\footnote{Заметим, что это восем не та вероятность, что была на предыдущем слайде!}
   \item Интересно найти параметры, которые наиболее вероятны при наблюдаемых данных
   \item Обычно непонятно как это распределение построить напрямую
 \end{itemize}
@@ -302,8 +321,9 @@ $$
 $$
 \max_{\mathcal{T}} \mathcal{M} \left(\arg\max_{F} \mathcal{T}(F, L)\right)(T)
 $$
-с использованием натурального интеллекта :).
+с использованием натурального интеллекта, изменяя представление о предмете через $\mathcal{T}$ :).
 \end{frame}
+
 \begin{frame}{Байесовские методы}
 $$
 p(f | X) = \frac{p(X|f) p(f)}{p(X)} \sim p(X|f) p(f)
@@ -319,20 +339,42 @@ $$
 \end{frame}
 
 \begin{frame}{Байесовские методы (практика)}
+\small
 \begin{enumerate}
-  \item Задаем априорное распределение параметров (например N(0,1))
+  \item Задаем априорное распределение параметров решающей функции ($\beta$)
   \item Вычисляем вероятность X, считая что точки независимы и одинаково распределены
   $$
   p(X|f) = \prod_i p(x_i|f)
   $$
-  \item Получаем распределение из которого можно посамплить
+  \item Получаем распределение над $\beta$ из которого можно посамплить
   \item Усредняем посампленное
 \end{enumerate}
 \end{frame}
 
+\begin{frame}{Байесовские методы (пример)}
+\tiny
+$$
+P(Trouble|x) = P(Local|x) P(Drunk|x) + (1 - P(Local|x)) (1 - (1 - P(Drunk|x)) (1 - P(Idiot|x))
+$$
+\footnotesize
+\begin{enumerate}
+  \item Положим, что люди приходят одни и те же (чтобы не вводить обобщения в решающей функции).
+  \item Будем моделировать $P(*|x)$ через разные $Be(a,b)$, будем считать $\beta = \{a_i, b_i\}$, для всех посетителей.
+  \item Возьмем уже известную нам статистику по появлению посетителей в разных состояниях $*$ и сформируем по ним $\bar{\beta}$.
+  \item Для каждого \textit{нового} посетителя узнаем истинное значение проблемности и поймем с какой вероятностью его предсказывает модель при фиксированных параметрах $P(*|x)$. Если посетителей много, перемножим вероятности, считая, что прецеденты независимы.
+  \item Решающая функция будет такая:
+\end{enumerate}
+\tiny
+$$
+\int_{P(*|x)\sim Be(\bar{\beta})} P(Trouble|x, P(*|x)) d P(*|x)
+$$
+\end{frame}
+
 \begin{frame}{Байесовские методы (свойства)}
+\small
 % \textbf{\color{green}Pros}
 \begin{description}
+  \item[\color{green}+] По сути нету никакой оптимизации, напрямую конструируем решающую функцию
   \item[\color{green}+] Все честно с точностью до входных данных и построенной модели
   \item[\color{green}+] Можно использовать информацию о предыдущем обучении (задавая prior)
   \item[\color{green}+] Можно понять погрешность предсказания (даже если она не выводится аналитически)
@@ -359,6 +401,21 @@ $$
 получим \textbf{maximum a posteriori}.
 \end{frame}
 
+\begin{frame}{Максимум апостериори (пример)}
+\tiny
+$$
+P(Trouble|x) = P(Local|x) P(Drunk|x) + (1 - P(Local|x)) (1 - (1 - P(Drunk|x)) (1 - P(Idiot|x))
+$$
+\footnotesize
+\begin{enumerate}
+  \item Положим, что люди приходят одни и те же (чтобы не вводить обобщения в решающей функции).
+  \item Будем моделировать $P(*|x)$ через разные $Be(a,b)$, будем считать $\beta = \{a_i, b_i\}$, для всех посетителей.
+  \item Возьмем уже известную нам статистику по появлению посетителей в разных состояниях $*$ и сформируем по ним $\bar{\beta}$.
+  \item Для каждого \textit{нового} посетителя узнаем истинное значение проблемности и поймем какой набор $\hat{P}(*|x)$, который наилучшим образом объясняет происходящее с учетом вероятности этого значения из $Be(\beta)$
+  \item В качестве решающей функции возьмем набор $\hat{P}(*|x)$
+\end{enumerate}
+\end{frame}
+
 \begin{frame}{Метод максимального правдоподобия}{(Байес совсем по простому)}
 \begin{itemize}
   \item Лень придумывать prior
@@ -375,6 +432,21 @@ F = & \arg \max_F p(X|f) = \arg \max_F \prod_i p(x_i | f) \\
 Заметим, что prior не корректен, в случае $|F| = \infty$.
 \end{frame}
 
+\begin{frame}{Метод максимального правдоподобия (пример)}
+\tiny
+$$
+P(Trouble|x) = P(Local|x) P(Drunk|x) + (1 - P(Local|x)) (1 - (1 - P(Drunk|x)) (1 - P(Idiot|x))
+$$
+\footnotesize
+\begin{enumerate}
+  \item Положим, что люди приходят одни и те же (чтобы не вводить обобщения в решающей функции).
+  \item Будем моделировать $P(*|x)$ через разные $Be(a,b)$, будем считать $\beta = \{a_i, b_i\}$, для всех посетителей.
+  \item Возьмем уже известную нам статистику по появлению посетителей в разных состояниях $*$ и сформируем по ним $\bar{\beta}$.
+  \item Для каждого \textit{нового} посетителя узнаем истинное значение проблемности и поймем какой набор $\hat{P}(*|x)$, который наилучшим образом объясняет происходящее.
+  \item В качестве решающей функции возьмем набор $\hat{P}(*|x)$
+\end{enumerate}
+\end{frame}
+
 \begin{frame}{Веса при LL}
 $$\begin{array}{rl}
 F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
@@ -389,7 +461,6 @@ F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
 \end{frame}
 
 \subsection{Математические свойства ММП}
-
 \begin{frame}{Сходимость ММП}
 \begin{itemize}
   \item Идентификация (все функции разные);
@@ -410,14 +481,14 @@ F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
 \begin{itemize}
   \item Первые две производные $L$ определены:
   $$\begin{array}{l}
-    F = F(x, \lambda) \\
-    i_{j,k} = \mu_X(\frac{\partial^2L}{\partial\lambda_j\partial\lambda_k})
+    F = F(x, \beta) \\
+    i_{j,k} = \mu_X(\frac{\partial^2L}{\partial\beta_j\partial\beta_k})
   \end{array}$$
   \item Матрица $I$ не ноль, непрерывная функция лямбды;
   \item Выполняется консистентность;
   \item И всё остальное хорошо:
   $$
-  \sqrt{n}(\lambda_{mle} - \lambda_0) \overset{d}{\to} \mathcal{N}(0, I^{-1})
+  \sqrt{n}(\beta_{mle} - \beta_0) \overset{d}{\to} \mathcal{N}(0, I^{-1})
   $$
 \end{itemize}
 \end{frame}
@@ -436,20 +507,25 @@ F = & \arg \max_F \prod_i \left(p(x_i | F)\right)^{n(\frac{w_i}{Z}N)} \\
 
 \begin{frame}{Принцип максимальной энтропии II}
 \begin{itemize}
-  \item Выразим априорные свойства в виде ограничений;
-  \item Найдём распределение обладающее максимальной энтропией;
-  \item Когда хочется своего $p(x|I)$ решение будет другое.
+  \item Выразим априорные свойства (наш $X, Y$) в виде ограничений;
+  \item Из всех решений, соответствующих свойствам, найдем обладающее максимальной энтропией;
 \end{itemize}
+\small
+\noindent Например ограничения такие:
 $$\begin{array}{l}
-\sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, \ldots, m \\
+\sum_i p(x_i|I)f_k(x_i) = f_k^0, k = 1, \ldots, m
+$$
+
+Тогда максимальной энтропией будет обладать такое решение:
+$$
+p(x|I) = \frac{1}{Z}e^{\sum_1^m\beta_kf_k(x)} \\
 \\
-p(x|I) = \frac{1}{Z}e^{\sum_k\lambda_kf_k(x)} \\
+Z = \sum_i\exp^{\sum_k\beta_kf_k(x)} \\
 \\
-Z = \sum_i\exp^{\sum_k\lambda_kf_k(x)} \\
-\\
-f_k^0 = \frac{\partial}{\partial\lambda_k}logZ
+f_k^0 = \frac{\partial}{\partial\beta_k}logZ
 \end{array}$$
 \end{frame}
+
 
 \begin{frame}{Почему это работает} % переход в общие термины
 $\arg\max_{F} \mathcal{T}(F, L) = \arg\max_{F} \mathcal{M}(F, L)$
@@ -461,11 +537,10 @@ $\arg\max_{F} \mathcal{T}(F, L) = \arg\max_{F} \mathcal{M}(F, L)$
 
 \begin{frame}{Принцип наименьшего описания}
 \begin{itemize}
-  \item Формализация бритвы Оккама;
-  \item Колмогоров/Solomonoff;
-  \item Вводим сложность по Колмогорову;
-  \item Находим оптимальное решение; 
-  \item По хорошему вероятность = 1.
+  \item Формализация бритвы Оккама
+  \item Колмогоров/Solomonoff
+  \item Вводим сложность по Колмогорову
+  \item Находим оптимальное решение
 \end{itemize}
 $$
   F_0 = \arg\min_{F:p(X|F)\ge\epsilon} C(F)
