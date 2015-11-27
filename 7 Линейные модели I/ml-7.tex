@@ -28,7 +28,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2014
+    Санкт-Петербург, 2015
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -55,7 +55,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2014
+\footnotesize СПб, 2015
 \end{center}
 \end{frame}
 
@@ -126,7 +126,7 @@ $$
 \begin{frame}{Статистические свойства решения}
 Если наблюдения независимы, $Var(y) = const$, а $x$ вычислены точно:
 $$
-Var(\beta) = \left(X^TX\right)^{-1}\frac{1}{m - n - 1}\|y - \hat{y}\|_2
+Var(\hat{\beta}) = \left(X^TX\right)^{-1}\frac{1}{m - n - 1}\|y - y^*\|_2
 $$
 А если еще и предположить, что $y={\beta^*}^Tx + \epsilon$ и $\epsilon \sim N(0,\sigma)$:
 $$
@@ -134,7 +134,7 @@ $$
 $$
 а наблюдаемая $\sigma$ для $y$ распределена по $\chi^2$:
 $$
-(n-m-1)\hat{\sigma} = \|y - \hat{y}\|_2 \sim \sigma \chi^2_{m-n-1}
+(n-m-1)\hat{\sigma} = \|y - y^*\|_2 \sim \sigma \chi^2_{m-n-1}
 $$
 \end{frame}
 
