@@ -28,7 +28,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2015
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -66,7 +66,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2013
+\footnotesize СПб, 2015
 \end{center}
 \end{frame}
 
@@ -78,17 +78,44 @@
 \end{frame}
 \begin{frame}{Пример: постановка задачи}
 \begin{center}
-\includegraphics[width=0.7\textwidth]{CS-ProblemSetup-1.png}
+\includegraphics[width=0.6\textwidth]{CS-ProblemSetup-1.png}
 \end{center}
 \vspace{-2em}
+\small
 \begin{itemize}
   \item В телевизоре хотят сказать $x^0$ ($\beta^*$)
+  \item Говорят много ($n$), но информации там мало ($k$)
   \item Матрица $A$ ($X$) --- язык передачи
   \item $y^0$ ($y$) --- то, что мы видим
 \end{itemize}
 \footnotesize
 $\Rightarrow$ Хотим устроить язык передачи так, чтобы минимизировать количество наблюдений, для восстановления $\hat{\beta}$ как можно ближе к правде $\beta^*$\\
 \tiny Картинка из Tutorial ICML2010 by Irina Rish \& Genady Grabarnik
+\end{frame}
+
+\begin{frame}{Restricted isometry property}
+Пусть $A$ --- матрица $m\times n$, $1 \le s \le n$. Если существует $\delta_s$, такая что:
+$$
+(1-\delta_s)\|y\|^2_2 \le \|A_sy\|^2_2 \le (1+\delta_s)\|y\|^2_2
+$$
+для любой подматрицы $A_s$, состоящей из $s$ столбцов матрицы $A$, и $\forall y$. Тогда матрица $A$ удовлетворяет $s$-ограниченным изометрическим свойством ($s$-Restricted Isometry Property).
+\end{frame}
+
+\begin{frame}{Решение точной задачи}
+\begin{center}
+\includegraphics[width=0.6\textwidth]{CS-ProblemSetup-1.png}
+\end{center}
+\vspace{-1em}
+
+\small
+Если язык (матрица $A$) устроен ``правильно'' (удовлетворяет k-RIP), то решение:
+$$
+\min_{x : y^0 = A x} \|x\|_1 
+$$
+восстановит загаданный $x^0$. Или в наших обозначениях:
+$$
+\beta^* = \min_{\beta : y = X \beta} \|\beta\|_1
+$$
 \end{frame}
 
 \begin{frame}{Сюрприз compressed sensing}
@@ -98,7 +125,7 @@ y = X\beta + \epsilon
 $$
 Если компоненты матрицы $X$ независимые, одинаково распределенные, нормальные, то $\beta$ можно восстановить точно с большой вероятностью:
 \begin{itemize}
-  \item из $O(k log(\frac{m}{k}))$ измерений;
+  \item из $O(k log(\frac{n}{k}))$ измерений;
   \item решив оптимизацию
     $$\begin{array}{l}
     \arg \min_\beta\|\beta\|_1\\
@@ -126,12 +153,12 @@ $\Rightarrow$ где-то мы уже такое видели
 \small
 Будем рассматривать множество возможных наблюдений как ось времени, тогда можно рассматривать передачу информации о загаданном $\beta^*$ как моделирование сигнала через разложение в Фурье. При этом, для простоты, будем считать, что количество возможных наблюдений совпадает с размерностью вектора $\beta^*$, в этом случае мы можем рассматривать преобразование как линейную систему DFT: 
 $$\begin{array}{rl}
-y & = \mathcal{F} \beta^* \\
-& = \sum_{t = 1}^n \beta_t e^{-2\pi i \omega t \over n}
+z & = \mathcal{F} \beta^* \\
+z_\omega& = \sum_{t = 0}^n \beta_t e^{-2\pi i \omega t \over n}
 \end{array}$$
-Возвращаясь к примеру, для Сергея Юрьевича ситуация выглядит как-то так:
+Возвращаясь к примеру, для Сергея Юрьевича, если он смотрел до конца, и все хорошо понимал, ситуация выглядит как-то так:
 $$
-\beta^* = \mathcal{F}^{-1} \mathcal{F} \beta^* = \frac{1}{n}\mathcal{F^*} \mathcal{F} \beta^*
+\hat{\beta} = \mathcal{F}^{-1} \mathcal{F} \beta^* = \frac{1}{n}\mathcal{F^*} \mathcal{F} \beta^* = \beta^*
 $$
 \end{frame}
 
@@ -147,32 +174,33 @@ $$\begin{array}{l}
 \arg \min_\beta \|\beta\|_1 \\
 \|(\mathcal{F}\beta)_\Omega - (\mathcal{F}\beta^*)_\Omega\| < \epsilon
 \end{array}$$
+где $\Omega$ --- множество моментов наблюдения.
 \end{frame}
 
 \begin{frame}{LASSO для восстановления сигнала}
 Для начала решим задачу в которой наблюдения точные:
 $$
-y = (\mathcal{F}\beta^*)_k, k \in \Omega
+z = (\mathcal{F}\beta^*)_k, k \in \Omega
 $$
 При этом будем решать 
 $$\begin{array}{l}
 \arg \min_\beta \|\beta\|_1 \\
 (\mathcal{F}\beta)_k = (\mathcal{F}\beta^*)_k, k \in \Omega
 \end{array}$$
-с равными размерностями $\beta^*$ и $\mathcal{F}\beta^*$.
+с равными размерностями $\beta^*$ и $\mathcal{F}\beta^*$. Оказывается, что $\mathcal{F}^{-1} \mathcal{F}$ --- RIP. Так что $\hat{\beta} = \beta^*$.
 \end{frame}
-
 
 \subsection{Теорема о качестве восстановленного сигнала (Candes et al. 2006)}
 \begin{frame}{Теорема о качестве восстановленного сигнала для RFP}
 \small
 \begin{theorem}[Candes et al. (2006)]
 \begin{itemize}
-\item[] $\beta\in\mathbb{C}^n, |\{i \in \mathbb{Z}_n|\beta^*_i \ne 0\}| = S$ 
-\item[] $\Omega \subset \mathbb{Z}_n$ --- одно из равновероятных множеств размера $n$
-\item[] зафиксируем точность $B$
+\item[--] $\beta\in\mathbb{C}^n, |\{i \in \mathbb{Z}_n|\beta^*_i \ne 0\}| = S$ 
+\item[--] $\Omega \subset \mathbb{Z}_n$ --- одно из равновероятных множеств фиксированного размера $|\Omega|$
+\item[--] зафиксируем точность $B$
 \end{itemize}
-$\Rightarrow$ c вероятностью $P \ge 1 - O(n^{-B})$ мы можем точно восстановить $\beta^*$, если:
+\vspace{-1em}
+$\Rightarrow$ c вероятностью $P \ge 1 - O(n^{-B})$ мы можем точно восстановить $\hat{\beta} = \beta^*$, если:
 $$
 |\Omega| \ge C^{'}_B S \log n
 $$
@@ -183,7 +211,7 @@ $$
 \begin{frame}{Выводы из теоремы}
 \begin{itemize}
   \item Теорема рассказывает о свойствах случайной DFT проекции
-  \item Загаданный вектор $x$ может быть восстановлен:
+  \item Загаданный вектор $\beta^*$ может быть восстановлен:
   \begin{itemize}
     \item с высокой вероятностью
     \item используя LASSO
@@ -193,7 +221,7 @@ $$
 \end{frame}
 
 \begin{frame}{Упрощение рандома}
-В теореме $\Omega$ равномерно распределена по всем множествам размера $n$. Такое сложно генерировать. Значительно проще $\Omega^{'}: \forall j \in \mathbb{Z}_n, P(j \in \Omega) = \tau$. \\
+В теореме $\Omega$ равномерно распределена по всем множествам фиксированного размера. Такое сложно генерировать. Значительно проще $\Omega^{'}: \forall j \in \mathbb{Z}_n, P(j \in \Omega) = \tau$. \\
 $\Rightarrow$ Для таких проекций вероятность восстановить сигнал примерно такая же.
 \end{frame}
 
@@ -203,19 +231,19 @@ $\Rightarrow$ Для таких проекций вероятность восс
 Интересны два вида ``стабильности'':
 \begin{description}
   \item[стабильность:] маленькие изменения в решении при малом изменении в наблюдениях (изменения в загаданном);
-  \item[робастность:] устойчивость к шуму в данных (неточно померяли отлик $x$).
+  \item[робастность:] устойчивость к шуму в данных (неточно померяли отлик $y$).
 \end{description}
-Если мы уже решили проблему построения $T$, то решение стабильно:
+Если мы уже решили проблему построения $T$ (множества загаданных ненулей), то решение стабильно:
 $$
 \hat{\beta} = (\mathcal{F}^*_{T,\Omega}\mathcal{F}_{T,\Omega})^{-1}\mathcal{F}^*_{T,\Omega}y
 $$
-Из доказательства теоремы о восстановлении сигнала $\mathcal{F}^*_{T,\Omega}\mathcal{F}_{T,\Omega} > \delta E$ c высокой вероятностью при условии на $\Omega$. А вот с робастностью все сложнее...
+Из доказательства теоремы о восстановлении сигнала $\mathcal{F}^*_{T,\Omega}\mathcal{F}_{T,\Omega} \succeq \delta E$ c высокой вероятностью при условии на $\Omega$. А вот с робастностью все сложнее...
 \end{frame}
 
-\begin{frame}{А что же с произвольно построенным $X$?}
+\begin{frame}{Можно ли как-то подругому построить $X$?}
 Пока Сергей Юрьевич получал закодированный в Фурье сигнал и раскодировал его обратным Фурье. А что, если кодировани и раскодирование сигнала происходит как-то иначе. Положим, что так:
 $$
-\beta^* = \Phi^{-1} \Phi \beta^* = \Psi \Phi \beta^*
+\hat{\beta} = \Phi^{-1} \Phi \beta^* = \Psi \Phi \beta^*
 $$
 Будем рассматривать ортонормированные $\Phi, \Psi$
 \end{frame}
@@ -238,14 +266,14 @@ $$
 \begin{frame}{Теорема о качестве восстановленного сигнала для произвольных базисов}
 \small
 \begin{theorem}[Candes and Romberg (2006)]
-Для фиксированной $\delta > 0$ и $x \in \mathbb{R}^n$, $|\{i | \beta^*_i \ne 0\}| < S$. Выберем $\Omega$ точек для наблюдения равномерно из $\mathbb{Z}_n$ без повторений. Если
+Для фиксированной $\delta > 0$ и $\beta^* \in \mathbb{R}^n$, $|\{i | \beta^*_i \ne 0\}| < S$. Выберем $\Omega$ точек для наблюдения равномерно из $\mathbb{Z}_n$ без повторений. Если
 $$|\Omega| \ge C \mu^2(\Phi,\Psi)S\log {n\over\delta}$$
 тогда решение LASSO:
 $$\begin{array}{l}
-\arg \min_{\beta \in \mathbb{R}^n} \|\beta\|_1 \\
-(\Phi \beta)_\Omega = (\Psi x)_\Omega
+\hat{\beta} = \arg \min_{\beta \in \mathbb{R}^n} \|\beta\|_1 \\
+(\Phi \beta)_\Omega = (\Psi \beta^*)_\Omega
 \end{array}$$
-восстановит $x$ с вероятностью $1 - \delta$
+восстановит $\hat{\beta} = \beta^*$ с вероятностью $1 - \delta$
 \end{theorem}
 \end{frame}
 
@@ -254,11 +282,11 @@ $$\begin{array}{l}
 \small
 Воспользовавшись построенной теорией для точных наблюдений, введем ряд дополнительных ограничений:
 \begin{enumerate}
-  \item Вводим ограничение на модельную матрицу (Restricted Isomenry Property): 
-  $$\begin{array}{l}
-  \exists \delta(S = |\{i | x \ne 0\}|): \\
-  (1-\delta(S)) \|x\|_2 \le \|Ax\|_2 \le (1 + \delta(S)) \|x\|_2
-  \end{array}$$
+  \item Вводим ограничение на модельную матрицу, что она $k$-RIP 
+  % $$\begin{array}{l}
+  % \exists \delta(S = |\{i | x \ne 0\}|): \\
+  % (1-\delta(S)) \|x\|_2 \le \|Ax\|_2 \le (1 + \delta(S)) \|x\|_2
+  % \end{array}$$
   \item В введенных условиях получаем ограничение на робастность в рамках восстановления сигнала
   \item Переходим от когерентности к условиям на собственные числа модельной матрицы
 \end{enumerate}
@@ -268,8 +296,7 @@ $$\begin{array}{l}
 $$
 \|\hat{\beta} - \beta^*\| \le O\left(\sqrt{\log n \over m}\right)
 $$
-Сравним полученное с условиями на несмещенное решение, где мы могли легко убежать бесконечно далеко от заданного $\beta^*$. 
-
+Ура, мы научились измерять смещение $\hat{\beta}$ в зависимости от условий задачи. К сожалению в очень жестких условиях.
 \end{frame}
 
 \begin{frame}{Что мы узнали про CS}
