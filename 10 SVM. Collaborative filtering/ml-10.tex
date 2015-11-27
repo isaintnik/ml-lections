@@ -21,6 +21,7 @@
 \renewcommand{\CancelColor}{\color{red}}
 
 \setbeamercolor{footline}{fg=Blue!50}
+\setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{footline}{
   \leavevmode%
   \hbox{%
@@ -28,7 +29,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2014
+    Санкт-Петербург, 2015
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -50,7 +51,7 @@
  \end{frame}
 }
 
-\title{Линейные модели: SVM (продолжение). Collaborative filtering.\\\small{}}
+\title{Линейные модели: SVM\\\small{}}
 \author[]{\small{%
 И.~Куралёнок,
 Н.~Поваров}}
@@ -66,13 +67,147 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2014
+\footnotesize СПб, 2015
 \end{center}
 \end{frame}
 
+
+\section{Support vector machines}
+\subsection{Идея метода}
+\begin{frame}{SVM(воспоминания о былом)}
+\begin{itemize}
+  \item Последний из линейных методов, который мы рассмотрим подробно.
+  \item Rocket science до конца 90-х, по крайней мере в задачах классификации.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{SVM на пальцах}
+\begin{itemize}
+  \item Максимальный зазор.
+  \item Нелинейные преобразования.
+\end{itemize}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{SVM_1.png}
+\end{center}
+\end{frame}
+
+\begin{frame}{Мысли вслух}
+\begin{itemize}
+  \item Почему большой зазор это хорошо?
+  \item Какая $\beta$ максимизирует зазор? 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Найдем ширину ``зазора'': геометрия}
+\small
+Есть две параллельные плоскости:
+$$\left\{\begin{array}{l}
+\beta^T x = a \\
+\beta^T x = b
+\end{array}\right.$$
+проведем прямую, перпендикулярную этой плоскости: $y=\|\beta\| \frac{\beta}{\|\beta\|} t$. Пересечет она наши плоскости вот так:
+$$\left\{\begin{array}{l}
+\beta^T (\|\beta\| \frac{\beta}{\|\beta\|} t_a) = a \\
+\beta^T (\|\beta\| \frac{\beta}{\|\beta\|} t_b) = b
+\end{array}\right.$$
+$$\left\{\begin{array}{l}
+t_a = \frac{a}{\|\beta\|} \\
+t_b = \frac{b}{\|\beta\|}
+\end{array}\right.$$
+тогда расстояние по полученной прямой: $|t_a - t_b| = \frac{|a-b|}{\|\beta\|}$ 
+\end{frame}
+
+\begin{frame}{Найдем ширину ``зазора'': мат. анализ}
+\footnotesize
+Решим оптимизацией:
+$$
+\min \frac{1}{2}\|x - y\|^2
+$$
+$$\left\{\begin{array}{l}
+\beta^T x = a \\
+\beta^T y = b
+\end{array}\right.
+$$
+Перейдем к коэффициентам Лагранжа:
+$$
+\min \frac{1}{2}\|x - y\|^2 + \lambda_1 (\beta^Tx - a) + \lambda_2 (\beta^Ty - b)
+$$
+Найдем нули производных по всем переменным:
+$$
+\begin{array}{lll}
+\left\{\begin{array}{l}
+\beta^T x = a \\
+\beta^T y = b \\ 
+x - y + \lambda_1 \beta = 0 \\
+x - y + \lambda_2 \beta = 0 \\
+\end{array}\right.
+&
+\left\{\begin{array}{l}
+\beta^T(x - y) = a - b \\
+\lambda_1 = \lambda_2 \\
+\|\beta\|\lambda_1 = b - a \\
+\end{array}\right.
+&
+\left\{\begin{array}{l}
+\lambda_1 = \lambda_2 = \frac{b-a}{\|\beta\|^2} \\
+x - y = \frac{b - a}{\|\beta\|^2}\|\beta\|\left(\frac{\beta}{\|\beta\|}\right)
+\end{array}\right.
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Возвращаясь к SVM}
+\small
+Теперь мы знаем что оптимизировать. Отнормируем разделяющие плоскости так:
+$$
+\left\{\begin{array}{l}
+\beta^T x = b - 1 \\
+\beta^T x = b + 1 \\
+\end{array}\right.
+$$
+В этих терминах нас $|a - b|$ фиксированы и оптимизировать мы будем только $\beta$:
+$$
+\arg \min \frac{\|\beta\|}{2}
+$$
+Вот в таких условиях ($y_i \in \{-1,1\}$):
+$$%\left\{
+\begin{array}{l}
+y_i(\beta^T x_i - b) \ge 1
+\end{array}
+%\right.$$
+$$
+\end{frame}
+
+\subsection{Коэффициенты Лагранжа для решения задачи про максимальное расстояние}
+\begin{frame}{По методу Лагранжа}
+По теореме Куна-Таккера: \
+$$
+\mathcal{L} = \frac{1}{2}\|\beta\|^2 - \sum_{i=1}^m\lambda_i(y_i(\beta x_i - \beta_0) - 1), \lambda_i \ge 0
+$$ 
+$$
+\left\{  
+  \begin{array}{ll}  
+  -\mathcal{L} = -\sum_{i=1}^m\lambda_i + \frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\lambda_i\lambda_j y_i y_j (x_i x_j) \\  
+  \lambda_i \ge 0 & \\
+  \sum_{i=1}^m\lambda_i y_i = 0
+  \end{array}   
+  \right.
+$$
+Тогда: \
+$$\begin{array}{l}
+\beta = \sum_{i=1}^m\lambda_i y_i x_i \\
+\beta_0 = \beta x_i - y_i, \lambda_i > 0
+\end{array}$$
+\end{frame}
+
+\begin{frame}{Чем стало легче?}
+\begin{itemize}
+  \item Адовые условия сменились простым $\lambda_i > 0$
+  \item У нас получился квадрат количества точек
+  \item Интересны только $(x_i, x_j)$ с которыми мы можем играться (kernel trick)!
+\end{itemize}
+\end{frame}
 % Классные слайды http://www.cs.nyu.edu/~mohri/icml2011-tutorial/tutorial-icml2011-1.pdf
-\section{SVM (продолжение)}
-\begin{frame}{Что мы узнали в прошлый раз I}
+\begin{frame}{Напишем еще раз}
 Вид двойственной задачи в случае линейной разделимости:
 $$\begin{array}{l}
 \arg \min_\lambda -\sum_{i=1}^m\lambda_i + \frac{1}{2}\sum_{i=1}^m\sum_{j=1}^m\lambda_i\lambda_j y_i y_j (x_i x_j) \\ 
@@ -88,17 +223,6 @@ $$\begin{array}{l}
 \beta = \sum_{i=1}^m\lambda_i y_i x_i \\
 \beta_0 = \beta x_i - y_i, \lambda_i > 0
 \end{array}$$
-\end{frame}
-
-\begin{frame}{Что мы узнали в прошлый раз II}
-\small
-\begin{itemize}
-  \item Было бы классно найти такую плоскость, которая сильнее всего поделит на классы
-  \item Если множества линейно разделимы, то надо минимизировать $\|\beta\|$
-  \item Если перейти к дуальной задаче, зависимость от $x$ окажется только через скалярные произведения, которые мы можем ``организовать'' по своему разумению
-  \item В дуальном решении условия очень просты и можно организовать безусловную оптимизацию заменой переменных
-  \item Количество компонент оптимизации пропорционально квадрату количества точек, что много
-\end{itemize}
 \end{frame}
 
 \subsection{SVM в случае неразделимых множеств} % из вики
@@ -241,208 +365,33 @@ $$
 Теперь вопрос свелся к тому как найти оптимальный $\mathcal{M}$.
 \end{frame}
 
-\section{Collaborative filtering}
-
-\subsection{Пример}
-% переработать http://habrahabr.ru/company/surfingbird/blog/139022/ на Сифона/Бороду
-% \begin{frame}{Вася и Петя \& подарки}
-% Вася и Петя собирали подарки для друзей из другого города. Друзья загадочные, но известно, что у них есть. Надо подобрать подарки так, чтобы им понравилось, используя знание о том, что обычно встречается вместе в домах.
-% \end{frame}
-
-\subsection{Постановка задачи} % wiki
-\begin{frame}{Collaborative filtering}
-Есть пользователи, есть товары. Надо найти подходящие пользователю товары, которых он не видел, используя информацию о том какие товары покупают вместе.
-$$\begin{array}{l}
-U = \{u_i\}_1^n, R = \{r_j\}_1^m \\
-X = \{(u, r, s) | u \in U, r \in R, s \in \mathbb{Z}_S \}
-\end{array}$$
-{\color{blue}www.netflixprize.com} проводит соревнование с призом в 1m\$. $n \simeq 480k, m \simeq 17k$.
-$$
-L(h, X) = -\sum_{(u,r,s) \in X} \|s - h(r,s)\|_2
-$$
-\end{frame}
-
-\begin{frame}{Принципиальные способы решения}
+\begin{frame}{Что мы узнали в прошлый раз I}
+\small
 \begin{itemize}
-  \item Храним весь опыт в памяти:
-  \begin{description}
-    \item[\color{green}+] просто, можно легко обновлять;
-    \item[\color{red}---] может быть тяжело по памяти, возможен только простой анализ, так как все работает on the fly.
-  \end{description}
-  \item Храним только профайлы для пользователей и товаров:
-  \begin{description}
-    \item[\color{green}+] легко шардируется, менее требовательно по памяти;
-    \item[\color{red}---] сложнее обновлять, для высокой отзывчивости надо городить охретектуру.
-  \end{description}
+  \item Было бы классно найти такую плоскость, которая сильнее всего поделит на классы
+  \item Если множества линейно разделимы, то надо минимизировать $\|\beta\|$
+  \item Если перейти к дуальной задаче, зависимость от $x$ окажется только через скалярные произведения, которые мы можем ``организовать'' по своему разумению
+  \item В дуальном решении условия очень просты и можно организовать безусловную оптимизацию заменой переменных
+  \item Количество компонент оптимизации пропорционально квадрату количества точек, что много
 \end{itemize}
 \end{frame}
 
-\subsection{Случай, когда матрица полная} % Воронцов, лекция в ВШЭ http://www.machinelearning.ru/wiki/images/e/e5/Voron-2008-11-10-cf.pdf
-
-\begin{frame}{Потоварные методы: линейная регрессия}
-Если есть звезды, то можно сделать все просто:
-$$
-h(u, r|X) = \sum_{\footnotesize\begin{array}{c}(u,q,s) \in X \\ q \ne r\end{array}} a_q s + b_q
-$$
-Slope One:
-$$
-h(u, r|X) = \frac{1}{\sum_{q \ne r} |X(r,q)|} \sum_{\footnotesize\begin{array}{c}(u,q,s) \in X \\ q \ne r\end{array}} |X(r,q)|(s + b_q)
-$$
-Все равно слишком много параметров: $m^2$!
-\end{frame}
-
-\begin{frame}{Потоварные методы: Amazon.com item-to-item}
-Дополнительно известна страница товара, на которой находится пользователь. Звезд нету, близость item'ов меряем так:
-$$\begin{array}{l}
-d(r,q) = {(X(r),X(q)) \over \|X(r)\| \|X(q)\|}
-\end{array}$$
-Ищем наиболее близкий текущему товар, его и рекоммендуем.
-\end{frame}
-
-\begin{frame}{Попользовательские методы}
-Пока все наши выводы не слишком зависили от пользователя. \\
-Можно сделать все тоже самое, но только по близким пользователям. Близость можно определить также:
-$$
-d(u_1, u_2) = {X(u_1) X(u_2) \over \|X(u_1)\| \|X(u_2)\|}
-$$
-или 
-$$
-d(u_1, u_2) = corr(X(u_1), X(u_2))
-$$
-\end{frame}
-
-\subsection{Разреженные матрицы: решение факторизацией} %  из головы
-\begin{frame}{Решение факторизацией}
+\begin{frame}{Что мы сегодня узнали II}
 \small
-В конечном счете у нас всегда есть таблица $C \in \mathbb{R}^{n \times m}$, в которой содержатся как известные из $X$ части, так и неизвестные компоненты. При этом информации из $X$ существенно меньше, чем требуется для того, чтобы достроить оставшееся. Из курса алгебры мы знаем, что (теорема Эккарта-Янга):
-$$
-C_0 = \arg \min_{rank(C^{'}) \le r} \|C - C^{'}\|_F = U^T \Sigma_r V
-$$
-Регулируя $r$ можно добиться сопостовимого с $X$ количества информации в правой части. Решение исходной задачи можно получить из $C_0$.
-\end{frame}
-
-\begin{frame}{Как построить разложение}
-Заметим, что:
-$$
-C_0^T C_0 = V^T \Sigma^2 V, C_0 C_0^T = U^T \Sigma^2 U
-$$
-Более того, так как $U$ и $V$ ортонормированны, найдя одну из них (конечно меньшую :)) мы можем получить вторую почти бесплатно. Для решения этой задачи есть мульен техник.
-\end{frame}
-
-\begin{frame}{Разложение напрямую работает плохо}
-\begin{itemize}
-  \item Звезды у одного пользователя != звездам другого
-  \item Слишком много пропущенных данных
-  \item Решения может ``колбасить'' из-за метода вычисления разложения, так как матрицы случайные
-\end{itemize}
-Последние 2 проблемы можно попробовать решить:
-$$
-\arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + R(u) + R(v)
-$$
-Размер $u_u$ и $v_r$ определяет ранк разложения (обычно маленький).
-\end{frame}
-
-\subsection{Известные регуляризации} % Мучать Гулина
-\begin{frame}{Известные регуляризации}
-\small
-Для того, чтобы строить регуляризации надо перейти к вероятностям. Предположение о нормальности $y = f(x) + \epsilon$ дает нам минимизиацию LL. Что позволяет перейти к MAP и применять классические $l_2$, $l_1$, $l_0$, AIC, BIC (Schwarz) etc.:
-$$\begin{array}{c}
-\arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + \lambda_1 \|u\|_q + \lambda_2 \|v\|_q \\
-\arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + 2 \left(d(u) + d(v)\right) \sigma^2_\epsilon \\
-\arg \min_{u,v} \sum_{(u,r,s) \in X} (s - u_u^T v_r)^2 + log |X| \left(d(u) + d(v)\right) \sigma^2_\epsilon\\
-\end{array}$$
-\end{frame}
-
-\begin{frame}{Akaike information criterion}
-\small
-Будем считать, что мы знаем истинную функцию распределения $h_0$, тогда, мы можем посчитать $KL(h_0 \| \hat{h})$ для любого решения $\hat{h}$. Понятно, что $h_0$ на практике неизвестно, но оказывается сравнить $KL(h_0 \| \hat{h})$ мы все равно можем (Akaike (1974)):
-$$AIC(h, y, X) = 2d(h) - 2 LL(y|X,h)$$
-Где $d$ --- мера сложности решения. Например в линейных $d = \|\beta\|_0$. Закон асимптотический, поэтому можно применять только для больших $|X|$. Используют также:
-$$
-AICc(h, y, X) = AIC(h,y,X) + \frac{2d(h)(d(h) + 1)}{|X| - d(h) - 1}
-$$
-\end{frame}
-
-\begin{frame}{Какие еще подходы бывают}
-\begin{itemize}
-  \item Co-clustering
-  \item Байесова модель поведения пользователя
-  \item Ближайшие соседи  
-\end{itemize}
-\end{frame}
-
-\subsection{Factorization machines} % Статья http://www.ismll.uni-hildesheim.de/pub/pdfs/Rendle2010FM.pdf
-
-\begin{frame}{Другой подход к построению модельной матрицы}
-Последние много слайдов мы решали задачу регрессии. Давайте это прямо и напишем
-\begin{center}
-\includegraphics[width=1\textwidth]{FMSetup.png}
-\end{center}
-\end{frame}
-
-\begin{frame}{Factorization machine}
-\small
-$$
-h(x, \beta) = \beta_0^0 + \sum_i \beta_i^1 x_i + \sum_i \sum_{j > i} (\beta_i^2, \beta_j^2)x_i x_j
-$$
-и найдем
-$$
-\arg \min_\beta \|h(X, \beta) - y\|_2
-$$
-Такая постановка называется Factorization Machine (FM) второго порядка.
-\end{frame}
-
-\subsection{Проблема холодного старта}
-\begin{frame}{Проблема холодного старта}
-Что делать с новыми пользователями, история по которым неизвестна?
-\begin{itemize}
-  \item Посмотреть на ``средних'' (да-да, порекомендуйте мне Верку Сердючку!)
-  \item Узнать хоть что-то про пользователя (регион, IP, откуда пришел (реферер), время захода, etc.) и построить правильный prior.
-\end{itemize}
-\end{frame}
-
-\section{Заключение}
-
-\begin{frame}{Что мы сегодня узнали I}
-\small
-Про SVM
 \begin{itemize}
   \item SVM можно делать в случае линейной неразделимости
   \item Формулы получаются почти такие же, но еще и с верхней границей на $\lambda$
   \item В SVM есть ядра, их можно подбирать, однако решение в этом случае включает все граничные точки из-за того, что $\Psi$ не определено в явном виде
   \item SVM можно рассматривать как минимизацию hindge loss с регуляризацией по Тихонову
 \end{itemize}
-И не только:
+\end{frame}
+
+\begin{frame}{Что мы сегодня узнали III}
 \begin{itemize}
   \item На ядрах можно делать не только SVM, но и регрессию
   \item Несколько способов построения мультиклассификатора и их обобщение
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Что мы сегодня узнали II}
-\small
-Про CF:
-\begin{itemize}
-  \item Есть такая задача
-  \item Ее можно решать просто и непросто
-  \item Задачу CF можно свести к линейной регрессии с регуляризацией, и это работает
-  \item Наиболее эффективный из известных мне методов CF (FM)
-\end{itemize}
-И не только:
-\begin{itemize}
-  \item Бывают регуляризации, построенные по принципу скорректированных оценок
-\end{itemize}
-\end{frame}
-
-\section{Домашнее задание}
-\begin{frame}{Результаты 5-й недели}
-\begin{itemize}
-  \item В формулировку домашних заданий закрался баг.
-  \item В howto.txt разных недель была просьба присылать письмо с названием за одну и ту же пятую неделю.
-  \item Многие так и сделали.
-  \item Такое очень сложно проверить и отранжировать.
-  \item Просьба прислать результаты домашнего задания за 5, 6, 7 и 8 неделю ещё раз. 
-\end{itemize}
-\end{frame}
 
 \end{document}
