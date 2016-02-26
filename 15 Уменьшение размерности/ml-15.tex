@@ -31,7 +31,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2014
+    Санкт-Петербург, 2016
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -51,7 +51,7 @@
    \addtolength\leftmargin{\labelsep}}}
   {\end{list}}
 
-\title{Уменшение размерности: обзор\\\small{}}
+\title{Уменьшение размерности: обзор\\\small{}}
 \author[]{\small{%
 И.~Куралёнок,
 Н.~Поваров}}
@@ -65,7 +65,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2014
+\footnotesize СПб, 2016
 \end{center}
 \end{frame}
 
@@ -160,9 +160,9 @@
 \end{frame}
 
 \subsection{Какие есть теоретические ограничения}
-\begin{frame}{Jonson-Lindestrauss lemma I}
+\begin{frame}{Johnson-Lindestrauss lemma I}
 \begin{theorem}{}
-Для заданного $0<\epsilon<1$, множества точек $X \supset \mathbb{R}^{n\times m}$, числа $k > \frac{\log m}{\epsilon^2}$, существует линейное преобразование $f: \mathbb{R}^n \to \mathbb{R}^k$ такое, что:
+Для заданного $0<\epsilon<1$, множества точек $X \in \mathbb{R}^{n\times m}$, числа $k > \frac{\log m}{\epsilon^2}$, существует линейное преобразование $f: \mathbb{R}^n \to \mathbb{R}^k$ такое, что:
 $$
 (1 - \epsilon) \|u - v\|_2^2 \le \|f(u) - f(v)\|_2^2 \le (1 + \epsilon) \|u - v\|_2^2
 $$
@@ -170,7 +170,7 @@ $$
 \end{theorem}
 \end{frame}
 
-\begin{frame}{Jonson-Lindestrauss lemma II}
+\begin{frame}{Johnson-Lindestrauss lemma II}
 К сожалению лемма довольно tight:
 \begin{theorem}{}
 Существует множество точек $X$, для которого потребуется $k = O(-\frac{\log m}{\epsilon^2 \log \epsilon})$.
@@ -241,7 +241,7 @@ $$
 В CV обычно встает вопрос соотношения мощности $L$ и $V$. Есть две альтернативы:
 \begin{itemize}
   \item Сделать $L$ поменьше \\
-\uncover<2->{\footnotesize Увеличит variance $\beta$ и, соответственно, может повлиять на дисперсию случайных величин справа и слева, при фиксированном.}
+\uncover<2->{\footnotesize Увеличит variance $\beta$ и, соответственно, может повлиять на дисперсию случайных величин справа и слева.}
   \item \small Сделать $T$ поменьше \\
 \uncover<3->{\footnotesize Обычно мы строим $T$ используя информацию о независимости наблюдаемых точек, что приводит к обратной зависимости дисперсии от количества точек.}
 \end{itemize}
@@ -268,16 +268,6 @@ $$
 Зависит дисперсия от количества разбиений. Сделаете 10 --- будет гигантским, сделаете 1000 --- будет точнее. У нас 200. 
 \end{frame}
 
-\begin{frame}{Когда оно все одно лажает?}
-Тем не менее все это добро может и не работать. 
-\begin{enumerate}
-  \item Значения $W_t$ зависимы
-  \item Все еще остается $\alpha$ с которой эта штука будет принимать одинаковые DS за ухудшения
-  \item Мы могли неверно подобрать какой-нить магический параметр
-\end{enumerate}
-$\Rightarrow$ все равно надо тестировать
-\end{frame}
-
 \begin{frame}{Wrapper vs. Filter}
 \small
 Если использовать исходную оптимизацию, можно поседеть. На чем можно сэкономить?
@@ -290,6 +280,18 @@ $\Rightarrow$ все равно надо тестировать
 \end{itemize}
 Все подобные телодвижения переводят нас из класса wrapper методов (честных), в класс filter (нечестных).
 \end{frame}
+
+\begin{frame}{Когда оно все одно лажает?}
+Тем не менее все это добро может и не работать. 
+\begin{enumerate}
+  \item Значения $W_t$ зависимы
+  \item Все еще остается $\alpha$ с которой эта штука будет принимать одинаковые DS за ухудшения
+  \item Мы могли неверно подобрать какой-нить магический параметр
+\end{enumerate}
+$\Rightarrow$ все равно надо тестировать
+\end{frame}
+
+
 
 \begin{frame}{Как можно тестировать приемку факторов?}
 \begin{itemize}
@@ -323,13 +325,13 @@ $\Rightarrow$ все равно надо тестировать
 Получается не очень, если делать без знания о методе оптимизации.
 \end{frame}
 
-\begin{frame}{Пара слов про embedded}
-Мы уже знаем пару способов как делать embedded. Вот пара способов:
+\begin{frame}{Пара buzzword про embedded}
+Мы уже знаем пару способов как делать embedded.
 \begin{itemize}
-  \item Akaike information criterion (и его исправленная, неработающая версия)
-  \item Bayesian information criterion
-  \item Minimum description length
   \item $l_q$, для $q < 2$.
+  \item Minimum description length
+  \item Bayesian information criterion
+  \item Akaike information criterion (и его исправленная, неработающая версия)
 \end{itemize}
 \end{frame}
 
