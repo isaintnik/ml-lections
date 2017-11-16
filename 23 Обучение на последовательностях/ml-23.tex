@@ -158,7 +158,7 @@ $$
 С помощью формулы Байеса легко показать, что:
 
 $$\begin{array}{l}
-P(r|s,A,B) I\{x_{rt} = \xi\} \sim f_{\xi t} b_{\xi t} \\
+P(X_t = \xi| s, A, B) = \sum_r P(r|s,A,B) I\{x_{rt} = \xi\} \sim f_{\xi t} b_{\xi t} \\
 f_{t}  = f_{t-1} A\ diag(b_{w_t}) \\
 b_{t}  = b_{t+1} A\ diag(b_{w_{t+1}})
 \end{array}$$
@@ -169,8 +169,8 @@ b_{t}  = b_{t+1} A\ diag(b_{w_{t+1}})
 Попробуем напрямую максимизировать:
 $$\begin{array}{l}
 (\hat{A}, \hat{B}) = \arg \max_{A,B} \sum_{t=1}^{T} \log {X_t(y_t) \over \sum_y X_t(y)} \\
-X_t = \sum_\xi \xi \sum_r P(r|s,A,B) I\{x_{rt} = \xi\} \\
-P(r|s,A,B) I\{x_{rt} = \xi\} \sim f_{\xi t} b_{\xi t} \\
+X_t = \sum_\xi \xi P(X_t = \xi| s, A, B) = \\
+P(X_t = \xi| s, A, B) = \sim f_{\xi t} b_{\xi t} \\
 \end{array}$$
 \small
 \uncover<2->{Это не кажется простым занятием :)\\
@@ -211,9 +211,9 @@ $$X_t = f(X_{t-1})$$
 Введем функции $f$ и $g$, зависящие от соседей по графу. $f$---от перехода, $g$---от нода.
 {\small
 $$\begin{array}{c}
-X_t(\lambda, \mu) = \\ 
-\exp\left(\sum_{k,e} \lambda_k f_k(e, y|_e x, X_{t - 1}(\lambda, \mu)) \right.\\
-\left. + \sum_{k,v} \mu_k g_k(v, y|_v, x, X_{t-1}(\lambda, \mu)) \right)
+X_t(\lambda, \mu) =
+\exp\left(\sum_{k,e} \lambda_k f_k(e, y|_e, w_t)
+ + \sum_{k,v} \mu_k g_k(v, y|_v, w_t) \right)
 \end{array}$$
 }
 Теперь количество параметров определяется количеством функций, а не состояний.

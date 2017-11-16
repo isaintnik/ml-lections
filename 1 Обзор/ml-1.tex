@@ -23,10 +23,10 @@
   \leavevmode%
   \hbox{%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    И. Кураленок, Н. Поваров, Яндекс
+    И. Кураленок
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2013
+    Санкт-Петербург, 2017
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -39,9 +39,7 @@
 \newcommand{\itemi}{\item[\checkmark]}
 
 \title{Машинное обучение: начало\\\small{}}
-\author[]{\small{%
-И.~Куралёнок,
-Н.~Поваров}}
+\author[]{\small{И.~Куралёнок}}
 \date{}
 
 \begin{document}
@@ -51,9 +49,8 @@
 \small
 \begin{center}
 \vspace{-60pt}
-\normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2014
+\footnotesize СПб, 2017
 \end{center}
 \end{frame}
 
@@ -71,9 +68,9 @@
 \begin{frame}
 \frametitle{Как отчитываться?}
 \begin{itemize}
-\item К концу обучения сделать 15 минутную презентацию по применению ML в вашей любимой задаче.
-\item Задачки
-\item Ошибки к лекциях и в слайдам :)
+	\item Экзамен как в универе
+	\item Домашняя работа, которая дает бонусы на экзамене
+	\item Статья с ``хорошей'' конференции/журнала
 \end{itemize}
 \end{frame}
 
@@ -89,20 +86,84 @@
 \begin{frame}
 \frametitle{Что почитать?}
 \begin{itemize}
-  \item Википедия (лучше en)
+ 	\item Википедия (лучше en)
 \end{itemize}
 \begin{itemize}
-  \item T. Hastie, R. Tibshirani, J. Friedman “The elements of Statistical Learning”
-  \item T. Mitchell “Machine Learning”
+ 	\item T. Hastie, R. Tibshirani, J. Friedman “The elements of Statistical Learning”
+ 	\item T. Mitchell “Machine Learning”
 \end{itemize}
 \begin{itemize}
-  \item Труды конференций: ICML, NIPS, CIKM, KDD, etc.
-  \item Журналы: JML, JMLR, JIS, NC, etc.
-  \item Видео курс: www.ml-class.org
+ 	\item Труды конференций: NIPS, ICML, CIKM, KDD, etc.
+ 	\item Журналы: JML, JMLR, JIS, NC, etc.
+ 	\item Видео курсы (нет им числа)
 \end{itemize}
 \end{frame}
 
 \section{Введение}
+
+\begin{frame}
+\frametitle{Чтобы решить задачку обучения}
+Нужно:
+\only<2>{
+	\begin{enumerate}
+	\item Скачать данные
+	\item Придумать метрику
+	\item Запустить XGBoost
+	\end{enumerate}
+}
+\uncover<3>{
+	\begin{enumerate}
+		\item Придумать цель и найти данные
+		\item Обеспечить наблюдаемость цели в рамках описания
+		\item Найти класс решающих функций подходящий для задачи
+		\item Составить целевую функцию, близкую к предметной цели и ``простую в оптимизации''
+		\item Провести оптимизацию и убедиться в том, что ответ достигает поставленных целей
+	\end{enumerate}
+}
+\end{frame}
+
+\begin{frame}{Чего (пока) не умеет ML}{Зачем мы все еще нужны :)}
+\begin{enumerate}
+	\item Ставить задачу и разбивать ее на этапы
+	\item Моделировать ненаблюдаемые ситуации
+	\item Переиспользовать накопленные знания для решения новых задач
+	\item Понять полезность результата
+\end{enumerate}
+\end{frame}
+
+\begin{frame}
+\frametitle{Data Mining vs. Machine Learning}
+\begin{center}
+\rowcolors{2}{Blue!10}{Blue!5}
+\footnotesize
+\begin{tabular}{p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}}
+\rowcolor{Blue!20}
+& \small Data Mining & \small Machine Learning \\
+\hline 
+\bf Цель дисциплины & Выявление ``скрытых данных'' & Оптимизация целевой функции \\		
+\bf Исследования & Больше про данные & Больше про методы \\
+\bf Типичный результат & ``Мы применили такой метод и получили клевые результаты на таких стандартных данных'' & ``Предложили новый метод, который работает круче чем другие на нескольких датасетах (возможно даже синтетика)'' \\
+\bf Где почитать & SIGIR, WSDM, WWWC, $\ldots$ & ICML, CIKM, $\ldots$ \\
+\end{tabular}
+\end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{Artificial Intelligence vs. Machine Learning}
+\begin{center}
+\rowcolors{2}{Blue!10}{Blue!5}
+\footnotesize
+\begin{tabular}{p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}}
+\rowcolor{Blue!20}
+& \small Artificial Intelligence & \small Machine Learning \\
+\hline 
+\bf Цель дисциплины & Рациональное поведение умных машин & Оптимизация целевой функции \\		
+\bf Исследования & Больше про мат. моделирование & Больше про методы \\
+\bf Типичный результат & ``Мы придумали как формализовать задачу игры в шахматы, применили такие методы и обыграли человека'' & ``Предложили новый метод, который работает круче чем другие на нескольких датасетах (возможно даже синтетика)'' \\
+\bf Где почитать & AAAI, IJCAI, $\ldots$ & ICML, CIKM, $\ldots$ \\
+\end{tabular}
+\end{center}
+\end{frame}
 
 \subsection{Определения}
 
@@ -113,6 +174,7 @@ A computer program is said to learn from experience E with respect to some class
 \begin{flushright}\textbf{Tom~M.~Mitchell}\end{flushright}
 \end{quote}
 \end{frame}
+
 \begin{frame}
 \frametitle{Машинное обучение: определения (II)}
 \begin{quote}
@@ -120,6 +182,7 @@ Machine learning --- the ability of a machine to improve its performance based o
 \begin{flushright}\textbf{Webster}\end{flushright}
 \end{quote}
 \end{frame}
+
 \begin{frame}
 \frametitle{Машинное обучение: определения (III)}
 \begin{quote}
@@ -127,6 +190,7 @@ Machine learning --- the ability of a machine to improve its performance based o
 \begin{flushright}\textbf{ru.wikipedia.org}\end{flushright}
 \end{quote}
 \end{frame}
+
 % Вывод такой: нету единого понимания о чем все это. Также нету структуры, которая была бы стандартной,
 % поэтому дальше мы придумали свою собственную.
 
@@ -140,6 +204,7 @@ Machine learning --- the ability of a machine to improve its performance based o
 	\item[80-90гг] первые конференции, много практического применения, активное применение кластеризации в анализе
 	\item[90-00гг] повторное сэмплирование в ML, SVM, применение в IR, ML != DM, LASSO, bootstrap, bagging, boosting
 	\item[00-10гг] Compressed sensing и прочие восстановления сигналов, царство деревьев, развитие ансамблей, $\ldots$
+	\item[10-] Deep learning $\ldots$
 \end{description}
 \end{small}
 \end{frame}
@@ -149,7 +214,7 @@ Machine learning --- the ability of a machine to improve its performance based o
 \frametitle{Основные понятия}
 \begin{itemize}
 	\item Область работы $=$ Universe $=\Gamma$.
-	\item Решающая функция $=$ Decision Function $=$ $F_0 \in F$ -- класс решающих функций.
+	\item Решающая функция $=$ Decision Function $=$ $\hat{F} \in F$ -- класс решающих функций.
 	\item Опыт $=$ Data Set $=$ $D = X \times Y$.
 	\item Целевая функция $=$ Target $=T(y,F(x))$.
 \end{itemize}
@@ -158,7 +223,7 @@ Machine learning --- the ability of a machine to improve its performance based o
 \begin{frame}{Задача обучения}
 В ML оптимизация часто проводится в одних условиях, а эксплуатация в других. 
 $$
-\arg \max_{F, B: F_0 = B(F)} A(\Gamma, F_0)
+\arg \max_{F, B: \hat{F} = B(F)} A(\Gamma, \hat{F})
 $$
 \begin{itemize}
 	\item $A$ --- цели эксплуатации (например деньги) на всей области работы $\Gamma$
@@ -169,14 +234,14 @@ $$
 \begin{frame}{Как устроена эксплуатация}{На самом деле, как она \_может\_ быть устроена}
 Будем считать, что работа на разных элементах $\Gamma$ независима. Тогда эксплуатацию $A$ можно представить так:
 $$
-A=\mu_{x \sim U(\Gamma)} T_A(F_0(x))
+A=\mu_{x \sim U(\Gamma)} T_A(\hat{F}(x))
 $$
 \end{frame}
 
 \begin{frame}{Как устроена оптимизация}{На самом деле, как она \_может\_ быть устроена}
 Способ оптимизации $B$, в свою очередь, такая штука:
 $$
-F_0 = B(F, D) = \arg \max_{F} T_B(D, F) = \arg \max_{F} T_B(Y,F(X));
+\hat{F} = B(F, D) = \arg \max_{F} T_B(D, F) = \arg \max_{F} T_B(Y,F(X));
 $$
 
 В рамках этой лекции, мы не будем рассматривать разницу между $T_A$ и $T_B$, поэтому будем считать, что они одинаковы $T$.
@@ -224,9 +289,10 @@ ML можно делить по:
 	\item Все множество, на котором работаем задано перечислением $\Gamma_0$
 	\item Для части данных известен ответ, и они формируют $D$
 \end{enumerate}
-$$
-F_0=B(F, D, \Gamma_0)
-$$
+$$\begin{array}{l}
+\hat{F}=B(F, D, \Gamma_0) \\
+A(\Gamma_0, \hat{F})
+\end{array}$$
 \end{frame}
 
 \begin{frame}
@@ -236,22 +302,23 @@ $$
 	\item Определяем генеральную совокупность $\Gamma$
 	\item Обучаемся на доступных примерах, используя информацию о всех
 \end{enumerate}
-$$
-F_0 = B(F, D)
-$$
+$$\begin{array}{l}
+\hat{F} = B(F, D) \\
+A(\Gamma, \hat{F})
+\end{array}$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Стохастическая оптимизация\footnote{Одна из возможных версий предмета :).}}
 \begin{enumerate}
 	\item Определяем генеральную совокупность $\Gamma$
-	\item Обучаемся на следующем примере пока не надоест (до момента $t_0$)
+	\item Обучаемся на следующем примере пока не надоест (до момента $T$)
 \end{enumerate}
 $$\begin{array}{l}
 D_0 = \emptyset \\
-D_{t+1} = D_{t} \cup \left(x_i \sim U(\Gamma)\right) \\
-F_0^t=B(F, D_i) \\
-A(F_0) = A(F_0^{t_0}, \Gamma)
+D_{t+1} = D_{t} \cup \left(x_t \sim U(\Gamma)\right) \\
+\hat{F}_t=B(F, D_t) \\
+A(\hat{F}_T, \Gamma)
 \end{array}$$
 \end{frame}
 
@@ -260,12 +327,12 @@ A(F_0) = A(F_0^{t_0}, \Gamma)
 \begin{enumerate}
 	\item Определяем генеральную совокупность $\Gamma$
 	\item Обучаемся на всех доступных примерах
-	\item Пополняем множество примеров по просьбе алгоритма $\mathcal{A}$ и переходим к п.~2, если $\mathcal{A}$ не требует больше данных останавливаемся в $t_0$
+	\item Пополняем множество примеров по просьбе алгоритма $\mathcal{A}$ и переходим к п.~2, если $\mathcal{A}$ не требует больше данных останавливаемся в $T$
 \end{enumerate}
 $$\begin{array}{l}
-D_{t+1} = D_{t} \cup \{\mathcal{A}(D_t, F_t)\} \\
-F_0^t = B(F, D_{t}) \\
-A(F_0, \Gamma) = A(F_0^{t_0}, \Gamma)
+D_{t+1} = D_{t} \cup \{\mathcal{A}(D_t, \hat{F}_t)\} \\
+\hat{F}_t = B(F, D_{t}) \\
+A(\hat{F}_T, \Gamma)
 \end{array}$$
 \end{frame}
 
@@ -278,9 +345,9 @@ A(F_0, \Gamma) = A(F_0^{t_0}, \Gamma)
 	\item Пополняем множество примеров по просьбе алгоритма $\mathcal{A}$, пока не закончился бюджет $\sum_t c({x_t, y_t}) < C$ и переходим к п.~3
 \end{enumerate}
 $$\begin{array}{l}
-D_{t+1} = D_{t} \cup \{\mathcal{A}(D_t, F_t)\} \\
-F_0^t = B(F, D_{t}) \\
-A(F_0, \Gamma) = A(F_0^{t_0}, \Gamma)
+D_{t+1} = D_{t} \cup \{\mathcal{A}(D_t, \hat{F}_t)\} \\
+\hat{F}_t = B(F, D_{t}) \\
+A(\hat{F}_T, \Gamma)
 \end{array}$$
 \end{frame}
 
@@ -292,27 +359,30 @@ A(F_0, \Gamma) = A(F_0^{t_0}, \Gamma)
 	\item Получаем следующую точку, исходя из работы решающей функции и переходим к п.~2
 \end{enumerate}
 $$\begin{array}{l}
+A(\hat{F}, \Gamma) = \sum_{t} A(\hat{F}_t, x_t) \\
 D_0 = \emptyset \\
-D_{t+1} = D_{t} \cup \{(x_{t+1}, y_{t+1})\} \\
-F_0^t = B(F, D_{t}) \\
-A(F_0, \Gamma) = \sum_{t} T_A(y_t, F_0^t(x_t)) \\
+D_{t+1} = D_{t} \cup \{(x_{t+1})\} \\
+\hat{F}_t = B(F, D_{t}) \\
 \end{array}$$
 \end{frame}
 
 \begin{frame}
 \frametitle{Многорукие бандиты}
+\footnotesize
 \begin{enumerate}
-	\item Фиксируем множество возможных действий $M$, $x\in M$.
-	\item Каждое действие ведет к $y \sim \xi^*$.
-	\item Обновляем модель $\xi_{ti}, \forall i \in M$ неизвестного $\xi^*$.
-	\item Выбираем следующий элемент исходя из оптимального exploitation($B$)/exploration($E$).
+	\item Фиксируем множество возможных действий $M$, $m \in M$.
+	\item Каждое действие ведет к ответу $y \sim \xi(x)^*$.
+	\item Получаем следующую точку $x_t$
+	\item Обновляем модель $\hat{F}_t = \{\xi_{tm}, m \in M$.
+	\item Выбираем следующее действие исходя из алгоритма $\mathcal{A}(\hat{F}_t, x)$.
+	\item Получаем по действию ответ среды
 	\item Повторяем с п.3 пока не надоест.
 \end{enumerate}
 $$\begin{array}{l}
+A(\hat{F}, \Gamma) = \sum_{t} A(y_t = y \sim \xi_{m_t = \mathcal{A}(\hat{F}_t, x_t)}, x_t) \\
 D_0 = \emptyset \\
-D_{t+1} = D_{t} \cup \{(x_{t+1} \in M, y_{t+1})\} \\
-F_0^t = \left[\begin{array}{l}B(M, D_{t}, \xi_t(D_{t}, \xi_0))\\ E(M, D_{t}, \xi_t(D_{t}, \xi_0))\end{array}\right. \\
-A(F_0, \Gamma) = \sum_{t} T_A(y_t, F_0^t(x_t), \xi^*) \\
+D_{t+1} = D_{t} \cup \left\{\left((x_{t+1}, y_{t+1}), m_{t+1}\right)\right\} \\
+\hat{F}_t = B(F, D_t) \\
 \end{array}$$
 \end{frame}
 
@@ -321,16 +391,16 @@ A(F_0, \Gamma) = \sum_{t} T_A(y_t, F_0^t(x_t), \xi^*) \\
 \footnotesize
 \begin{enumerate}
 	\item Фиксируем множество возможных действий $M$, ``поле'' $X$, множество возможных ответов среды $S = S^o \cup S^n$.
-	\item Получим наблюдаемую часть ответа системы на текущее состояние.
-	\item Построим оценку $T_B$ на основе нашего прогноза $s^n$, для возможных ходов.
-	\item Сделаем следующий ход исходя из оптимальности exploitation($B$)/exploration($E$).
+	\item Получим наблюдаемую часть ответа среды на текущее состояние.
+	\item Обновим модель предсказания $\hat{F}_t = S(m)$
+	\item Сделаем следующий ход исходя из алгоритма $\mathcal{A}(\hat{F}_t, s^o)$.
 	\item Повторяем с п.2 пока не надоест или среда нас не убъет.
 \end{enumerate}
 $$\begin{array}{l}
+A(\hat{F}, M, X, S) = \sum_t A(S_t(m_t = \mathcal{A}(\hat{F}_t, x_t)), {S_i}_1^t) \\
 D_0 = \emptyset \\
-D_{t+1} = D_t \cup ((m_t,x_t), y_t), y_t \in S^o \\
-F_0^t = \left[\begin{array}{l}B(M, X, D_{t}, S_t^n)\\ E(M, X, D_{t}, S_t^n)\end{array}\right. \\
-A(F_0, \Gamma) = \sum_{t} T_A(s^o_t, s^n_t, F_0^t(x_t)) \\
+D_{t+1} = D_{t} \cup \left\{\left((x_{t+1}, y_{t+1} \in S^o), m_{t+1}\right)\right\} \\
+\hat{F}_t = B(F, D_t) \\
 \end{array}$$
 \end{frame}
 
@@ -496,11 +566,7 @@ ML можно делить по:
 		\item Генетические алгоритмы
 		\item PLSI/LDA (Latent Dirichlet Allocation)/прочие модели с распределениями (несть им числа)
 	\end{itemize}
-\item Instance based learning
-	\begin{itemize}
-		\item kNN
-		\item DANN
-	\end{itemize}
+\item Instance based learning (kNN)
 \end{itemize}
 \end{frame}
 
@@ -546,40 +612,6 @@ ML можно делить по:
 Логистическая регрессия & LDA \\
 &\\
 \bf \em Для вхождения в область, при больших размерностях & \bf \em Небольшие размерности, «давно тут сидим» \\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}
-\frametitle{Data Mining vs. Machine Learning}
-\begin{center}
-\rowcolors{2}{Blue!10}{Blue!5}
-\footnotesize
-\begin{tabular}{p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}}
-\rowcolor{Blue!20}
-& \small Data Mining & \small Machine Learning \\
-\hline 
-\bf Цель дисциплины & Выявление ``скрытых данных'' & Оптимизация целевой функции \\		
-\bf Исследования & Больше про данные & Больше про методы \\
-\bf Типичный результат & ``Мы применили такой метод и получили клевые результаты на таких стандартных данных'' & ``Предложили новый метод, который работает круче чем другие на нескольких датасетах (возможно даже синтетика)'' \\
-\bf Где почитать & SIGIR, WSDM, WWWC, $\ldots$ & ICML, CIKM, $\ldots$ \\
-\end{tabular}
-\end{center}
-\end{frame}
-
-\begin{frame}
-\frametitle{Artificial Intelligence vs. Machine Learning}
-\begin{center}
-\rowcolors{2}{Blue!10}{Blue!5}
-\footnotesize
-\begin{tabular}{p{0.2\textwidth}|p{0.35\textwidth}|p{0.35\textwidth}}
-\rowcolor{Blue!20}
-& \small Artificial Intelligence & \small Machine Learning \\
-\hline 
-\bf Цель дисциплины & Рациональное поведение умных машин & Оптимизация целевой функции \\		
-\bf Исследования & Больше про мат. моделирование & Больше про методы \\
-\bf Типичный результат & ``Мы придумали как формализовать задачу игры в шахматы, применили такие методы и обыграли человека'' & ``Предложили новый метод, который работает круче чем другие на нескольких датасетах (возможно даже синтетика)'' \\
-\bf Где почитать & AAAI, IJCAI, $\ldots$ & ICML, CIKM, $\ldots$ \\
 \end{tabular}
 \end{center}
 \end{frame}

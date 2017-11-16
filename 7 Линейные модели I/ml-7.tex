@@ -25,10 +25,10 @@
   \leavevmode%
   \hbox{%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    И. Кураленок, Н. Поваров, Яндекс
+    И. Кураленок, Н. Поваров
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2015
+    Санкт-Петербург, 2016
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -53,9 +53,8 @@
 \small
 \begin{center}
 \vspace{-60pt}
-\normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2015
+\footnotesize СПб, 2016
 \end{center}
 \end{frame}
 
@@ -128,7 +127,7 @@ $$
 $$
 Var(\hat{\beta}) = \left(X^TX\right)^{-1}\frac{1}{m - n - 1}\|y - y^*\|_2
 $$
-А если еще и предположить, что $y={\beta^*}^Tx + \epsilon$ и $\epsilon \sim N(0,\sigma)$:
+А если еще и предположить, что $y={\beta^*}^Tx + \epsilon$ и $\epsilon \sim N(0,\sigma^2)$:
 $$
 \hat{\beta} \sim N(\beta^*, \left(X^TX\right)^{-1}\sigma^2)
 $$
@@ -138,12 +137,12 @@ $$
 $$
 \end{frame}
 
-\begin{frame}{А точно $\hat{\beta}_i \ne 0$?}
+\begin{frame}{А точно $\beta^*_i \ne 0$?}
 Введем такую штуку ($Z$-score):
 $$
 z_i = \frac{\hat{\beta}_i}{\hat{\sigma}\sqrt{v_i}}
 $$
-где $v_i$ --- диагональный элемент $\left(X^TX\right)^{-1}$. Если подумать что $\hat{\beta}_i = 0$, то:
+где $v_i$ --- диагональный элемент $\left(X^TX\right)^{-1}$. Если подумать что $\beta^*_i = 0$, то:
 $$
 z_i \sim T_{m-n-1}
 $$
@@ -151,7 +150,21 @@ $$
 \end{frame}
 
 \subsection{Теорема Гаусса-Маркова}
-\begin{frame}{Теорема Гаусса-Маркова}
+\begin{frame}{Теорема Гаусса-Маркова I}
+\begin{itemize}
+  \item Независимость компонент $x$
+  \item $X$ вычислены точно
+  \item Распределение ошибки -- нормально с ожиданием $0$ (можно смягчить)
+\end{itemize}
+$\Rightarrow$
+\begin{enumerate}
+  \item Несмещенность
+  \item Эффективность (лучше решения по разбросу не бывает)
+  \item Состоятельность (чем больше данных, тем меньше разброс, асимптотика в $0$)
+\end{enumerate}
+\end{frame}
+
+\begin{frame}{Теорема Гаусса-Маркова II}
 \begin{theorem}[]
 Линейное приближение по MSE обладает наименьшим разбросом из всех несмещенных линейных решений
 \end{theorem}
@@ -160,6 +173,8 @@ $$
 \item[$\Rightarrow$] простым MSE нам не отделаться, надо будет менять $T$
 \end{itemize}
 \end{frame}
+
+
 
 \subsection{Расширение на несколько целевых функций}
 \begin{frame}{Расширение на несколько целей}

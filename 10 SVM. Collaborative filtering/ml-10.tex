@@ -29,7 +29,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2015
+    Санкт-Петербург, 2016
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -67,7 +67,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2015
+\footnotesize СПб, 2016
 \end{center}
 \end{frame}
 
@@ -183,6 +183,11 @@ $$
 $$
 \mathcal{L} = \frac{1}{2}\|\beta\|^2 - \sum_{i=1}^m\lambda_i(y_i(\beta x_i - \beta_0) - 1), \lambda_i \ge 0
 $$ 
+$$\begin{array}{l}
+\beta = \sum_{i=1}^m\lambda_i y_i x_i \\
+\beta_0 = \beta x_i - y_i, \lambda_i > 0
+\end{array}$$
+Тогда: \
 $$
 \left\{  
   \begin{array}{ll}  
@@ -192,11 +197,6 @@ $$
   \end{array}   
   \right.
 $$
-Тогда: \
-$$\begin{array}{l}
-\beta = \sum_{i=1}^m\lambda_i y_i x_i \\
-\beta_0 = \beta x_i - y_i, \lambda_i > 0
-\end{array}$$
 \end{frame}
 
 \begin{frame}{Чем стало легче?}
