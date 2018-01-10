@@ -31,7 +31,7 @@
     И. Кураленок, Н. Поваров, Яндекс
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,center]{}%
-    Санкт-Петербург, 2014
+    Санкт-Петербург, 2016
   \end{beamercolorbox}%
   \begin{beamercolorbox}[wd=.333333\paperwidth,ht=2.25ex,dp=1ex,right]{}%
   Стр. \insertframenumber{} из \inserttotalframenumber \hspace*{2ex}
@@ -65,7 +65,7 @@
 \vspace{-60pt}
 \normalsize {\color{red}Я}ндекс \\
 \vspace{80pt}
-\footnotesize СПб, 2014
+\footnotesize СПб, 2016
 \end{center}
 \end{frame}
 \section{SOM}
@@ -80,11 +80,6 @@
 \end{itemize}
 \end{frame}
 
-\begin{frame}{SOM}{процесс обучения}
-Можно представить так: кидаем платок и расправляем его.
-\begin{center}\includegraphics[width=0.7\textwidth]{SOM.png}\end{center}
-\end{frame}
-
 \begin{frame}{SOM}{алгоритм}
 \textbf{Дано:} функция расстояния по графу ($G$), множество точек ($X \in \mathbb{R}^n$), дискаунт за расстояние ($q$), дискаунт за итерацию ($s$) 
 \begin{enumerate}
@@ -93,11 +88,21 @@
   \item Находим ближайший $g_{i_0}$
   \item ``Двигаем'' $g_i$ в сторону точки $x^t$, по принципу ``чем дальше, тем меньше'':
   $$
-    g_i^{t+1} = g_i^t + q(G(i, i_0), t)s(t)(x_t - g_t)
+    g_i^{t+1} = g_i^t + q(G(i, i_0), t)s(t)(x^t - g_i^t)
   $$
   \item Переходим в п.2 пока не сошлось.
 \end{enumerate}
 \end{frame}
+
+\begin{frame}{SOM}{пример I}
+\begin{center}\includegraphics[height=0.7\textheight]{random_som.png}\end{center}
+\end{frame}
+
+\begin{frame}{SOM}{пример II}
+\begin{center}\includegraphics[height=0.7\textheight]{sorted_som.png}\end{center}
+\end{frame}
+
+
 
 \begin{frame}{SOM}{свойства}
 Что можно с их помощью делать:
@@ -132,6 +137,11 @@
 \textit{\textbf{Кластерный анализ (англ. cluster analysis): }задача разбиения заданной выборки объектов (ситуаций) на подмножества, называемые кластерами, так, чтобы каждый кластер состоял из схожих объектов, а объекты разных кластеров существенно отличались.}
 \end{frame}
 
+\begin{frame}{Кластерный анализ}{примеры }
+\begin{center}\includegraphics[height=0.7\textheight]{methods.png}\end{center}
+\end{frame}
+
+
 \begin{frame}{Кластерный анализ}{виды}
 \begin{itemize}
   \item Иерархические методы (connectivity-based)
@@ -140,6 +150,8 @@
   \item Ограниченные (constraint-based).
 \end{itemize}
 \end{frame}
+
+
 
 \begin{frame}{Кластерный анализ}{иерархические методы}
 \small
@@ -157,6 +169,9 @@ $$
 \textbf{Замечания:} можно сделать более, чем односвязное замыкание, так как подобных делений много, результат сильно зависит от рандома, сложность $O(n^3)$.
 \end{frame}
 
+
+
+
 \begin{frame}{Кластерный анализ}{иерархические методы, плотность}
 \small
 \textbf{Цель:}
@@ -165,17 +180,24 @@ $$
 $$
 \textbf{Алгоритм (DBSCAN):}
 \begin{enumerate}
-  \item Выбираем случайную точку $x$ и кладём её $S$
+  \item Выбираем случайную непосещённую точку $x$
+  \item Если у  неё больше m соседей, то кладём её в $S$
   \item Для каждой точки из $S$:
   \begin{enumerate}
-    \item Ищем соседей в радиусе $\epsilon$
-    \item Если точка ещё не в каком-либо кластере, кладём точки в $C_i$
-    \item Если таких соседей больше $m \in C_i$, то добавляем всех соседей в $S$. 
+    \item Если точку не посещали, то ищем соседей в радиусе $\epsilon$
+    \item Если таких соседей больше $m$, то добавляем всех соседей в $S$. 
+    \item Если точка ещё не в каком-либо кластере, кладём точку в $C_i$
+    
   \end{enumerate}
   
 \end{enumerate}
 \textbf{Замечания:} сложность $O(n^2)$, повязаны на поиск ближайших соседей.
 \end{frame}
+
+\begin{frame}{DBSCAN}{иллюстрация}
+\begin{center}\includegraphics[width=0.7\textwidth]{dbscan.png}\end{center}
+\end{frame}
+
 
 \begin{frame}{Кластерный анализ}{центроиды}
 \small
@@ -196,7 +218,6 @@ $$\begin{array}{l}
   \item Никаких гарантий сходимости для k-means
   \item Сильная зависимость от начальных параметров
   \item Вместо центройдов можно использовать медианы
-  \item Один из самых простых случаев EM $\Rightarrow$ можно попробовать EM гауссовой смеси напрямую.
 \end{itemize}
 \end{frame}
 
@@ -244,7 +265,7 @@ $$\begin{array}{l}
 
 \begin{frame}{Кластерный анализ}{что ещё}
 \begin{itemize}
-  \item Спектральная кластеризация $L = E - D^{-\frac{1}{2}}SD^{-\frac{1}{2}}$
+  \item Спектральная кластеризация
   \item Constraint-based clustering 
 \end{itemize}
 \end{frame}

@@ -189,6 +189,17 @@ $$
 \end{center}
 \end{frame}
 
+\begin{frame}{Карго III}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{cargo_2}
+\end{center}
+\end{frame}
+
+\begin{frame}{Карго IV}
+\begin{center}
+\includegraphics[width=0.9\textwidth]{cargo_3}
+\end{center}
+\end{frame}
 
 
 \begin{frame}{Немного истории}
@@ -262,53 +273,57 @@ $$
 \textbf{Без обратной связи, многослойная}
 \end{frame}
 
-\begin{frame}{Обучение персептронной сети}{Обратное распространение ошибки}
-\footnotesize
-С $sign$ работать тяжело, поэтому возьмем $g$ поглаже ($th, \frac{1}{1+e^{-t}}$, etc.), тогда можно сделать стохастический градиентный спуск, воспользовавшись блочной структурой решающей функции:
-$$
-\arg \max_{\{W_l\}} T(y, F(x, \{W_l\}_1^d)) = \arg\max_{\{W_l\}} T(y, g(W_l y_{l-1}))
-$$
-\begin{itemize}
-  \item Посчитаем частные производные для выходного слоя:
-  $$
-  w_{ij}^{dt+1} = w_{ij}^{dt} - \frac{\partial T}{\partial y_i^d}\frac{\partial g}{\partial w_{ij}^d}\left(\{W^t\}_1^d\right)
-  $$
-  \item Для предпоследнего слоя:
-  $$
-  w_{ij}^{d-1t+1}  = w_{ij}^{d-1t+1} - \left(\sum_k \frac{\partial T}{\partial y_k^d}\frac{\partial T}{\partial y_j^{d-1}}\right)\frac{\partial g}{\partial w_{ij}^{d - 1}}\left(\{W^t\}_1^d\right)
-  $$
-  \end{itemize}
-\end{frame}
 
-\begin{frame}{Обратное распространение ошибки в случае MSE}
-\footnotesize
-Нам интересно научиться строить регрессию.
+\begin{frame}{Обучение персептронной сети}{Обратное распространение ошибки в случае MSE}
+
+С $sign$ работать тяжело, поэтому возьмем $g$ поглаже:
 $$\begin{array}{c}
-T = -\frac{1}{2}\|y - F(x, \{W_l\}_1^d)\|^2 \\
-g(u) = \frac{1}{1 + e^{-u}}
+T = -\frac{1}{2}\sum_k(y_k - o_k)^2 \\
+g(u) = \frac{1}{1 + e^{-2\alpha u}} \\
+\Delta w_{i,j} = \eta\frac{\partial T}{\partial w_{i,j}}
 \end{array}$$
 
-
-\begin{itemize}
-  \item Посчитаем частные производные для выходного слоя:
-  \only<-2>{$$
-  w_{ij}^{dt+1} = w_{ij}^{dt} - \frac{\partial T}{\partial y_i^d}\frac{\partial g}{\partial w_{ij}^d}\left(\{W^t\}_1^d\right)
-  $$}
-  \only<2->{
-  $$
-  w_{ij}^{dt+1} = w_{ij}^{dt} - y_i^{d-1}y_j^d(1 - y^d_j)(y_j^d - y)
-  $$}
-  \item Для предпоследнего слоя:
-  \only<-3>{$$
-  w_{ij}^{d-1t+1}  = w_{ij}^{d-1t+1} - \left(\sum_k \frac{\partial T}{\partial y_k^d}\frac{\partial T}{\partial y_j^{d-1}}\right)\frac{\partial g}{\partial w_{ij}^{d - 1}}\left(\{W^t\}_1^d\right)
-  $$
-  }
-  \only<3->{
-  $$
-  w_{ij}^{d-1t+1} = w_{ij}^{d-1t+1} + y_i^{d-2}y_j^{d - 1}\left(1 - y_j^{d-1}\right)\sum_k w_{jk}^{dt}y_k^d(1 - y^d_k)(y^d_k - y)
-  $$}
-\end{itemize}
 \end{frame}
+
+\begin{frame}{Обратное распространение ошибки в случае MSE}{Последний слой}
+
+
+$$\begin{array}{c}
+S_j = \sum_i w_{i,j}x_i \\
+\frac{\partial T}{\partial w_{i,j}} = \frac{\partial T}{\partial S_j} \frac{\partial S_j}{\partial w_{i,j}} = x_i \frac{\partial T}{\partial S_j} \\
+\frac{\partial T}{\partial S_j} = \frac {\partial T}{\partial o_j} \frac{\partial o_j}{\partial S_j} = ... = -2 \alpha o_j (1 - o_j) (y_j - o_j)
+\end{array}$$
+
+\end{frame}
+
+\begin{frame}{Обратное распространение ошибки в случае MSE}{Не последний слой}
+
+
+$$\begin{array}{c}
+\frac{\partial T}{\partial S_j} = \sum_k \frac{\partial T}{\partial S_k} \frac{\partial S_j}{\partial w_{i,j}} = x_i \frac{\partial T}{\partial S_j} \\
+\frac{\partial S_k}{\partial S_j} = \frac {\partial S_k}{\partial o_j} \frac{\partial o_j}{\partial S_j} = ... = -2 \alpha w_{j,k} o_j (1 - o_j)
+\end{array}$$
+
+\end{frame}
+
+\begin{frame}{Обратное распространение ошибки в случае MSE}{Итого}
+\begin{itemize}
+\item Для последнего слоя:
+$$
+\delta_j = -2\alpha o_j(1-o_j)(y_j - o_j)
+$$
+\item Для внутреннего слоя:
+$$
+\delta_j = -2\alpha o_j(1-o_j)\sum_k(\delta_kw_{j,k})
+$$
+\item Для всех:
+$$
+\Delta w_{i,j} = \eta \delta_j o_i
+$$
+\end{itemize}
+
+\end{frame}
+
 
 % понятие персептрона, BP, расширения персептронных сетей W-нейроны и прочая херня
 

@@ -190,6 +190,18 @@
 $\Rightarrow$ Большая размерность — зло для kNN и не только для него!
 \end{frame}
 
+\begin{frame}{Проклятье размерности в картинках}
+\begin{center}
+\includegraphics[width=0.8\textwidth]{curse_of_dim.png}
+\end{center}
+\end{frame}
+
+
+\begin{frame}{One more problem}
+\begin{center}
+\includegraphics[height=0.8\textheight]{DANN_reason.png}
+\end{center}
+\end{frame}
 
 \begin{frame}{Discriminant Adaptive Nearest-Neighbor (DANN)}
 \small
@@ -310,12 +322,12 @@ $$\begin{array}{l}
 \small
 Построение:
 \begin{enumerate}
-  \item Выберем $L$-функций семейства $\mathcal{H}^k$
-  \item Поделим все данные на кусочки с одинаковыми значениями $g_i = (h_{i,1},...,h_{i,k})$
+  \item Выберем $L$-функций семейства $\mathcal{H}$
+  \item Поделим все данные на кусочки с одинаковыми значениями
 \end{enumerate}
 Поиск по точке $q$:
 \begin{enumerate}
-  \item Выкинем $j \sim U\{1,...,L\}$
+  \item Выберем $j \sim U\{1,...,L\}$
   \item Найдем значение $L_j(q)$ и соответствующий этому значению “кусочек”
   \item Линейно поищем в “кусочке”
   \item Одно из двух:
@@ -334,16 +346,6 @@ $$\begin{array}{l}
 \end{mydescription}
 \end{frame}
 
-\begin{frame}{Некоторые известные семейства функций}
-\begin{mydescription}{косинусная мера}
-  \item [\color{blue}$l_1$] возьмём $w >> R, s_i \sim U[0, w], i=1,...,n$,
-  $$
-    h_{s_1,...,s_n} = (\left[\frac{(x_1 - s_1)}{w}\right], ..., \left[\frac{(x_n - s_n)}{w}\right])
-  $$
-  \item [\color{blue}$l_s$] возьмём $w >> R, r_i \sim N(0, 1), h_{w, r, b} = [\frac{r^Tx+b}{w}]$ при $\delta = \delta(k, L)$
-  \item [\color{blue}косинусная мера] возьмём $r_i\sim N(0,1), h_r = sign(x,r)$
-\end{mydescription}
-\end{frame}
 
 \begin{frame}{Что мы сегодня узнали}
 \begin{itemize}
