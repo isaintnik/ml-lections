@@ -105,12 +105,12 @@
 \begin{itemize}
    \item Вероятностное сэмплирование: 
    $$
-   p(x),\forall x:p(x) > 0
+   P(x),\forall x:P(x) > 0
    $$
    \uncover<2>{\textit{Например: попробуем посчитать соотношение мужчин/женщин}}
    \item Невероятностное сэмплирование:
    $$
-   p(x), \exists x: p(x) = 0
+   P(x), \exists x: P(x) = 0
    $$
    \uncover<3>{\textit{Например: ``по результатам опроса superjob.ru, 100\% россиян пользуются интернетом''}}
    \item Без возвращений
@@ -185,12 +185,12 @@
 \small
 Как же понять что построенное множество хорошее? Хотим такого:
 $$\begin{array}{rl}
-F_0 =& \arg \max_{F} \mu_{\xi \sim D} T(y_{\xi}, F(x_{\xi})) \\
-    =& \arg \max_{F} \mu_{\xi \sim \Gamma} T(y_{\xi}, F(x_{\xi}))
+\hat{H} =& \arg \max_{H} \mu_{\xi \sim D} T(y_{\xi}, H(x_{\xi})) \\
+    =& \arg \max_{H} \mu_{\xi \sim \Gamma} T(y_{\xi}, H(x_{\xi}))
 \end{array}$$
 Но делать будем иначе:
 $$
-D = \arg \max_{D} \mu_{\eta \sim \Gamma} T(y_{\eta}, \arg \max_{F} \mu_{\xi \sim D} T(y_{\xi}, F(x_{\xi}))(x_\eta))
+D = \arg \max_{D} \mu_{\eta \sim \Gamma} T(y_{\eta}, \arg \max_{H} \mu_{\xi \sim D} T(y_{\xi}, H(x_{\xi}))(x_\eta))
 $$
 Это такая оптимизация
 \end{frame}
@@ -213,7 +213,6 @@ $$
 
 \begin{frame}{Leave One Out}
 Выберем один из примеров и посмотрим насколько поменяется выборка, если его в ней не будет. Усредним по всем.\\
-\\
 \small
 Эту логику можно применять например так:
 \normalsize
@@ -291,7 +290,7 @@ $$\begin{array}{rl}
 \begin{frame}{Переборные методы как частный случай сэмплирования}
 Сэмплирование можно использовать не только для сбора данных! Представим себе, что процесс оптимизации устроен так:
 $$
-F_0 = \arg \max_{\beta \in \mathbb{R}^m} \mu_{\xi \sim D} T(y_{\xi}, F(x_{\xi}, \beta))
+\hat{H} = \arg \max_{\beta \in \mathbb{R}^m} \mathbb{E}_{\xi \sim D}(T(y_{\xi}, H(x_{\xi}, \beta)))
 $$
 И нету у нас никаких способов понять свойства зависимости $T$ от $\beta$.
 \end{frame}
@@ -299,7 +298,7 @@ $$
 \subsection{Формальная постановка}
 \begin{frame}{Формальная постановка}
 $$
-F_0 = \arg\max_F p(F|X)
+\hat{H} = \arg\max_H P(H|X)
 $$
 \begin{description}
   \item[\color{green}+] если известны вероятности можно попробовать посэмплировать решения;
@@ -310,7 +309,7 @@ $$
 
 \begin{frame}{Иногда все просто}
 $$
-F_0 = \arg\max_{F \in \{f_i\}_{i=1}^n} p(F|X)
+\hat{H} = \arg\max_{H \in \{H_i\}_{i=1}^n} P(H|X)
 $$
 \begin{enumerate}
   \item введём порядок обхода;
@@ -321,8 +320,13 @@ $$
 
 \begin{frame}{Но чаще всё непросто}
 $$
-F_0 = \arg\max_{F \in \{f_i\}_{i=1}^\infty} p(F|X)
+\hat{H} = \arg\max_{H \in \{H_i\}_{i=1}^\infty} P(H|X)
 $$
+или совем запущено:
+$$
+\hat{H} = \arg\max_{H(x, \beta), \beta \in \mathbb{R}^k} P(H|X)
+$$
+
 \begin{enumerate}
   \item введём порядок обхода;
   \item применим систематическое сэмплирование;
@@ -332,22 +336,23 @@ $$
 
 \subsection{Случайное блуждание}
 \begin{frame}{Случайное блуждание I}
+\small
+$$
+H = H(x, \beta), \beta \in \mathbb{R}^k
+$$
 Чтобы построить порядок обхода можно воспользоваться такой схемой:
-
 $$\begin{array}{l}
-F = F(x, \beta), \beta \in \mathbb{R}^n \\
-F_t = F(x, \beta_t) \\
-\beta_{t+1} = \beta_t + \xi~~~~C(\beta_{t+1} | \{\beta_i\}_0^t) \\
+H_t = H(x, \beta_t) \\
+\mathcal{A} = \left\{\begin{array}{l}
+\beta_{t+1} = \beta_t + \xi \\ C(\beta_{t+1} | \{\beta_i\}_0^t)
+\end{array}\right.
 \end{array}$$
-
-\begin{itemize}
-  \item будем блуждать по пространству параметров;
-  \item необходимо определить:
-  \begin{enumerate}
-    \item способ сделать шаг;
-    \item условие принятия этого шага.
-  \end{enumerate}
-\end{itemize}
+Для этого необходимо определить:
+\begin{enumerate}
+  \item начальную точку $\beta_0$;
+  \item способ сделать шаг $\xi$;
+  \item условие принятия этого шага $C$.
+\end{enumerate}
 \end{frame}
 
 \begin{frame}{Случайное блуждание II}
@@ -363,7 +368,7 @@ F_t = F(x, \beta_t) \\
 \begin{itemize}
   \item множество фиксированных шагов $\xi \sim U(\{\xi_i\}_1^m)$;
   \item гауссовское $\xi_t \sim N(\mu, \sigma^2)$;
-  \item самозависимое;
+  \item самозависимое (генетика, рои, etc.);
   \item etc.
 \end{itemize}
 \end{frame}
@@ -371,9 +376,9 @@ F_t = F(x, \beta_t) \\
 \subsection{Hill climbing}
 \begin{frame}{Simple hill climbing}
 $$\begin{array}{l}
-\xi \sim U(\{\xi_i\}_1^{2n}), \xi_{i\frac{i}{2}} = -1^{i~mod~2}\omega, \xi_{ij} = 0, j \neq \frac{i}{2},\\
+\xi \sim U(\{\xi_i\}_1^{2k}), \xi_{i} = -1^{i~mod~2}\omega_t,\\
 \\
-C(\beta_{t+1}|\beta_t) = \frac{p(F(\beta_{t+1})|X)}{p(F(\beta_t)|X)} > 1 \\
+C(\beta_{t+1}|\beta_t) = \frac{P(H(\beta_{t+1})|X)}{P(H(\beta_t)|X)} > 1 \\
 \end{array}$$
 Свойства:
 \begin{itemize}
@@ -413,7 +418,7 @@ $\Rightarrow$ Markov Chain Monte-Carlo (MCMC)
 
 Введем $p(\beta_1|\beta_2)$, отвечающую за локальность.
 $$\begin{array}{l}
-\alpha = \frac{p(F_{\beta_{t+1}}|X)p(\beta_{t+1}|\beta_t)}{p(F_{\beta_t}|X)p(\beta_t|\beta_{t+1})}\\
+\alpha = \frac{P(H_{\beta_{t+1}}|X)P(\beta_{t+1}|\beta_t)}{P(H_{\beta_t}|X)P(\beta_t|\beta_{t+1})}\\
 \\
 \psi \sim U(0,1)\\
 \\
@@ -424,8 +429,8 @@ C(\beta_{t+1}|\beta_t) = \left\{
            \end{array}   
            \right.  
 \end{array}$$
-Например, $p(\beta_{t+1}|\beta_t) \sim N(\beta_t,\sigma^2E)$ \\
-Если $p(\beta_1 | \beta_2) = p(\beta_2 | \beta_1)$ --- это Metropolis \\ 
+Например, $P(\beta_{t+1}|\beta_t) \sim N(\beta_t,\sigma^2E)$ \\
+Если $P(\beta_1 | \beta_2) = P(\beta_2 | \beta_1)$ --- это Metropolis \\ 
 \end{frame}
 
 \begin{frame}{Свойства}
@@ -459,7 +464,7 @@ $\Rightarrow$ \textit{Точно придём в максимум!} \\
 
 \begin{frame}{Сложности в использовании}
 \begin{itemize}
-  \item Сходимость зависит от выбора $p(\beta_{t+1}|\beta_{t})$
+  \item Сходимость зависит от выбора $P(\beta_{t+1}|\beta_{t})$
   \item Если хотим использовать разумное распределение, оно многомерное $\Rightarrow$ его сложно реализовывать
 \end{itemize}
 \end{frame}
@@ -507,30 +512,42 @@ $$
 \small
 Фокус, который мы проделали называется $EM$-алгоритм. Пускай данные у нас состоят из видимой части $L$ и скрытой $Z$, $X = (L,Z)$. Мы хотим найти оптимальные параметры $\beta$:
 $$
-LL(p(L|\beta)) = LL(p(X|\beta))
+log P(L|\beta)) = log P(X|\beta)
 $$
 \begin{enumerate}
   \item Возьмем какой-то $\beta_0$
   \item Посчитаем ожидание (expectation step):
   $$
-  E(\beta | \beta_t) = \mu\left(LL(\beta,X) | Z,\beta_t \right)
+  \mathbb{E}(\beta | \beta_t) = \mathbb{E}_Z \left(log P(X, \beta, Z | \beta_t \right))
   $$
   \item Проведем оптимизацию (maximization step):
   $$
-  \beta_{t+1} = \arg \max_{\beta} E(\beta | \beta_t)
+  \beta_{t+1} = \arg \max_{\beta} \mathbb{E}(\beta | \beta_t)
   $$
   \item Перейти к второму шагу до сходимости
 \end{enumerate}
 \end{frame}
 
 \subsection{Сэмплирование Гиббса как расширение EM}
+
+\begin{frame}{Немного про Гиббса/Больцмана}
+Есть такое распределение:
+$$
+p(x) = \frac{e^\frac{e(x)}{kT}}{Z = \int_x e^\frac{e(x)}{kT} dx}
+$$
+Про него известно, для фиксированной функции $e(x) \ge 0: Z < \infty$ и условии на общую энергию системы:
+$$
+\int_x e(x) dP(x) \le const
+$$
+оно доставляет в максимум энтропию. А еще это добро эквивалентно MRF.
+\end{frame}
 \begin{frame}{Алгоритм Гиббса}
-В Метрополисе есть проблема: многомерное распределение $p(F|X) = p(\beta|X)$. Можно попробовать рассматривать его по частям.
+В Метрополисе есть проблема: многомерное распределение $P(H|X) = P(\beta|X)$. Можно попробовать рассматривать его по частям.
 \begin{enumerate}
   \item Начнем с какого-то $\beta$
   \item Сгенерируем $\beta_{t+1}$ по правилам
 $$
-p(\beta_{t + 1,i} | X, \beta_{t+1,1},\ldots,\beta_{t+1, i-1}, \beta_{t, i+1},\ldots, \beta_{t,n})
+P(\beta_{t + 1,i} | X, \beta_{t+1,1},\ldots,\beta_{t+1, i-1}, \beta_{t, i+1},\ldots, \beta_{t,n})
 $$
   \item Будем бегать по $i=1\ldots n$, пока не сойдется
   \item Полученная $\beta$ --- следующая точка сэмплирования
@@ -549,13 +566,40 @@ $$
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Как можно построить $p(F|X)$ для RMSE}
+\begin{frame}{Как можно построить $P(F|X)$ для RMSE}
 $$\begin{array}{l}
-p(\beta|X) = \frac{e^{-c\|F(\beta|X) - Y\|_2}}{Z} \\
+P(\beta|X) = \frac{e^{-c\|H(\beta|X) - Y\|_2}}{Z} \\
 \\
-Z = \int\limits_{\beta} e^{-c\|F(\beta|X) - Y\|}d\beta
+Z = \int\limits_{\beta} e^{-c\|H(\beta|X) - Y\|}d\beta
 \end{array}$$
 Если максимизируем, то надеемся задрать $Y$ так, чтообы $Z$ был определён. 
+
+Есть только одна проблема: \uncover<2->{мы хотим максимизировать, а не считать среднее :)}
+\end{frame}
+
+\begin{frame}{NFL: формальная формулировка}
+$$\begin{array}{rl}
+d_m =& \{(d^x_m(1), d^y_m(1)), \ldots, (d^x_m(m), d^y_m(m))\} \\
+f: & \mathcal{X} \to \mathcal{Y} \\
+\mathcal{F}= & \mathcal{Y}^\mathcal{X} \\
+p(f) = & \frac{1}{\mathcal{F}} ёё
+\end{array}$$
+
+\begin{theorem}[David Wolpert and William G. Macready (1997)]
+Для любых двух способов обхода $a_1$ и $a_2$:
+$$\begin{array}{rl}
+\sum_f P(d^y_m|f,m,a_1) = \sum_f P(d^y_m|f,m,a_2)
+% \sum_f p(d^y_m|f_0,M,m,a_1) = \sum_f p(d^y_m|f_0,M,m,a_2)
+\end{array}$$
+\end{theorem}
+\end{frame}
+
+\begin{frame}{NFL: следствия}
+\begin{itemize}
+  \item Нам всем хватит работы :)
+  \item Полоса белая, полоса черная
+  \item Нужно искать близкие задачи
+\end{itemize}
 \end{frame}
 
 \section{Заключение}
